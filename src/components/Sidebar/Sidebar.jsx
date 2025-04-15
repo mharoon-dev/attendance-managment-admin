@@ -120,70 +120,73 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
   ];
 
   return (
-    <div className={`sidebar ${!isOpen ? 'closed' : ''}`}>
-      <div className="sidebar-header">
-        <div className="logo">
-          <span className="logo-text">School</span>
-          <span className="logo-highlight">Manager</span>
+    <>
+      <div className={`sidebar ${!isOpen ? 'closed' : ''}`}>
+        <div className="sidebar-header">
+          <div className="logo">
+            <span className="logo-text">School</span>
+            <span className="logo-highlight">Manager</span>
+          </div>
+          <button className="close-sidebar" onClick={toggleSidebar}>
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
         </div>
-        <button className="close-sidebar" onClick={toggleSidebar}>
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <line x1="18" y1="6" x2="6" y2="18"></line>
-            <line x1="6" y1="6" x2="18" y2="18"></line>
-          </svg>
-        </button>
-      </div>
-      
-      <div className="sidebar-content">
-        <nav className="sidebar-nav">
-          {navItems.map((item) => (
-            <div key={item.key} className="nav-section">
-              {item.subItems ? (
-                <>
-                  <button
-                    className={`nav-item ${expandedItems[item.key] ? 'expanded' : ''}`}
-                    onClick={() => toggleExpand(item.key)}
-                  >
+        
+        <div className="sidebar-content">
+          <nav className="sidebar-nav">
+            {navItems.map((item) => (
+              <div key={item.key} className="nav-section">
+                {item.subItems ? (
+                  <>
+                    <button
+                      className={`nav-item ${expandedItems[item.key] ? 'expanded' : ''}`}
+                      onClick={() => toggleExpand(item.key)}
+                    >
+                      <span className="nav-icon">{item.icon}</span>
+                      <span className="nav-label">{item.label}</span>
+                      <svg
+                        className="expand-icon"
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                      </svg>
+                    </button>
+                    <div className={`sub-items ${expandedItems[item.key] ? 'expanded' : ''}`}>
+                      {item.subItems.map((subItem) => (
+                        <Link
+                          key={subItem.path}
+                          to={subItem.path}
+                          className="sub-item"
+                        >
+                          {subItem.label}
+                        </Link>
+                      ))}
+                    </div>
+                  </>
+                ) : (
+                  <Link to={item.path} className="nav-item">
                     <span className="nav-icon">{item.icon}</span>
                     <span className="nav-label">{item.label}</span>
-                    <svg
-                      className="expand-icon"
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="16"
-                      height="16"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <polyline points="6 9 12 15 18 9"></polyline>
-                    </svg>
-                  </button>
-                  <div className={`sub-items ${expandedItems[item.key] ? 'expanded' : ''}`}>
-                    {item.subItems.map((subItem) => (
-                      <Link
-                        key={subItem.path}
-                        to={subItem.path}
-                        className="sub-item"
-                      >
-                        {subItem.label}
-                      </Link>
-                    ))}
-                  </div>
-                </>
-              ) : (
-                <Link to={item.path} className="nav-item">
-                  <span className="nav-icon">{item.icon}</span>
-                  <span className="nav-label">{item.label}</span>
-                </Link>
-              )}
-            </div>
-          ))}
-        </nav>
+                  </Link>
+                )}
+              </div>
+            ))}
+          </nav>
+        </div>
       </div>
-    </div>
+      <div className="sidebar-overlay" onClick={toggleSidebar}></div>
+    </>
   );
 };
 
