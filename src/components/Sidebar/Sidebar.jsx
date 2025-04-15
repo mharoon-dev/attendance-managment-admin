@@ -24,7 +24,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
           <rect x="3" y="14" width="7" height="7"></rect>
         </svg>
       ),
-      path: '/'
+      path: '/dashboard'
     },
     {
       key: 'teachers',
@@ -185,7 +185,12 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
           </nav>
         </div>
       </div>
-      <div className="sidebar-overlay" onClick={toggleSidebar}></div>
+      {
+        window.innerWidth <= 768 && (
+          <div className="sidebar-overlay" onClick={toggleSidebar}></div>
+        )
+      }
+      
     </>
   );
 };
