@@ -1,0 +1,99 @@
+.input-container {
+  width: 100%;
+  margin-bottom: 1.5rem;
+}
+
+.input-label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #374151;
+}
+
+.required-mark {
+  color: #D90429;
+  margin-left: 0.25rem;
+}
+
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  border: 1px solid #D1D5DB;
+  border-radius: 0.5rem;
+  background-color: #FFFFFF;
+  transition: all 0.2s ease;
+}
+
+.input-wrapper:hover {
+  border-color: #9CA3AF;
+}
+
+.input-wrapper.focused {
+  border-color: #3A86FF;
+  box-shadow: 0 0 0 2px rgba(58, 134, 255, 0.2);
+}
+
+.input-wrapper.error {
+  border-color: #D90429;
+}
+
+.input-wrapper.disabled {
+  background-color: #F3F4F6;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.input-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-left: 1rem;
+  color: #6B7280;
+}
+
+.input-field {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  font-size: 0.95rem;
+  color: #111827;
+  background-color: transparent;
+  border: none;
+  outline: none;
+}
+
+.input-field::placeholder {
+  color: #9CA3AF;
+}
+
+.input-field:disabled {
+  cursor: not-allowed;
+}
+
+.input-wrapper .input-icon + .input-field {
+  padding-left: 0.5rem;
+}
+
+.password-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 1rem;
+  background: none;
+  border: none;
+  color: #6B7280;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.password-toggle:hover {
+  color: #374151;
+}
+
+.error-message {
+  color: #D90429;
+  font-size: 0.8rem;
+  margin-top: 0.25rem;
+}

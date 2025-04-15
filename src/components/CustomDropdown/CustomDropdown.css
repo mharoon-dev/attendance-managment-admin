@@ -1,0 +1,129 @@
+.custom-dropdown-container {
+  position: relative;
+  width: 100%;
+  margin-bottom: 1.5rem;
+}
+
+.dropdown-label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #374151;
+}
+
+.required-mark {
+  color: #D90429;
+  margin-left: 0.25rem;
+}
+
+.custom-dropdown {
+  position: relative;
+  width: 100%;
+  border: 1px solid #D1D5DB;
+  border-radius: 0.5rem;
+  background-color: #FFFFFF;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.custom-dropdown:hover {
+  border-color: #9CA3AF;
+}
+
+.custom-dropdown.open {
+  border-color: #3A86FF;
+  box-shadow: 0 0 0 2px rgba(58, 134, 255, 0.2);
+}
+
+.custom-dropdown.error {
+  border-color: #D90429;
+}
+
+.dropdown-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  min-height: 2.5rem;
+}
+
+.dropdown-value {
+  color: #111827;
+  font-size: 0.95rem;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dropdown-arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #6B7280;
+  transition: transform 0.2s ease;
+}
+
+.dropdown-arrow.open {
+  transform: rotate(180deg);
+}
+
+.dropdown-options {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  max-height: 200px;
+  overflow-y: auto;
+  background-color: #FFFFFF;
+  border: 1px solid #E5E7EB;
+  border-radius: 0.5rem;
+  margin-top: 0.25rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  z-index: 10;
+  padding: 0.5rem 0;
+}
+
+.dropdown-option {
+  padding: 0.75rem 1rem;
+  font-size: 0.95rem;
+  color: #374151;
+  transition: background-color 0.2s ease;
+  cursor: pointer;
+}
+
+.dropdown-option:hover {
+  background-color: #F3F4F6;
+}
+
+.dropdown-option.selected {
+  background-color: #EFF6FF;
+  color: #3A86FF;
+  font-weight: 500;
+}
+
+.error-message {
+  color: #D90429;
+  font-size: 0.8rem;
+  margin-top: 0.25rem;
+}
+
+/* Scrollbar styling */
+.dropdown-options::-webkit-scrollbar {
+  width: 6px;
+}
+
+.dropdown-options::-webkit-scrollbar-track {
+  background: #F3F4F6;
+  border-radius: 3px;
+}
+
+.dropdown-options::-webkit-scrollbar-thumb {
+  background: #D1D5DB;
+  border-radius: 3px;
+}
+
+.dropdown-options::-webkit-scrollbar-thumb:hover {
+  background: #9CA3AF;
+}
