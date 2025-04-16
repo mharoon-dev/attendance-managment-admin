@@ -2,15 +2,12 @@ import React, { useState } from 'react';
 import Navbar from '../../components/Navbar/Navbar';
 import Sidebar from '../../components/Sidebar/Sidebar';
 import Loader from '../../components/Loader/Loader';
+import useSidebar from '../../hooks/useSidebar';
 import './Dashboard.css';
 
 const Dashboard = () => {
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const { sidebarOpen, toggleSidebar } = useSidebar();
   const [loading, setLoading] = useState(false);
-  
-  const toggleSidebar = () => {
-    setSidebarOpen(!sidebarOpen);
-  };
   
   // Sample data for dashboard
   const stats = [

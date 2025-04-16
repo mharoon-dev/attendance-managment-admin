@@ -4,23 +4,92 @@ import './Teachers.css';
 import Navbar from '../../components/Navbar/Navbar';
 import Sidebar from '../../components/Sidebar/Sidebar';
 import CustomDropdown from '../../components/CustomDropdown/CustomDropdown';
+import useSidebar from '../../hooks/useSidebar';
+import { FiFilter, FiArrowUp, FiSearch, FiPlus, FiX, FiSave, FiUpload } from 'react-icons/fi';
+import { BsBuilding, BsPersonBadge } from 'react-icons/bs';
 
 const Teachers = () => {
   const navigate = useNavigate();
+  const { sidebarOpen, toggleSidebar } = useSidebar();
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
   const [sortBy, setSortBy] = useState('name');
-  const [sidebarOpen, setSidebarOpen] = useState(true);
   const [loading, setLoading] = useState(false);
   const [selectedDepartment, setSelectedDepartment] = useState('all');
   const [selectedStatus, setSelectedStatus] = useState('all');
-
-  const toggleSidebar = () => {
-    setSidebarOpen(!sidebarOpen);
-  };
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [editingTeacher, setEditingTeacher] = useState(null);
+  const [formData, setFormData] = useState({
+    name: '',
+    subject: '',
+    email: '',
+    phone: '',
+    status: '',
+    education: '',
+    classes: []
+  });
 
   const handleViewProfile = (teacherId) => {
     navigate(`/teachers/${teacherId}`);
+  };
+
+  const handleEditClick = (teacher) => {
+    setEditingTeacher(teacher);
+    setFormData({
+      name: teacher.name,
+      subject: teacher.subject,
+      email: teacher.email,
+      phone: teacher.phone,
+      status: teacher.status,
+      education: teacher.education,
+      classes: [...teacher.classes]
+    });
+    setIsEditModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsEditModalOpen(false);
+    setEditingTeacher(null);
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleClassChange = (index, value) => {
+    const updatedClasses = [...formData.classes];
+    updatedClasses[index] = value;
+    setFormData(prev => ({
+      ...prev,
+      classes: updatedClasses
+    }));
+  };
+
+  const addClass = () => {
+    setFormData(prev => ({
+      ...prev,
+      classes: [...prev.classes, '']
+    }));
+  };
+
+  const removeClass = (index) => {
+    const updatedClasses = formData.classes.filter((_, i) => i !== index);
+    setFormData(prev => ({
+      ...prev,
+      classes: updatedClasses
+    }));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // Here you would typically update the teacher data in your backend
+    console.log('Updated teacher data:', formData);
+    // For now, we'll just close the modal
+    handleCloseModal();
   };
 
   // Sample teachers data
@@ -101,7 +170,7 @@ const Teachers = () => {
       <div className={`teachers-container ${!sidebarOpen ? 'sidebar-closed' : ''}`}>
         <div className="teachers-header">
           <h1>Teachers</h1>
-          <button className="add-teacher-btn">
+          <button className="add-teacher-btn" onClick={() => navigate('/teachers/add')}>
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <line x1="12" y1="5" x2="12" y2="19"></line>
               <line x1="5" y1="12" x2="19" y2="12"></line>
@@ -110,42 +179,59 @@ const Teachers = () => {
           </button>
         </div>
 
-        <div className="teachers-toolbar">
-          <div className="search-box">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <circle cx="11" cy="11" r="8"></circle>
-              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-            </svg>
-            <input
-              type="text"
-              placeholder="Search teachers..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-          </div>
-
+        <div className="toolbar">
           <div className="toolbar-actions">
+            <div className="search-box">
+              <FiSearch className="search-icon" />
+              <input
+                type="text"
+                placeholder="Search teachers..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+            </div>
+            <div className="dropdown-container">
             <CustomDropdown
-              options={departments}
+              compact
+              icon={<FiFilter />}
+              label="Department"
               value={selectedDepartment}
-              onChange={setSelectedDepartment}
-              placeholder="Select Department"
+              onChange={(value) => setSelectedDepartment(value)}
+              options={[
+                { value: 'all', label: 'All Departments', icon: <BsBuilding /> },
+                { value: 'science', label: 'Science', icon: <BsBuilding /> },
+                { value: 'math', label: 'Mathematics', icon: <BsBuilding /> },
+                { value: 'english', label: 'English', icon: <BsBuilding /> },
+                { value: 'history', label: 'History', icon: <BsBuilding /> },
+              ]}
             />
             <CustomDropdown
-              options={statuses}
+              compact
+              icon={<FiFilter />}
+              label="Status"
               value={selectedStatus}
-              onChange={setSelectedStatus}
-              placeholder="Select Status"
+              onChange={(value) => setSelectedStatus(value)}
+              options={[
+                { value: 'all', label: 'All Status', icon: <BsPersonBadge /> },
+                { value: 'active', label: 'Active', icon: <BsPersonBadge /> },
+                { value: 'inactive', label: 'Inactive', icon: <BsPersonBadge /> },
+              ]}
             />
-            <select
-              className="sort-select"
+            <CustomDropdown
+              compact
+              icon={<FiArrowUp />}
+              label="Sort By"
               value={sortBy}
-              onChange={(e) => setSortBy(e.target.value)}
-            >
-              <option value="name">Sort by Name</option>
-              <option value="subject">Sort by Subject</option>
-              <option value="joinDate">Sort by Join Date</option>
-            </select>
+              onChange={(value) => setSortBy(value)}
+              options={[
+                { value: 'name', label: 'Name', icon: <FiArrowUp /> },
+                { value: 'department', label: 'Department', icon: <FiArrowUp /> },
+                { value: 'status', label: 'Status', icon: <FiArrowUp /> },
+              ]}
+            />
+            </div>
+         
+
           </div>
         </div>
 
@@ -203,7 +289,10 @@ const Teachers = () => {
                   View Profile
                 </button>
                 <div className="quick-actions">
-                  <button className="action-btn edit">
+                  <button 
+                    className="action-btn edit"
+                    onClick={() => handleEditClick(teacher)}
+                  >
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <path d="M20 14.66V20a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h5.34"></path>
                       <polygon points="18 2 22 6 12 16 8 16 8 12 18 2"></polygon>
@@ -221,6 +310,154 @@ const Teachers = () => {
           ))}
         </div>
       </div>
+
+      {/* Edit Teacher Modal */}
+      {isEditModalOpen && (
+        <div className="modal-overlay">
+          <div className="modal-container">
+            <div className="modal-header">
+              <h2>Edit Teacher</h2>
+              <button className="modal-close-btn" onClick={handleCloseModal}>
+                <FiX />
+              </button>
+            </div>
+            <div className="modal-body">
+              <form onSubmit={handleSubmit}>
+                <div className="form-row">
+                  <div className="form-group">
+                    <label htmlFor="name">Full Name</label>
+                    <input
+                      type="text"
+                      id="name"
+                      name="name"
+                      value={formData.name}
+                      onChange={handleInputChange}
+                      required
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="subject">Subject</label>
+                    <input
+                      type="text"
+                      id="subject"
+                      name="subject"
+                      value={formData.subject}
+                      onChange={handleInputChange}
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div className="form-row">
+                  <div className="form-group">
+                    <label htmlFor="email">Email</label>
+                    <input
+                      type="email"
+                      id="email"
+                      name="email"
+                      value={formData.email}
+                      onChange={handleInputChange}
+                      required
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="phone">Phone</label>
+                    <input
+                      type="tel"
+                      id="phone"
+                      name="phone"
+                      value={formData.phone}
+                      onChange={handleInputChange}
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div className="form-row">
+                  <div className="form-group">
+                    <label htmlFor="education">Education</label>
+                    <input
+                      type="text"
+                      id="education"
+                      name="education"
+                      value={formData.education}
+                      onChange={handleInputChange}
+                      required
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="status">Status</label>
+                    <select
+                      id="status"
+                      name="status"
+                      value={formData.status}
+                      onChange={handleInputChange}
+                      required
+                    >
+                      <option value="active">Active</option>
+                      <option value="inactive">Inactive</option>
+                      <option value="on-leave">On Leave</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div className="form-group">
+                  <label>Classes</label>
+                  <div className="classes-section-container">
+                    {formData.classes.map((className, index) => (
+                      <div key={index} className="class-input-group">
+                        <input
+                          type="text"
+                          value={className}
+                          onChange={(e) => handleClassChange(index, e.target.value)}
+                          placeholder="Class name"
+                        />
+                        <button 
+                          type="button" 
+                          className="remove-class-btn"
+                          onClick={() => removeClass(index)}
+                        >
+                          <FiX />
+                        </button>
+                      </div>
+                    ))}
+                    <button 
+                      type="button" 
+                      className="add-class-btn"
+                      onClick={addClass}
+                    >
+                      Add Class
+                    </button>
+                  </div>
+                </div>
+
+                <div className="form-group">
+                  <label>Profile Image</label>
+                  <div className="avatar-upload">
+                    <img 
+                      src={editingTeacher.avatar} 
+                      alt={editingTeacher.name} 
+                      className="avatar-preview" 
+                    />
+                    <button type="button" className="upload-btn">
+                      <FiUpload /> Change Image
+                    </button>
+                  </div>
+                </div>
+
+                <div className="modal-footer">
+                  <button type="button" className="cancel-btn" onClick={handleCloseModal}>
+                    Cancel
+                  </button>
+                  <button type="submit" className="save-btn">
+                    <FiSave /> Save Changes
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -2,17 +2,14 @@ import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Navbar from '../../components/Navbar/Navbar';
 import Sidebar from '../../components/Sidebar/Sidebar';
+import useSidebar from '../../hooks/useSidebar';
 import './TeacherProfile.css';
 
 const TeacherProfile = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { sidebarOpen, toggleSidebar } = useSidebar();
   const [activeTab, setActiveTab] = useState('personal');
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-
-  const toggleSidebar = () => {
-    setSidebarOpen(!sidebarOpen);
-  };
 
   // Sample teacher data (replace with actual data from your API)
   const teacher = {

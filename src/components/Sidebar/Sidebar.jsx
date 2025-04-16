@@ -24,7 +24,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
           <rect x="3" y="14" width="7" height="7"></rect>
         </svg>
       ),
-      path: '/dashboard'
+      path: '/'
     },
     {
       key: 'teachers',

@@ -1,0 +1,361 @@
+/* Add Student Container */
+.add-student-container {
+  padding: 2rem;
+  margin-left: 250px;
+  margin-top: 64px;
+  min-height: calc(100vh - 64px);
+  background-color: #f8f9fa;
+  transition: all 0.3s ease;
+  width: calc(100% - 250px);
+}
+
+.add-student-container.sidebar-closed {
+  margin-left: 0;
+  width: 100%;
+}
+
+/* Header Section */
+.add-student-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.back-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #fff;
+  font-weight: 500;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.back-button:hover {
+  color: #e0e0e0;
+}
+
+.add-student-header h1 {
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: #333;
+  margin: 0;
+}
+
+/* Content Section */
+.add-student-content {
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  padding: 2rem;
+  margin-bottom: 2rem;
+}
+
+/* Form Sections */
+.form-section {
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.form-section:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.form-section h2 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #333;
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+}
+
+/* Form Grid */
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+}
+
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.form-group.full-width {
+  grid-column: 1 / -1;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: #333;
+}
+
+/* Input with Icon */
+.input-with-icon {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-icon {
+  position: absolute;
+  left: 12px;
+  color: #4a90e2;
+  font-size: 1.25rem;
+}
+
+.input-with-icon input,
+.input-with-icon select,
+.input-with-icon textarea {
+  width: 100%;
+  padding: 0.75rem 1rem 0.75rem 2.5rem;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  transition: all 0.2s ease;
+}
+
+.input-with-icon textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.input-with-icon input:focus,
+.input-with-icon select:focus,
+.input-with-icon textarea:focus {
+  outline: none;
+  border-color: #4a90e2;
+  box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
+}
+
+/* Subjects Section */
+.subjects-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.subject-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1rem;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.subject-item:hover {
+  background-color: #f0f2f5;
+}
+
+.subject-inputs {
+  display: flex;
+  flex: 1;
+  gap: 1rem;
+}
+
+.remove-subject-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 50%;
+  background-color: #ffebee;
+  color: #c62828;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.remove-subject-btn:hover {
+  background-color: #ffcdd2;
+}
+
+.add-subject-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  border: 1px dashed #4a90e2;
+  border-radius: 6px;
+  background-color: transparent;
+  color: #4a90e2;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-top: 0.5rem;
+}
+
+.add-subject-btn:hover {
+  background-color: rgba(74, 144, 226, 0.05);
+}
+
+/* Form Actions */
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #e0e0e0;
+}
+
+.cancel-btn,
+.save-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.cancel-btn {
+  background-color: #f0f0f0;
+  color: #333;
+}
+
+.cancel-btn:hover {
+  background-color: #e0e0e0;
+}
+
+.save-btn {
+  background-color: #4a90e2;
+  color: white;
+}
+
+.save-btn:hover {
+  background-color: #357abd;
+}
+
+.save-btn:disabled {
+  background-color: #a0c3e8;
+  cursor: not-allowed;
+}
+
+/* Loading Spinner */
+.loading-spinner {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: white;
+  animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Responsive Styles */
+@media (min-width: 1200px) {
+  .add-student-content {
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+@media (max-width: 1024px) {
+  .add-student-container {
+    padding: 1.5rem;
+  }
+  
+  .form-grid {
+    gap: 1.25rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .add-student-container {
+    margin-left: 0;
+    width: 100%;
+    padding: 1rem;
+  }
+  
+  .add-student-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  
+  .add-student-content {
+    padding: 1.5rem;
+  }
+  
+  .form-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .subject-inputs {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .subject-item {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .remove-subject-btn {
+    align-self: flex-end;
+  }
+}
+
+@media (max-width: 480px) {
+  .add-student-container {
+    padding: 0.75rem;
+  }
+  
+  .add-student-header h1 {
+    font-size: 1.5rem;
+  }
+  
+  .add-student-content {
+    padding: 1rem;
+  }
+  
+  .form-section h2 {
+    font-size: 1.1rem;
+  }
+  
+  .input-with-icon input,
+  .input-with-icon select,
+  .input-with-icon textarea {
+    padding: 0.6rem 0.75rem 0.6rem 2.25rem;
+    font-size: 0.9rem;
+  }
+  
+  .input-icon {
+    font-size: 1.1rem;
+    left: 10px;
+  }
+  
+  .form-actions {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  
+  .cancel-btn,
+  .save-btn {
+    width: 100%;
+    justify-content: center;
+  }
+} 
