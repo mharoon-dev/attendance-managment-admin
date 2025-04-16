@@ -359,7 +359,7 @@
   background-color: #f8f9fa;
 }
 
-.chart-placeholder {
+.student-chart-placeholder {
   height: 300px;
   display: flex;
   align-items: center;
@@ -460,7 +460,7 @@
   color: #666;
 }
 
-.attendance-chart-placeholder {
+.student-attendance-chart-placeholder {
   height: 200px;
   display: flex;
   align-items: center;

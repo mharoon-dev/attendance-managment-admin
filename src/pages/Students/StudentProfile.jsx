@@ -305,7 +305,7 @@ const StudentProfile = () => {
 
                   <div className="performance-chart-card">
                     <h2>Performance Trends</h2>
-                    <div className="chart-placeholder">
+                    <div className="student-chart-placeholder">
                       <p>Performance chart would be displayed here</p>
                     </div>
                   </div>
@@ -330,7 +330,7 @@ const StudentProfile = () => {
                         <span className="stat-label">Late</span>
                       </div>
                     </div>
-                    <div className="attendance-chart-placeholder">
+                    <div className="student-attendance-chart-placeholder">
                       <p>Attendance chart would be displayed here</p>
                     </div>
                   </div>
