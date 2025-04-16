@@ -130,6 +130,7 @@ const Login = () => {
             error={errors.role}
             required
             />
+            <br />
 
           <Input
             type="text"

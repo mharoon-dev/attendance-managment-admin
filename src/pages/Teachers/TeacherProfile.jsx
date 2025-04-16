@@ -3,6 +3,18 @@ import { useParams, useNavigate } from 'react-router-dom';
 import Navbar from '../../components/Navbar/Navbar';
 import Sidebar from '../../components/Sidebar/Sidebar';
 import useSidebar from '../../hooks/useSidebar';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
+import PersonIcon from '@mui/icons-material/Person';
+import EmailIcon from '@mui/icons-material/Email';
+import PhoneIcon from '@mui/icons-material/Phone';
+import SchoolIcon from '@mui/icons-material/School';
+import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
+import ClassIcon from '@mui/icons-material/Class';
+import BookIcon from '@mui/icons-material/Book';
+import BadgeIcon from '@mui/icons-material/Badge';
+import BusinessIcon from '@mui/icons-material/Business';
 import './TeacherProfile.css';
 
 const TeacherProfile = () => {
@@ -156,7 +168,7 @@ const TeacherProfile = () => {
             className="back-button"
             onClick={() => navigate('/teachers')}
           >
-            <i className="fas fa-arrow-left"></i> Back to Teachers
+            <ArrowBackIcon /> Back to Teachers
           </button>
         </div>
 

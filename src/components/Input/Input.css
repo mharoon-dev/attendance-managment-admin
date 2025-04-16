@@ -50,7 +50,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding-left: 1rem;
+  /* padding-left: 1rem; */
   color: #6B7280;
 }
 
@@ -73,7 +73,7 @@
 }
 
 .input-wrapper .input-icon + .input-field {
-  padding-left: 0.5rem;
+  padding-left: 2.5rem;
 }
 
 .password-toggle {

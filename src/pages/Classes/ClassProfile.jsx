@@ -1,10 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { FiArrowLeft, FiEdit2, FiTrash2 } from 'react-icons/fi';
-import { BsBuilding, BsPeople, BsPersonBadge, BsBookHalf } from 'react-icons/bs';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import BusinessIcon from '@mui/icons-material/Business';
+import GroupIcon from '@mui/icons-material/Group';
+import PersonIcon from '@mui/icons-material/Person';
+import BadgeIcon from '@mui/icons-material/Badge';
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
+import DescriptionIcon from '@mui/icons-material/Description';
+import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
+import PeopleIcon from '@mui/icons-material/People';
 import Navbar from '../../components/Navbar/Navbar';
 import Sidebar from '../../components/Sidebar/Sidebar';
 import useSidebar from '../../hooks/useSidebar';
+import { FiArrowLeft, FiEdit2, FiTrash2 } from 'react-icons/fi';
+import { BsBuilding, BsPeople, BsPersonBadge, BsBookHalf } from 'react-icons/bs';
 import './ClassProfile.css';
 
 const ClassProfile = () => {
@@ -76,7 +85,7 @@ const ClassProfile = () => {
           <>
             <div className="class-profile-header">
               <div className="back-button" onClick={() => navigate('/classes')}>
-                <FiArrowLeft /> Back to Classes
+                <ArrowBackIcon /> Back to Classes
               </div>
               <div className="class-profile-title">
                 <h1>{classData.name}</h1>
@@ -98,60 +107,53 @@ const ClassProfile = () => {
               <div className="overview-section">
                 <div className="class-info-card">
                   <h2>Class Information</h2>
-                  <div className="info-grid">
+                  <div className="class-info">
                     <div className="info-item">
-                      <BsBuilding className="info-icon" />
-                      <div className="info-details">
-                        <span className="info-label">Grade</span>
-                        <span className="info-value">{classData.grade}</span>
-                      </div>
+                      <BusinessIcon className="info-icon" />
+                      <span>{classData.grade}</span>
                     </div>
                     <div className="info-item">
-                      <BsPeople className="info-icon" />
-                      <div className="info-details">
-                        <span className="info-label">Section</span>
-                        <span className="info-value">{classData.section}</span>
-                      </div>
+                      <GroupIcon className="info-icon" />
+                      <span>{classData.section}</span>
                     </div>
                     <div className="info-item">
-                      <BsPersonBadge className="info-icon" />
-                      <div className="info-details">
-                        <span className="info-label">Teacher</span>
-                        <span className="info-value">{classData.teacher}</span>
-                      </div>
+                      <PersonIcon className="info-icon" />
+                      <span>{classData.teacher}</span>
                     </div>
                     <div className="info-item">
-                      <BsBuilding className="info-icon" />
-                      <div className="info-details">
-                        <span className="info-label">Room</span>
-                        <span className="info-value">{classData.room}</span>
-                      </div>
+                      <BadgeIcon className="info-icon" />
+                      <span>{classData.room}</span>
                     </div>
                     <div className="info-item">
-                      <BsPeople className="info-icon" />
-                      <div className="info-details">
-                        <span className="info-label">Capacity</span>
-                        <span className="info-value">{classData.capacity} students</span>
-                      </div>
+                      <CalendarMonthIcon className="info-icon" />
+                      <span>{classData.schedule}</span>
                     </div>
                   </div>
                 </div>
 
                 <div className="class-description-card">
                   <h2>Description</h2>
-                  <p>{classData.description}</p>
+                  <div className="description">
+                    <DescriptionIcon className="description-icon" />
+                    <p>{classData.description}</p>
+                  </div>
                 </div>
 
                 <div className="class-subjects-card">
                   <h2>Subjects</h2>
-                  <div className="subjects-grid">
-                    {classData.subjects.map((subject, index) => (
-                      <div key={index} className="subject-card">
-                        <BsBookHalf className="subject-icon" />
-                        <span className="subject-name">{subject}</span>
-                      </div>
-                    ))}
+                  <div className="subjects">
+                    <LibraryBooksIcon className="subjects-icon" />
+                    <div className="subjects-list">
+                      {classData.subjects.map((subject, index) => (
+                        <span key={index} className="subject-tag">{subject}</span>
+                      ))}
+                    </div>
                   </div>
+                </div>
+
+                <div className="students">
+                  <PeopleIcon className="students-icon" />
+                  <span>{classData.capacity} Students</span>
                 </div>
               </div>
             </div>

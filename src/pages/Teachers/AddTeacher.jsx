@@ -1,7 +1,20 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FiUpload, FiSave, FiX, FiPlus, FiTrash2 } from 'react-icons/fi';
-import { BsPersonBadge, BsBuilding, BsEnvelope, BsTelephone, BsBook, BsCalendar } from 'react-icons/bs';
+import UploadIcon from '@mui/icons-material/Upload';
+import SaveIcon from '@mui/icons-material/Save';
+import CloseIcon from '@mui/icons-material/Close';
+import AddIcon from '@mui/icons-material/Add';
+import DeleteIcon from '@mui/icons-material/Delete';
+import BadgeIcon from '@mui/icons-material/Badge';
+import BusinessIcon from '@mui/icons-material/Business';
+import EmailIcon from '@mui/icons-material/Email';
+import PhoneIcon from '@mui/icons-material/Phone';
+import BookIcon from '@mui/icons-material/Book';
+import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import PersonIcon from '@mui/icons-material/Person';
+import SchoolIcon from '@mui/icons-material/School';
+import ClassIcon from '@mui/icons-material/Class';
 import Navbar from '../../components/Navbar/Navbar';
 import Sidebar from '../../components/Sidebar/Sidebar';
 import CustomDropdown from '../../components/CustomDropdown/CustomDropdown';
@@ -93,20 +106,20 @@ const AddTeacher = () => {
   };
 
   const departments = [
-    { value: 'mathematics', label: 'Mathematics', icon: <BsBuilding /> },
-    { value: 'science', label: 'Science', icon: <BsBuilding /> },
-    { value: 'english', label: 'English', icon: <BsBuilding /> },
-    { value: 'history', label: 'History', icon: <BsBuilding /> },
-    { value: 'art', label: 'Art', icon: <BsBuilding /> },
-    { value: 'physical_education', label: 'Physical Education', icon: <BsBuilding /> },
-    { value: 'computer_science', label: 'Computer Science', icon: <BsBuilding /> },
-    { value: 'foreign_language', label: 'Foreign Language', icon: <BsBuilding /> }
+    { value: 'mathematics', label: 'Mathematics', icon: <BusinessIcon /> },
+    { value: 'science', label: 'Science', icon: <BusinessIcon /> },
+    { value: 'english', label: 'English', icon: <BusinessIcon /> },
+    { value: 'history', label: 'History', icon: <BusinessIcon /> },
+    { value: 'art', label: 'Art', icon: <BusinessIcon /> },
+    { value: 'physical_education', label: 'Physical Education', icon: <BusinessIcon /> },
+    { value: 'computer_science', label: 'Computer Science', icon: <BusinessIcon /> },
+    { value: 'foreign_language', label: 'Foreign Language', icon: <BusinessIcon /> }
   ];
 
   const statuses = [
-    { value: 'active', label: 'Active', icon: <BsPersonBadge /> },
-    { value: 'inactive', label: 'Inactive', icon: <BsPersonBadge /> },
-    { value: 'on_leave', label: 'On Leave', icon: <BsPersonBadge /> }
+    { value: 'active', label: 'Active', icon: <BadgeIcon /> },
+    { value: 'inactive', label: 'Inactive', icon: <BadgeIcon /> },
+    { value: 'on_leave', label: 'On Leave', icon: <BadgeIcon /> }
   ];
 
   return (
@@ -118,7 +131,7 @@ const AddTeacher = () => {
         <div className="add-teacher-header">
           <h1>Add New Teacher</h1>
           <button className="cancel-btn" onClick={() => navigate('/teachers')}>
-            <FiX /> Cancel
+            <CloseIcon /> Cancel
           </button>
         </div>
 
@@ -132,13 +145,13 @@ const AddTeacher = () => {
                     <img src={avatarPreview} alt="Avatar preview" className="avatar-preview" />
                   ) : (
                     <div className="avatar-placeholder">
-                      <BsPersonBadge />
+                      <PersonIcon />
                     </div>
                   )}
                 </div>
                 <div className="upload-controls">
                   <label htmlFor="avatar" className="upload-btn">
-                    <FiUpload /> Upload Photo
+                    <UploadIcon /> Upload Photo
                   </label>
                   <input 
                     type="file" 
@@ -155,7 +168,7 @@ const AddTeacher = () => {
                 <div className="form-group">
                   <label htmlFor="name">Full Name</label>
                   <div className="input-with-icon">
-                    <BsPersonBadge className="input-icon" />
+                    <PersonIcon className="input-icon" />
                     <input
                       type="text"
                       id="name"
@@ -174,7 +187,7 @@ const AddTeacher = () => {
                     value={formData.subject}
                     onChange={(value) => handleDropdownChange('subject', value)}
                     placeholder="Select department"
-                    icon={<BsBuilding />}
+                    icon={<BusinessIcon />}
                   />
                 </div>
               </div>
@@ -183,7 +196,7 @@ const AddTeacher = () => {
                 <div className="form-group">
                   <label htmlFor="email">Email Address</label>
                   <div className="input-with-icon">
-                    <BsEnvelope className="input-icon" />
+                    <EmailIcon className="input-icon" />
                     <input
                       type="email"
                       id="email"
@@ -198,7 +211,7 @@ const AddTeacher = () => {
                 <div className="form-group">
                   <label htmlFor="phone">Phone Number</label>
                   <div className="input-with-icon">
-                    <BsTelephone className="input-icon" />
+                    <PhoneIcon className="input-icon" />
                     <input
                       type="tel"
                       id="phone"
@@ -216,7 +229,7 @@ const AddTeacher = () => {
                 <div className="form-group">
                   <label htmlFor="education">Education</label>
                   <div className="input-with-icon">
-                    <BsBook className="input-icon" />
+                    <BookIcon className="input-icon" />
                     <input
                       type="text"
                       id="education"
@@ -231,7 +244,7 @@ const AddTeacher = () => {
                 <div className="form-group">
                   <label htmlFor="joinDate">Join Date</label>
                   <div className="input-with-icon">
-                    <BsCalendar className="input-icon" />
+                    <CalendarTodayIcon className="input-icon" />
                     <input
                       type="date"
                       id="joinDate"
@@ -251,12 +264,10 @@ const AddTeacher = () => {
                   value={formData.status}
                   onChange={(value) => handleDropdownChange('status', value)}
                   placeholder="Select status"
-                  icon={<BsPersonBadge />}
+                  icon={<BadgeIcon />}
                 />
               </div>
             </div>
-
-     
 
             <div className="form-section">
               <h2>Additional Information</h2>
@@ -287,7 +298,7 @@ const AddTeacher = () => {
                 <div className="form-group">
                   <label htmlFor="emergencyContact">Emergency Contact</label>
                   <div className="input-with-icon">
-                    <BsPersonBadge className="input-icon" />
+                    <PersonIcon className="input-icon" />
                     <input
                       type="text"
                       id="emergencyContact"
@@ -298,7 +309,7 @@ const AddTeacher = () => {
                     />
                   </div>
                   <div className="input-with-icon mt-2">
-                    <BsTelephone className="input-icon" />
+                    <PhoneIcon className="input-icon" />
                     <input
                       type="tel"
                       id="emergencyPhone"
@@ -314,14 +325,14 @@ const AddTeacher = () => {
 
             <div className="form-actions">
               <button type="button" className="cancel-btn" onClick={() => navigate('/teachers')}>
-                <FiX /> Cancel
+                <CloseIcon /> Cancel
               </button>
               <button type="submit" className="save-btn" disabled={loading}>
                 {loading ? (
-                  <span className="loading-spinner"></span>
+                  <div className="loading-spinner-small"></div>
                 ) : (
                   <>
-                    <FiSave /> Save Teacher
+                    <SaveIcon /> Save Teacher
                   </>
                 )}
               </button>

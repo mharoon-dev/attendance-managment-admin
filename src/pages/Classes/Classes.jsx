@@ -1,7 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FiSearch, FiPlus, FiFilter, FiArrowUp, FiEdit2, FiTrash2, FiEye, FiX, FiSave } from 'react-icons/fi';
-import { BsBuilding, BsPeople, BsCalendar, BsPersonBadge } from 'react-icons/bs';
+import SearchIcon from '@mui/icons-material/Search';
+import AddIcon from '@mui/icons-material/Add';
+import BusinessIcon from '@mui/icons-material/Business';
+import GroupIcon from '@mui/icons-material/Group';
+import PersonIcon from '@mui/icons-material/Person';
+import BadgeIcon from '@mui/icons-material/Badge';
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import CloseIcon from '@mui/icons-material/Close';
+import SaveIcon from '@mui/icons-material/Save';
 import Navbar from '../../components/Navbar/Navbar';
 import Sidebar from '../../components/Sidebar/Sidebar';
 import CustomDropdown from '../../components/CustomDropdown/CustomDropdown';
@@ -18,6 +28,7 @@ const Classes = () => {
   const [sortBy, setSortBy] = useState('name');
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editingClass, setEditingClass] = useState(null);
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     grade: '',
     section: '',
@@ -114,34 +125,34 @@ const Classes = () => {
 
   // Sample data for dropdown options
   const grades = [
-    { value: 'all', label: 'All Grades', icon: <BsBuilding /> },
-    { value: '10', label: 'Grade 10', icon: <BsBuilding /> },
-    { value: '11', label: 'Grade 11', icon: <BsBuilding /> },
-    { value: '12', label: 'Grade 12', icon: <BsBuilding /> }
+    { value: 'all', label: 'All Grades', icon: <BusinessIcon /> },
+    { value: '10', label: 'Grade 10', icon: <BusinessIcon /> },
+    { value: '11', label: 'Grade 11', icon: <BusinessIcon /> },
+    { value: '12', label: 'Grade 12', icon: <BusinessIcon /> }
   ];
 
   const sections = [
-    { value: 'all', label: 'All Sections', icon: <BsPeople /> },
-    { value: 'A', label: 'Section A', icon: <BsPeople /> },
-    { value: 'B', label: 'Section B', icon: <BsPeople /> },
-    { value: 'C', label: 'Section C', icon: <BsPeople /> }
+    { value: 'all', label: 'All Sections', icon: <GroupIcon /> },
+    { value: 'A', label: 'Section A', icon: <GroupIcon /> },
+    { value: 'B', label: 'Section B', icon: <GroupIcon /> },
+    { value: 'C', label: 'Section C', icon: <GroupIcon /> }
   ];
 
   const teachers = [
-    { value: 'all', label: 'All Teachers', icon: <BsPersonBadge /> },
-    { value: '1', label: 'Dr. Sarah Wilson', icon: <BsPersonBadge /> },
-    { value: '2', label: 'Prof. Michael Brown', icon: <BsPersonBadge /> },
-    { value: '3', label: 'Dr. Emily Johnson', icon: <BsPersonBadge /> },
-    { value: '4', label: 'Dr. Robert Davis', icon: <BsPersonBadge /> },
-    { value: '5', label: 'Prof. Lisa Anderson', icon: <BsPersonBadge /> },
-    { value: '6', label: 'Dr. James Wilson', icon: <BsPersonBadge /> }
+    { value: 'all', label: 'All Teachers', icon: <BadgeIcon /> },
+    { value: '1', label: 'Dr. Sarah Wilson', icon: <BadgeIcon /> },
+    { value: '2', label: 'Prof. Michael Brown', icon: <BadgeIcon /> },
+    { value: '3', label: 'Dr. Emily Johnson', icon: <BadgeIcon /> },
+    { value: '4', label: 'Dr. Robert Davis', icon: <BadgeIcon /> },
+    { value: '5', label: 'Prof. Lisa Anderson', icon: <BadgeIcon /> },
+    { value: '6', label: 'Dr. James Wilson', icon: <BadgeIcon /> }
   ];
 
   const sortOptions = [
-    { value: 'name', label: 'Class Name', icon: <FiArrowUp /> },
-    { value: 'grade', label: 'Grade', icon: <FiArrowUp /> },
-    { value: 'students', label: 'Students Count', icon: <FiArrowUp /> },
-    { value: 'teacher', label: 'Teacher Name', icon: <FiArrowUp /> }
+    { value: 'name', label: 'Class Name', icon: <BusinessIcon /> },
+    { value: 'grade', label: 'Grade', icon: <BusinessIcon /> },
+    { value: 'students', label: 'Students Count', icon: <BusinessIcon /> },
+    { value: 'teacher', label: 'Teacher Name', icon: <BusinessIcon /> }
   ];
 
   // Filter classes based on search term and selected filters
@@ -195,25 +206,27 @@ const Classes = () => {
         <div className="classes-header">
           <h1>All Classes</h1>
           <button className="add-class-btn" onClick={() => navigate('/classes/add')}>
-            <FiPlus /> Add New Class
+            <AddIcon /> Add New Class
           </button>
         </div>
 
         <div className="toolbar">
           <div className="toolbar-actions">
             <div className="search-box">
-              <FiSearch className="search-icon" />
-              <input
-                type="text"
-                placeholder="Search classes..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
+              <div className="search-input">
+                <SearchIcon className="search-icon" />
+                <input
+                  type="text"
+                  placeholder="Search classes..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+              </div>
             </div>
             <div className="dropdown-container">
               <CustomDropdown
                 compact
-                icon={<FiFilter />}
+                icon={<BusinessIcon />}
                 label="Grade"
                 value={selectedGrade}
                 onChange={(value) => setSelectedGrade(value)}
@@ -221,7 +234,7 @@ const Classes = () => {
               />
               <CustomDropdown
                 compact
-                icon={<FiFilter />}
+                icon={<GroupIcon />}
                 label="Section"
                 value={selectedSection}
                 onChange={(value) => setSelectedSection(value)}
@@ -229,7 +242,7 @@ const Classes = () => {
               />
               <CustomDropdown
                 compact
-                icon={<FiFilter />}
+                icon={<BadgeIcon />}
                 label="Teacher"
                 value={selectedTeacher}
                 onChange={(value) => setSelectedTeacher(value)}
@@ -237,7 +250,7 @@ const Classes = () => {
               />
               <CustomDropdown
                 compact
-                icon={<FiArrowUp />}
+                icon={<BusinessIcon />}
                 label="Sort By"
                 value={sortBy}
                 onChange={(value) => setSortBy(value)}
@@ -260,19 +273,23 @@ const Classes = () => {
               <div className="class-card-body">
                 <div className="class-info">
                   <div className="info-item">
-                    <BsPersonBadge className="info-icon" />
+                    <BusinessIcon className="info-icon" />
+                    <span>{cls.grade}</span>
+                  </div>
+                  <div className="info-item">
+                    <GroupIcon className="info-icon" />
+                    <span>{cls.section}</span>
+                  </div>
+                  <div className="info-item">
+                    <PersonIcon className="info-icon" />
                     <span>{cls.teacher}</span>
                   </div>
                   <div className="info-item">
-                    <BsPeople className="info-icon" />
-                    <span>{cls.students} Students</span>
-                  </div>
-                  <div className="info-item">
-                    <BsBuilding className="info-icon" />
+                    <BadgeIcon className="info-icon" />
                     <span>{cls.room}</span>
                   </div>
                   <div className="info-item">
-                    <BsCalendar className="info-icon" />
+                    <CalendarMonthIcon className="info-icon" />
                     <span>{cls.schedule}</span>
                   </div>
                 </div>
@@ -287,17 +304,17 @@ const Classes = () => {
                   className="view-class-btn"
                   onClick={() => handleViewClass(cls.id)}
                 >
-                  <FiEye /> View Details
+                  <VisibilityIcon /> View Details
                 </button>
                 <div className="quick-actions">
                   <button 
                     className="action-btn edit"
                     onClick={() => handleEditClass(cls)}
                   >
-                    <FiEdit2 />
+                    <EditIcon />
                   </button>
                   <button className="action-btn delete">
-                    <FiTrash2 />
+                    <DeleteIcon />
                   </button>
                 </div>
               </div>
@@ -312,8 +329,8 @@ const Classes = () => {
           <div className="modal-container">
             <div className="modal-header">
               <h2>Edit Class</h2>
-              <button className="modal-close-btn" onClick={handleCloseModal}>
-                <FiX />
+              <button className="close-btn" onClick={handleCloseModal}>
+                <CloseIcon />
               </button>
             </div>
             <div className="modal-body">
@@ -326,7 +343,7 @@ const Classes = () => {
                       value={editingClass.grade}
                       onChange={(value) => console.log('Grade changed:', value)}
                       placeholder="Select grade"
-                      icon={<BsBuilding />}
+                      icon={<BusinessIcon />}
                     />
                   </div>
                   <div className="form-group">
@@ -336,7 +353,7 @@ const Classes = () => {
                       value={editingClass.section}
                       onChange={(value) => console.log('Section changed:', value)}
                       placeholder="Select section"
-                      icon={<BsPeople />}
+                      icon={<GroupIcon />}
                     />
                   </div>
                 </div>
@@ -349,7 +366,7 @@ const Classes = () => {
                       value={editingClass.teacherId.toString()}
                       onChange={(value) => console.log('Teacher changed:', value)}
                       placeholder="Select teacher"
-                      icon={<BsPersonBadge />}
+                      icon={<BadgeIcon />}
                     />
                   </div>
                   <div className="form-group">
@@ -391,7 +408,13 @@ const Classes = () => {
                     Cancel
                   </button>
                   <button type="submit" className="save-btn">
-                    <FiSave /> Save Changes
+                    {loading ? (
+                      <span className="loading-spinner"></span>
+                    ) : (
+                      <>
+                        <SaveIcon /> Save Changes
+                      </>
+                    )}
                   </button>
                 </div>
               </form>

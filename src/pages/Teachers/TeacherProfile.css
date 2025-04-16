@@ -7,9 +7,8 @@
 .teacher-profile-container {
   flex: 1;
   padding: 2rem;
-  margin-left: 250px; /* Width of the sidebar */
   transition: margin-left 0.3s ease;
-  max-width: calc(100% - 250px);
+  max-width: 100%;
   padding-top: 80px; /* Add padding for the fixed Navbar */
 }
 

@@ -5,8 +5,27 @@ import Navbar from '../../components/Navbar/Navbar';
 import Sidebar from '../../components/Sidebar/Sidebar';
 import CustomDropdown from '../../components/CustomDropdown/CustomDropdown';
 import useSidebar from '../../hooks/useSidebar';
-import { FiFilter, FiArrowUp, FiSearch, FiPlus, FiX, FiSave, FiUpload } from 'react-icons/fi';
-import { BsBuilding, BsPersonBadge } from 'react-icons/bs';
+import FilterListIcon from '@mui/icons-material/FilterList';
+import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
+import SearchIcon from '@mui/icons-material/Search';
+import AddIcon from '@mui/icons-material/Add';
+import CloseIcon from '@mui/icons-material/Close';
+import SaveIcon from '@mui/icons-material/Save';
+import UploadIcon from '@mui/icons-material/Upload';
+import BusinessIcon from '@mui/icons-material/Business';
+import BadgeIcon from '@mui/icons-material/Badge';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import PersonIcon from '@mui/icons-material/Person';
+import EmailIcon from '@mui/icons-material/Email';
+import PhoneIcon from '@mui/icons-material/Phone';
+import SchoolIcon from '@mui/icons-material/School';
+import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
+import ClassIcon from '@mui/icons-material/Class';
+import BookIcon from '@mui/icons-material/Book';
+import { FiSave, FiUpload, FiX } from 'react-icons/fi';
 
 const Teachers = () => {
   const navigate = useNavigate();
@@ -171,10 +190,7 @@ const Teachers = () => {
         <div className="teachers-header">
           <h1>Teachers</h1>
           <button className="add-teacher-btn" onClick={() => navigate('/teachers/add')}>
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <line x1="12" y1="5" x2="12" y2="19"></line>
-              <line x1="5" y1="12" x2="19" y2="12"></line>
-            </svg>
+            <AddIcon />
             Add New Teacher
           </button>
         </div>
@@ -182,7 +198,7 @@ const Teachers = () => {
         <div className="toolbar">
           <div className="toolbar-actions">
             <div className="search-box">
-              <FiSearch className="search-icon" />
+              <SearchIcon className="search-icon" />
               <input
                 type="text"
                 placeholder="Search teachers..."
@@ -193,40 +209,40 @@ const Teachers = () => {
             <div className="dropdown-container">
             <CustomDropdown
               compact
-              icon={<FiFilter />}
+              icon={<FilterListIcon />}
               label="Department"
               value={selectedDepartment}
               onChange={(value) => setSelectedDepartment(value)}
               options={[
-                { value: 'all', label: 'All Departments', icon: <BsBuilding /> },
-                { value: 'science', label: 'Science', icon: <BsBuilding /> },
-                { value: 'math', label: 'Mathematics', icon: <BsBuilding /> },
-                { value: 'english', label: 'English', icon: <BsBuilding /> },
-                { value: 'history', label: 'History', icon: <BsBuilding /> },
+                { value: 'all', label: 'All Departments', icon: <BusinessIcon /> },
+                { value: 'science', label: 'Science', icon: <BusinessIcon /> },
+                { value: 'math', label: 'Mathematics', icon: <BusinessIcon /> },
+                { value: 'english', label: 'English', icon: <BusinessIcon /> },
+                { value: 'history', label: 'History', icon: <BusinessIcon /> },
               ]}
             />
             <CustomDropdown
               compact
-              icon={<FiFilter />}
+              icon={<FilterListIcon />}
               label="Status"
               value={selectedStatus}
               onChange={(value) => setSelectedStatus(value)}
               options={[
-                { value: 'all', label: 'All Status', icon: <BsPersonBadge /> },
-                { value: 'active', label: 'Active', icon: <BsPersonBadge /> },
-                { value: 'inactive', label: 'Inactive', icon: <BsPersonBadge /> },
+                { value: 'all', label: 'All Status', icon: <BadgeIcon /> },
+                { value: 'active', label: 'Active', icon: <BadgeIcon /> },
+                { value: 'inactive', label: 'Inactive', icon: <BadgeIcon /> },
               ]}
             />
             <CustomDropdown
               compact
-              icon={<FiArrowUp />}
+              icon={<ArrowUpwardIcon />}
               label="Sort By"
               value={sortBy}
               onChange={(value) => setSortBy(value)}
               options={[
-                { value: 'name', label: 'Name', icon: <FiArrowUp /> },
-                { value: 'department', label: 'Department', icon: <FiArrowUp /> },
-                { value: 'status', label: 'Status', icon: <FiArrowUp /> },
+                { value: 'name', label: 'Name', icon: <ArrowUpwardIcon /> },
+                { value: 'department', label: 'Department', icon: <ArrowUpwardIcon /> },
+                { value: 'status', label: 'Status', icon: <ArrowUpwardIcon /> },
               ]}
             />
             </div>
@@ -251,22 +267,15 @@ const Teachers = () => {
                 
                 <div className="teacher-info">
                   <div className="info-item">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
-                    </svg>
+                    <PhoneIcon />
                     <span>{teacher.phone}</span>
                   </div>
                   <div className="info-item">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
-                      <polyline points="22,6 12,13 2,6"></polyline>
-                    </svg>
+                    <EmailIcon />
                     <span>{teacher.email}</span>
                   </div>
                   <div className="info-item">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
-                    </svg>
+                    <SchoolIcon />
                     <span>{teacher.education}</span>
                   </div>
                 </div>
@@ -293,16 +302,10 @@ const Teachers = () => {
                     className="action-btn edit"
                     onClick={() => handleEditClick(teacher)}
                   >
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M20 14.66V20a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h5.34"></path>
-                      <polygon points="18 2 22 6 12 16 8 16 8 12 18 2"></polygon>
-                    </svg>
+                    <EditIcon />
                   </button>
                   <button className="action-btn delete">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <polyline points="3 6 5 6 21 6"></polyline>
-                      <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                    </svg>
+                    <DeleteIcon />
                   </button>
                 </div>
               </div>

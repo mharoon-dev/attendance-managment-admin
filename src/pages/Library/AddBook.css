@@ -1,0 +1,351 @@
+/* Add Book Page Styles */
+.add-book-container {
+  padding: 2rem;
+  transition: margin-left 0.3s ease, padding 0.3s ease;
+  min-height: calc(100vh - 64px);
+  background-color: #f5f7fa;
+  margin-top: 64px; /* Add top margin to account for navbar height */
+}
+
+.add-book-container.sidebar-closed {
+  margin-left: 0;
+}
+
+/* Layout container styles */
+.layout-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  position: relative;
+  transition: padding-left 0.3s ease;
+}
+
+.layout-container.sidebar-open {
+  padding-left: 250px;
+}
+
+/* Header Styles */
+.add-book-header {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  transition: flex-direction 0.3s ease, gap 0.3s ease;
+}
+
+.add-book-header h1 {
+  font-size: 2rem;
+  color: #333;
+  margin: 0;
+  transition: font-size 0.3s ease;
+}
+
+.back-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: none;
+  border: none;
+  color: #4a90e2;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 0;
+  transition: color 0.3s ease, transform 0.2s ease;
+  align-self: flex-start;
+}
+
+.back-btn:hover {
+  color: #3a7bc8;
+  transform: translateX(-3px);
+}
+
+.back-btn svg {
+  font-size: 1.2rem;
+  transition: transform 0.3s ease;
+}
+
+.back-btn:hover svg {
+  transform: translateX(-3px);
+}
+
+/* Content Styles */
+.add-book-content {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  padding: 2rem;
+  transition: padding 0.3s ease, box-shadow 0.3s ease;
+}
+
+.add-book-content:hover {
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Form Styles */
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+  transition: gap 0.3s ease;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.3s ease;
+}
+
+.form-group:hover {
+  transform: translateY(-2px);
+}
+
+.form-group.full-width {
+  grid-column: 1 / -1;
+}
+
+.form-group label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #555;
+  margin-bottom: 0.5rem;
+  transition: color 0.3s ease, font-size 0.3s ease;
+}
+
+.form-icon {
+  color: #4a90e2;
+  font-size: 1.1rem;
+  transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.form-group:hover .form-icon {
+  color: #3a7bc8;
+  transform: scale(1.1);
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  /* padding: 0.75rem 1rem; */
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  font-size: 1rem;
+  color: #333;
+  transition: all 0.3s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: #4a90e2;
+  box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
+  transform: translateY(-1px);
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+  color: #aaa;
+  transition: color 0.3s ease;
+}
+
+.form-group input:focus::placeholder,
+.form-group textarea:focus::placeholder {
+  color: #ccc;
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 100px;
+  transition: min-height 0.3s ease;
+}
+
+.form-group textarea:focus {
+  min-height: 120px;
+}
+
+.form-group select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 1rem;
+  padding-right: 2.5rem;
+  transition: background-position 0.3s ease;
+}
+
+.form-group select:focus {
+  background-position: right 1.2rem center;
+}
+
+/* Form Actions */
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #f0f0f0;
+  transition: flex-direction 0.3s ease, gap 0.3s ease;
+}
+
+.cancel-btn,
+.save-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.cancel-btn {
+  background-color: #f5f5f5;
+  color: #666;
+  border: none;
+}
+
+.cancel-btn:hover {
+  background-color: #e0e0e0;
+  transform: translateY(-2px);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.save-btn {
+  background-color: #4a90e2;
+  color: white;
+  border: none;
+}
+
+.save-btn:hover {
+  background-color: #3a7bc8;
+  transform: translateY(-2px);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.save-btn:disabled,
+.cancel-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.save-btn svg {
+  font-size: 1.2rem;
+  transition: transform 0.3s ease;
+}
+
+.save-btn:hover svg {
+  transform: rotate(15deg);
+}
+
+/* Material UI Icon Animations */
+.MuiSvgIcon-root {
+  transition: all 0.3s ease;
+}
+
+/* Loading Spinner */
+.loading-spinner-small {
+  width: 20px;
+  height: 20px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: white;
+  animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Responsive Styles */
+@media (max-width: 1200px) {
+  .form-grid {
+    gap: 1.25rem;
+  }
+}
+
+@media (max-width: 1024px) {
+  .add-book-container {
+    padding: 1.5rem;
+  }
+  
+  .add-book-content {
+    padding: 1.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .add-book-container {
+    padding: 1rem;
+    margin-left: 0;
+  }
+  
+  .add-book-header {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  .add-book-header h1 {
+    font-size: 1.5rem;
+  }
+  
+  .form-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .form-actions {
+    flex-direction: column;
+  }
+  
+  .cancel-btn,
+  .save-btn {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .add-book-container {
+    padding: 0.75rem;
+  }
+  
+  .add-book-content {
+    padding: 1rem;
+  }
+  
+  .add-book-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+  
+  .add-book-header h1 {
+    font-size: 1.25rem;
+  }
+  
+  .form-group label {
+    font-size: 0.85rem;
+  }
+  
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    padding: 0.6rem 0.75rem;
+    font-size: 0.9rem;
+  }
+} 

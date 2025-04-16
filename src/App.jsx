@@ -11,6 +11,8 @@ import ClassProfile from './pages/Classes/ClassProfile.jsx';
 import Students from './pages/Students/Students.jsx';
 import StudentProfile from './pages/Students/StudentProfile.jsx';
 import AddStudent from './pages/Students/AddStudent.jsx';
+import Library from './pages/Library/Library.jsx';
+import AddBook from './pages/Library/AddBook.jsx';
 function App() {
   return (
     <Router>
@@ -26,6 +28,9 @@ function App() {
         <Route path="/students" element={<Students />} />
         <Route path="/students/:id" element={<StudentProfile />} />
         <Route path="/students/add" element={<AddStudent />} />
+        <Route path="/library" element={<Library />} />
+        <Route path="/library/add" element={<AddBook />} />
+
 
       </Routes>
     </Router>
