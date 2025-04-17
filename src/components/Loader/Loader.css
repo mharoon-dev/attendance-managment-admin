@@ -1,16 +1,32 @@
 .loader-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.9);
   display: flex;
   flex-direction: column;
-  align-items: center;
   justify-content: center;
+  align-items: center;
+  z-index: 9999;
 }
 
 /* Spinner Animation */
 .loader-spinner {
-  border-style: solid;
-  border-width: 3px;
+  width: 50px;
+  height: 50px;
+  border: 5px solid #f3f3f3;
+  border-top: 5px solid #3A86FF;
   border-radius: 50%;
   animation: spin 1s linear infinite;
+}
+
+.loader-text {
+  margin-top: 20px;
+  color: #4B5563;
+  font-size: 16px;
+  font-weight: 500;
 }
 
 @keyframes spin {

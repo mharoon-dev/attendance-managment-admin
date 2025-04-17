@@ -1,7 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FiSearch, FiPlus, FiFilter, FiArrowUp, FiEdit2, FiTrash2, FiEye, FiX, FiSave } from 'react-icons/fi';
-import { BsBuilding, BsPeople, BsCalendar, BsPersonBadge, BsBook } from 'react-icons/bs';
+import SearchIcon from '@mui/icons-material/Search';
+import AddIcon from '@mui/icons-material/Add';
+import FilterListIcon from '@mui/icons-material/FilterList';
+import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import CloseIcon from '@mui/icons-material/Close';
+import SaveIcon from '@mui/icons-material/Save';
+import BusinessIcon from '@mui/icons-material/Business';
+import GroupIcon from '@mui/icons-material/Group';
+import PersonIcon from '@mui/icons-material/Person';
+import BadgeIcon from '@mui/icons-material/Badge';
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import Navbar from '../../components/Navbar/Navbar';
 import Sidebar from '../../components/Sidebar/Sidebar';
 import CustomDropdown from '../../components/CustomDropdown/CustomDropdown';
@@ -31,6 +43,7 @@ const Students = () => {
     status: 'active',
     subjects: []
   });
+  const [isLoading, setIsLoading] = useState(false);
 
   // Sample data for students
   const students = [
@@ -134,33 +147,33 @@ const Students = () => {
 
   // Sample data for dropdown options
   const grades = [
-    { value: 'all', label: 'All Grades', icon: <BsBuilding /> },
-    { value: '10', label: 'Grade 10', icon: <BsBuilding /> },
-    { value: '11', label: 'Grade 11', icon: <BsBuilding /> },
-    { value: '12', label: 'Grade 12', icon: <BsBuilding /> }
+    { value: 'all', label: 'All Grades', icon: <BusinessIcon /> },
+    { value: '10', label: 'Grade 10', icon: <BusinessIcon /> },
+    { value: '11', label: 'Grade 11', icon: <BusinessIcon /> },
+    { value: '12', label: 'Grade 12', icon: <BusinessIcon /> }
   ];
 
   const classes = [
-    { value: 'all', label: 'All Classes', icon: <BsPeople /> },
-    { value: '10-A', label: 'Class 10-A', icon: <BsPeople /> },
-    { value: '10-B', label: 'Class 10-B', icon: <BsPeople /> },
-    { value: '11-A', label: 'Class 11-A', icon: <BsPeople /> },
-    { value: '11-B', label: 'Class 11-B', icon: <BsPeople /> },
-    { value: '12-A', label: 'Class 12-A', icon: <BsPeople /> },
-    { value: '12-B', label: 'Class 12-B', icon: <BsPeople /> }
+    { value: 'all', label: 'All Classes', icon: <GroupIcon /> },
+    { value: '10-A', label: 'Class 10-A', icon: <GroupIcon /> },
+    { value: '10-B', label: 'Class 10-B', icon: <GroupIcon /> },
+    { value: '11-A', label: 'Class 11-A', icon: <GroupIcon /> },
+    { value: '11-B', label: 'Class 11-B', icon: <GroupIcon /> },
+    { value: '12-A', label: 'Class 12-A', icon: <GroupIcon /> },
+    { value: '12-B', label: 'Class 12-B', icon: <GroupIcon /> }
   ];
 
   const statuses = [
-    { value: 'all', label: 'All Status', icon: <BsPersonBadge /> },
-    { value: 'active', label: 'Active', icon: <BsPersonBadge /> },
-    { value: 'inactive', label: 'Inactive', icon: <BsPersonBadge /> }
+    { value: 'all', label: 'All Status', icon: <PersonIcon /> },
+    { value: 'active', label: 'Active', icon: <PersonIcon /> },
+    { value: 'inactive', label: 'Inactive', icon: <PersonIcon /> }
   ];
 
   const sortOptions = [
-    { value: 'name', label: 'Student Name', icon: <FiArrowUp /> },
-    { value: 'grade', label: 'Grade', icon: <FiArrowUp /> },
-    { value: 'class', label: 'Class', icon: <FiArrowUp /> },
-    { value: 'rollNumber', label: 'Roll Number', icon: <FiArrowUp /> }
+    { value: 'name', label: 'Student Name', icon: <ArrowUpwardIcon /> },
+    { value: 'grade', label: 'Grade', icon: <ArrowUpwardIcon /> },
+    { value: 'class', label: 'Class', icon: <ArrowUpwardIcon /> },
+    { value: 'rollNumber', label: 'Roll Number', icon: <ArrowUpwardIcon /> }
   ];
 
   // Filter students based on search term and selected filters
@@ -205,6 +218,30 @@ const Students = () => {
     setEditingStudent(null);
   };
 
+  const handleSearch = (e) => {
+    setSearchTerm(e.target.value);
+  };
+
+  const handleGradeChange = (value) => {
+    setSelectedGrade(value);
+  };
+
+  const handleClassChange = (value) => {
+    setSelectedClass(value);
+  };
+
+  const handleStatusChange = (value) => {
+    setSelectedStatus(value);
+  };
+
+  const handleSortChange = (value) => {
+    setSortBy(value);
+  };
+
+  const handleDeleteStudent = (studentId) => {
+    // Implement delete functionality
+  };
+
   return (
     <div className={`layout-container ${sidebarOpen ? 'sidebar-open' : ''}`}>
       <Navbar toggleSidebar={toggleSidebar} isSidebarOpen={sidebarOpen} />
@@ -214,53 +251,51 @@ const Students = () => {
         <div className="students-header">
           <h1>All Students</h1>
           <button className="add-student-btn" onClick={() => navigate('/students/add')}>
-            <FiPlus /> Add New Student
+            <AddIcon /> Add New Student
           </button>
         </div>
 
         <div className="toolbar">
           <div className="toolbar-actions">
             <div className="search-box">
-              <FiSearch className="search-icon" />
-              <input
-                type="text"
-                placeholder="Search students..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
+              <div className="search-input">
+                <SearchIcon className="search-icon" />
+                <input
+                  type="text"
+                  placeholder="Search students..."
+                  value={searchTerm}
+                  onChange={handleSearch}
+                />
+              </div>
             </div>
             <div className="dropdown-container">
               <CustomDropdown
-                compact
-                icon={<FiFilter />}
-                label="Grade"
-                value={selectedGrade}
-                onChange={(value) => setSelectedGrade(value)}
                 options={grades}
+                value={selectedGrade}
+                onChange={handleGradeChange}
+                placeholder="Grade"
+                icon={<BusinessIcon />}
               />
               <CustomDropdown
-                compact
-                icon={<FiFilter />}
-                label="Class"
-                value={selectedClass}
-                onChange={(value) => setSelectedClass(value)}
                 options={classes}
+                value={selectedClass}
+                onChange={handleClassChange}
+                placeholder="Class"
+                icon={<GroupIcon />}
               />
               <CustomDropdown
-                compact
-                icon={<FiFilter />}
-                label="Status"
-                value={selectedStatus}
-                onChange={(value) => setSelectedStatus(value)}
                 options={statuses}
+                value={selectedStatus}
+                onChange={handleStatusChange}
+                placeholder="Status"
+                icon={<PersonIcon />}
               />
               <CustomDropdown
-                compact
-                icon={<FiArrowUp />}
-                label="Sort By"
-                value={sortBy}
-                onChange={(value) => setSortBy(value)}
                 options={sortOptions}
+                value={sortBy}
+                onChange={handleSortChange}
+                placeholder="Sort By"
+                icon={<ArrowUpwardIcon />}
               />
             </div>
           </div>
@@ -318,17 +353,20 @@ const Students = () => {
                   className="view-student-btn"
                   onClick={() => handleViewStudent(student.id)}
                 >
-                  View Profile
+                  <VisibilityIcon /> View Profile
                 </button>
                 <div className="quick-actions">
                   <button 
                     className="action-btn edit"
                     onClick={() => handleEditStudent(student)}
                   >
-                    <FiEdit2 />
+                    <EditIcon />
                   </button>
-                  <button className="action-btn delete">
-                    <FiTrash2 />
+                  <button 
+                    className="action-btn delete"
+                    onClick={() => handleDeleteStudent(student.id)}
+                  >
+                    <DeleteIcon />
                   </button>
                 </div>
               </div>
@@ -343,8 +381,8 @@ const Students = () => {
           <div className="modal-container">
             <div className="modal-header">
               <h2>Edit Student</h2>
-              <button className="modal-close-btn" onClick={handleCloseModal}>
-                <FiX />
+              <button className="close-btn" onClick={handleCloseModal}>
+                <CloseIcon />
               </button>
             </div>
             <div className="modal-body">
@@ -380,7 +418,7 @@ const Students = () => {
                       value={editingStudent.grade}
                       onChange={(value) => console.log('Grade changed:', value)}
                       placeholder="Select grade"
-                      icon={<BsBuilding />}
+                      icon={<BusinessIcon />}
                     />
                   </div>
                   <div className="form-group">
@@ -390,7 +428,7 @@ const Students = () => {
                       value={editingStudent.class}
                       onChange={(value) => console.log('Class changed:', value)}
                       placeholder="Select class"
-                      icon={<BsPeople />}
+                      icon={<GroupIcon />}
                     />
                   </div>
                 </div>
@@ -459,7 +497,7 @@ const Students = () => {
                     value={editingStudent.status}
                     onChange={(value) => console.log('Status changed:', value)}
                     placeholder="Select status"
-                    icon={<BsPersonBadge />}
+                    icon={<BadgeIcon />}
                   />
                 </div>
 
@@ -467,8 +505,14 @@ const Students = () => {
                   <button type="button" className="cancel-btn" onClick={handleCloseModal}>
                     Cancel
                   </button>
-                  <button type="submit" className="save-btn">
-                    <FiSave /> Save Changes
+                  <button type="submit" className="save-btn" disabled={isLoading}>
+                    {isLoading ? (
+                      <div className="loading-spinner" />
+                    ) : (
+                      <>
+                        <SaveIcon /> Save Changes
+                      </>
+                    )}
                   </button>
                 </div>
               </form>

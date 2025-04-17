@@ -114,7 +114,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
       ),
       subItems: [
         { label: 'Mark Attendance', path: '/attendance/mark' },
-        { label: 'View Attendance', path: '/attendance/view' }
+        { label: 'View Attendance', path: '/attendance' }
       ]
     }
   ];

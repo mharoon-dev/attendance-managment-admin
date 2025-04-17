@@ -654,34 +654,33 @@
 /* Avatar Upload */
 .avatar-upload {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 20px;
+  gap: 10px;
 }
 
 .avatar-preview {
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
+  width: 100px;
+  height: 100px;
   object-fit: cover;
-  border: 2px solid #eaeaea;
+  border-radius: 50%;
+  border: 2px solid #e0e0e0;
 }
 
 .upload-btn {
-  background: none;
-  border: 1px solid #d9d9d9;
-  color: #666;
-  padding: 8px 16px;
-  border-radius: 6px;
-  cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 8px;
-  transition: all 0.2s ease;
+  gap: 5px;
+  padding: 8px 16px;
+  background-color: #f0f0f0;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s ease;
 }
 
 .upload-btn:hover {
-  border-color: #4a90e2;
-  color: #4a90e2;
+  background-color: #e0e0e0;
 }
 
 /* Modal Buttons */
@@ -765,4 +764,45 @@
     flex-direction: column;
     align-items: flex-start;
   }
+}
+
+.image-preview-container {
+  position: relative;
+  display: inline-block;
+}
+
+.remove-image-btn {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: #ff4444;
+  color: white;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  transition: all 0.3s ease;
+}
+
+.remove-image-btn:hover {
+  background-color: #cc0000;
+  transform: scale(1.1);
+}
+
+.marksheet-image-container {
+  position: relative;
+  display: inline-block;
+  margin: 5px;
+}
+
+.marksheet-preview {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 10px;
 }

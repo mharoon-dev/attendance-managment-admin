@@ -1,9 +1,21 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './Navbar.css';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 const Navbar = ({ toggleSidebar, isSidebarOpen }) => {
   const [showNotifications, setShowNotifications] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
+  const user = useSelector((state) => state.user.user);
+  // console.log(user);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!user) {
+      navigate("/login");
+    }
+  }, [user]);
   
   // Sample notifications data
   const notifications = [
@@ -86,11 +98,11 @@ const Navbar = ({ toggleSidebar, isSidebarOpen }) => {
               onClick={() => setShowProfileMenu(!showProfileMenu)}
             >
               <img 
-                src="https://randomuser.me/api/portraits/men/32.jpg" 
+                src={user?.teacher?.profileImage || "/assets/profile-avatar.jpg"} 
                 alt="Profile" 
                 className="profile-image" 
               />
-              <span className="profile-name">Admin</span>
+              <span className="profile-name">{user?.teacher?.fullName}</span>
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <polyline points="6 9 12 15 18 9"></polyline>
               </svg>
@@ -98,15 +110,15 @@ const Navbar = ({ toggleSidebar, isSidebarOpen }) => {
             
             {showProfileMenu && (
               <div className="profile-dropdown">
-                <div className="profile-header">
+                <div className="navbar-profile-header">
                   <img 
-                    src="https://randomuser.me/api/portraits/men/32.jpg" 
+                    src={user?.teacher?.profileImage || "/assets/profile-avatar.jpg"} 
                     alt="Profile" 
                     className="profile-image-large" 
                   />
                   <div className="profile-info">
-                    <h3>Admin User</h3>
-                    <p>admin@school.com</p>
+                    <h3>{user?.teacher?.fullName}</h3>
+                    <p>{user?.teacher?.emailAddress}</p>
                   </div>
                 </div>
                 <div className="profile-menu">
@@ -117,12 +129,7 @@ const Navbar = ({ toggleSidebar, isSidebarOpen }) => {
                     </svg>
                     My Profile
                   </button>
-                  <button className="profile-menu-item">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-                    </svg>
-                    Settings
-                  </button>
+                 
                   <button className="profile-menu-item">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>

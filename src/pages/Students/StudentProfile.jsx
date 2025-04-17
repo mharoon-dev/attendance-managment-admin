@@ -1,11 +1,26 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { FiArrowLeft, FiEdit2, FiTrash2, FiMail, FiPhone, FiMapPin, FiCalendar, FiBook, FiAward, FiUser } from 'react-icons/fi';
-import { BsPersonBadge, BsPeople, BsBuilding, BsBookHalf, BsGraphUp } from 'react-icons/bs';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import PersonIcon from '@mui/icons-material/Person';
+import EmailIcon from '@mui/icons-material/Email';
+import PhoneIcon from '@mui/icons-material/Phone';
+import LocationOnIcon from '@mui/icons-material/LocationOn';
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
+import MenuBookIcon from '@mui/icons-material/MenuBook';
+import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
+import GroupIcon from '@mui/icons-material/Group';
+import BusinessIcon from '@mui/icons-material/Business';
+import BadgeIcon from '@mui/icons-material/Badge';
+import CloseIcon from '@mui/icons-material/Close';
+import SaveIcon from '@mui/icons-material/Save';
 import Navbar from '../../components/Navbar/Navbar';
 import Sidebar from '../../components/Sidebar/Sidebar';
 import useSidebar from '../../hooks/useSidebar';
 import './StudentProfile.css';
+import { FiArrowLeft, FiEdit2, FiTrash2, FiMail, FiPhone, FiMapPin, 
+  FiCalendar, FiBook, FiAward, FiUser } from 'react-icons/fi';
+  import { BsPersonBadge, BsPeople, BsBuilding, BsBookHalf, BsGraphUp } from 
+  'react-icons/bs';
 
 const StudentProfile = () => {
   const { id } = useParams();
@@ -133,7 +148,7 @@ const StudentProfile = () => {
           <>
             <div className="student-profile-header">
               <div className="back-button" onClick={() => navigate('/students')}>
-                <FiArrowLeft /> Back to Students
+                <ArrowBackIcon /> Back to Students
               </div>
               <div className="student-profile-title">
                 <h1>{studentData.name}</h1>
@@ -175,49 +190,49 @@ const StudentProfile = () => {
                       <h2>Student Information</h2>
                       <div className="info-grid">
                         <div className="info-item">
-                          <BsPersonBadge className="info-icon" />
+                          <PersonIcon className="info-icon" />
                           <div className="info-details">
                             <span className="info-label">Name</span>
                             <span className="info-value">{studentData.name}</span>
                           </div>
                         </div>
                         <div className="info-item">
-                          <BsBuilding className="info-icon" />
+                          <BusinessIcon className="info-icon" />
                           <div className="info-details">
                             <span className="info-label">Grade</span>
                             <span className="info-value">{studentData.grade}</span>
                           </div>
                         </div>
                         <div className="info-item">
-                          <BsPeople className="info-icon" />
+                          <GroupIcon className="info-icon" />
                           <div className="info-details">
                             <span className="info-label">Class</span>
                             <span className="info-value">{studentData.class}</span>
                           </div>
                         </div>
                         <div className="info-item">
-                          <FiUser className="info-icon" />
+                          <BadgeIcon className="info-icon" />
                           <div className="info-details">
                             <span className="info-label">Roll Number</span>
                             <span className="info-value">{studentData.rollNumber}</span>
                           </div>
                         </div>
                         <div className="info-item">
-                          <FiMail className="info-icon" />
+                          <EmailIcon className="info-icon" />
                           <div className="info-details">
                             <span className="info-label">Email</span>
                             <span className="info-value">{studentData.email}</span>
                           </div>
                         </div>
                         <div className="info-item">
-                          <FiPhone className="info-icon" />
+                          <PhoneIcon className="info-icon" />
                           <div className="info-details">
                             <span className="info-label">Phone</span>
                             <span className="info-value">{studentData.phone}</span>
                           </div>
                         </div>
                         <div className="info-item">
-                          <FiMapPin className="info-icon" />
+                          <LocationOnIcon className="info-icon" />
                           <div className="info-details">
                             <span className="info-label">Address</span>
                             <span className="info-value">{studentData.address}</span>
@@ -231,21 +246,21 @@ const StudentProfile = () => {
                     <h2>Parent Information</h2>
                     <div className="info-grid">
                       <div className="info-item">
-                        <BsPersonBadge className="info-icon" />
+                        <PersonIcon className="info-icon" />
                         <div className="info-details">
                           <span className="info-label">Parent Name</span>
                           <span className="info-value">{studentData.parentName}</span>
                         </div>
                       </div>
                       <div className="info-item">
-                        <FiMail className="info-icon" />
+                        <EmailIcon className="info-icon" />
                         <div className="info-details">
                           <span className="info-label">Parent Email</span>
                           <span className="info-value">{studentData.parentEmail}</span>
                         </div>
                       </div>
                       <div className="info-item">
-                        <FiPhone className="info-icon" />
+                        <PhoneIcon className="info-icon" />
                         <div className="info-details">
                           <span className="info-label">Parent Phone</span>
                           <span className="info-value">{studentData.parentPhone}</span>
@@ -258,17 +273,17 @@ const StudentProfile = () => {
                     <h2>Performance Summary</h2>
                     <div className="performance-stats">
                       <div className="performance-stat">
-                        <BsGraphUp className="stat-icon" />
+                        <MenuBookIcon className="stat-icon" />
                         <span className="stat-value">{studentData.performance.averageScore}%</span>
                         <span className="stat-label">Average Score</span>
                       </div>
                       <div className="performance-stat">
-                        <FiAward className="stat-icon" />
+                        <EmojiEventsIcon className="stat-icon" />
                         <span className="stat-value">{studentData.performance.rank}/{studentData.performance.totalStudents}</span>
                         <span className="stat-label">Class Rank</span>
                       </div>
                       <div className="performance-stat">
-                        <FiCalendar className="stat-icon" />
+                        <CalendarMonthIcon className="stat-icon" />
                         <span className="stat-value">{studentData.attendance.present}%</span>
                         <span className="stat-label">Attendance</span>
                       </div>
@@ -389,8 +404,8 @@ const StudentProfile = () => {
           <div className="modal-container">
             <div className="modal-header">
               <h2>Edit Student</h2>
-              <button className="modal-close-btn" onClick={handleCloseModal}>
-                ×
+              <button className="close-btn" onClick={handleCloseModal}>
+                <CloseIcon />
               </button>
             </div>
             <div className="modal-body">
@@ -536,8 +551,14 @@ const StudentProfile = () => {
                   <button type="button" className="cancel-btn" onClick={handleCloseModal}>
                     Cancel
                   </button>
-                  <button type="submit" className="save-btn">
-                    Save Changes
+                  <button type="submit" className="save-btn" disabled={isLoading}>
+                    {isLoading ? (
+                      <div className="loading-spinner" />
+                    ) : (
+                      <>
+                        <SaveIcon /> Save Changes
+                      </>
+                    )}
                   </button>
                 </div>
               </form>

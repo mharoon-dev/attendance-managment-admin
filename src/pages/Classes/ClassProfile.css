@@ -47,19 +47,6 @@
   border-bottom: 1px solid #e0e0e0;
 }
 
-.back-button {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  color: #fff;
-  cursor: pointer;
-  transition: color 0.2s;
-}
-
-.back-button:hover {
-  color: #333;
-}
-
 .class-profile-title {
   display: flex;
   align-items: center;

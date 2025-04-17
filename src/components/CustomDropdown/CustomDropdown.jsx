@@ -1,26 +1,20 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { FiChevronDown, FiCheck } from 'react-icons/fi';
 import './CustomDropdown.css';
 
-const CustomDropdown = ({
-  options,
-  value,
-  onChange,
-  placeholder = 'Select an option',
+const CustomDropdown = ({ 
+  options, 
+  value, 
+  onChange, 
+  placeholder = 'Select an option', 
+  label,
   icon,
-  name,
-  required = false,
   disabled = false,
-  className = '',
-  error = '',
-  label = ''
+  className = ''
 }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedOption, setSelectedOption] = useState(
-    options.find(option => option.value === value) || null
-  );
   const dropdownRef = useRef(null);
 
+  // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -34,60 +28,45 @@ const CustomDropdown = ({
     };
   }, []);
 
-  useEffect(() => {
-    setSelectedOption(options.find(option => option.value === value) || null);
-  }, [value, options]);
-
   const handleSelect = (option) => {
-    setSelectedOption(option);
-    onChange({ target: { name, value: option.value } });
+    onChange(option);
     setIsOpen(false);
   };
 
-  const toggleDropdown = () => {
-    if (!disabled) {
-      setIsOpen(!isOpen);
-    }
-  };
+  const selectedOption = options.find(option => option.value === value);
+  const displayText = selectedOption ? selectedOption.label : placeholder;
 
   return (
     <div className={`custom-dropdown-container ${className}`}>
-      {label && (
-        <label className="custom-dropdown-label">
-          {label}
-          {required && <span className="required-indicator">*</span>}
-        </label>
-      )}
+      {label && <label className="custom-dropdown-label">{label}</label>}
       <div 
-        className={`custom-dropdown ${isOpen ? 'open' : ''} ${disabled ? 'disabled' : ''} ${error ? 'error' : ''}`}
+        className={`custom-dropdown ${isOpen ? 'open' : ''} ${disabled ? 'disabled' : ''}`}
+        onClick={() => !disabled && setIsOpen(!isOpen)}
         ref={dropdownRef}
       >
-        <div className="custom-dropdown-header" onClick={toggleDropdown}>
-          {icon && <span className="dropdown-icon">{icon}</span>}
-          <span className="selected-text">
-            {selectedOption ? selectedOption.label : placeholder}
+        <div className="custom-dropdown-selected">
+          {icon && <span className="custom-dropdown-icon">{icon}</span>}
+          <span className="custom-dropdown-text">{displayText}</span>
+          <span className="custom-dropdown-arrow">
+            <svg width="12" height="8" viewBox="0 0 12 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M1 1L6 6L11 1" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
           </span>
-          <FiChevronDown className={`dropdown-arrow ${isOpen ? 'open' : ''}`} />
         </div>
-        
         {isOpen && (
           <div className="custom-dropdown-options">
-            {options.map((option) => (
-              <div
-                key={option.value}
-                className={`dropdown-option ${selectedOption?.value === option.value ? 'selected' : ''}`}
-                onClick={() => handleSelect(option)}
+            {options.map((option, index) => (
+              <div 
+                key={index} 
+                className={`custom-dropdown-option ${option.value === value ? 'selected' : ''}`}
+                onClick={() => handleSelect(option.value)}
               >
-                <span className="option-label">{option.label}</span>
-                {selectedOption?.value === option.value && (
-                  <FiCheck className="check-icon" />
-                )}
+                {option.label}
               </div>
             ))}
           </div>
         )}
       </div>
-      {error && <div className="dropdown-error">{error}</div>}
     </div>
   );
 };

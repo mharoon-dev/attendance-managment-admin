@@ -1,11 +1,27 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FiArrowLeft, FiUser, FiMail, FiPhone, FiMapPin, FiPlus, FiX, FiSave } from 'react-icons/fi';
-import { BsPersonBadge, BsPeople, BsBuilding, BsBookHalf } from 'react-icons/bs';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import PersonIcon from '@mui/icons-material/Person';
+import EmailIcon from '@mui/icons-material/Email';
+import PhoneIcon from '@mui/icons-material/Phone';
+import LocationOnIcon from '@mui/icons-material/LocationOn';
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
+import MenuBookIcon from '@mui/icons-material/MenuBook';
+import GroupIcon from '@mui/icons-material/Group';
+import BusinessIcon from '@mui/icons-material/Business';
+import BadgeIcon from '@mui/icons-material/Badge';
+import CloseIcon from '@mui/icons-material/Close';
+import SaveIcon from '@mui/icons-material/Save';
+import AddIcon from '@mui/icons-material/Add';
+import RemoveIcon from '@mui/icons-material/Remove';
 import Navbar from '../../components/Navbar/Navbar';
 import Sidebar from '../../components/Sidebar/Sidebar';
 import CustomDropdown from '../../components/CustomDropdown/CustomDropdown';
 import useSidebar from '../../hooks/useSidebar';
+import { FiArrowLeft, FiEdit2, FiTrash2, FiMail, FiPhone, FiMapPin, 
+  FiCalendar, FiBook, FiAward, FiUser } from 'react-icons/fi';
+  import { BsPersonBadge, BsPeople, BsBuilding, BsBookHalf, BsGraphUp } from 
+  'react-icons/bs';
 import './AddStudent.css';
 
 const AddStudent = () => {
@@ -120,7 +136,7 @@ const AddStudent = () => {
       <div className={`add-student-container ${!sidebarOpen ? 'sidebar-closed' : ''}`}>
         <div className="add-student-header">
           <div className="back-button" onClick={() => navigate('/students')}>
-            <FiArrowLeft /> Back to Students
+            <ArrowBackIcon /> Back to Students
           </div>
           <h1>Add New Student</h1>
         </div>
@@ -128,12 +144,15 @@ const AddStudent = () => {
         <div className="add-student-content">
           <form onSubmit={handleSubmit}>
             <div className="form-section">
-              <h2>Basic Information</h2>
+              <div className="section-header">
+                <PersonIcon className="section-icon" />
+                <h3>Basic Information</h3>
+              </div>
               <div className="form-grid">
                 <div className="form-group">
                   <label htmlFor="name">Full Name</label>
                   <div className="input-with-icon">
-                    <FiUser className="input-icon" />
+                    <PersonIcon className="input-icon" />
                     <input
                       type="text"
                       id="name"
@@ -152,7 +171,7 @@ const AddStudent = () => {
                     value={formData.grade}
                     onChange={handleInputChange}
                     placeholder="Select Grade"
-                    icon={<BsBuilding />}
+                    icon={<BusinessIcon />}
                     name="grade"
                     label="Grade"
                     required
@@ -165,7 +184,7 @@ const AddStudent = () => {
                     value={formData.class}
                     onChange={handleInputChange}
                     placeholder="Select Class"
-                    icon={<BsPeople />}
+                    icon={<GroupIcon />}
                     name="class"
                     label="Class"
                     required
@@ -175,7 +194,7 @@ const AddStudent = () => {
                 <div className="form-group">
                   <label htmlFor="rollNumber">Roll Number</label>
                   <div className="input-with-icon">
-                    <BsPersonBadge className="input-icon" />
+                    <BadgeIcon className="input-icon" />
                     <input
                       type="text"
                       id="rollNumber"
@@ -191,7 +210,7 @@ const AddStudent = () => {
                 <div className="form-group">
                   <label htmlFor="email">Email</label>
                   <div className="input-with-icon">
-                    <FiMail className="input-icon" />
+                    <EmailIcon className="input-icon" />
                     <input
                       type="email"
                       id="email"
@@ -207,7 +226,7 @@ const AddStudent = () => {
                 <div className="form-group">
                   <label htmlFor="phone">Phone</label>
                   <div className="input-with-icon">
-                    <FiPhone className="input-icon" />
+                    <PhoneIcon className="input-icon" />
                     <input
                       type="text"
                       id="phone"
@@ -223,7 +242,7 @@ const AddStudent = () => {
                 <div className="form-group full-width">
                   <label htmlFor="address">Address</label>
                   <div className="input-with-icon">
-                    <FiMapPin className="input-icon" />
+                    <LocationOnIcon className="input-icon" />
                     <textarea
                       id="address"
                       name="address"
@@ -239,12 +258,15 @@ const AddStudent = () => {
             </div>
 
             <div className="form-section">
-              <h2>Parent Information</h2>
+              <div className="section-header">
+                <GroupIcon className="section-icon" />
+                <h3>Parent Information</h3>
+              </div>
               <div className="form-grid">
                 <div className="form-group">
                   <label htmlFor="parentName">Parent Name</label>
                   <div className="input-with-icon">
-                    <FiUser className="input-icon" />
+                    <PersonIcon className="input-icon" />
                     <input
                       type="text"
                       id="parentName"
@@ -260,7 +282,7 @@ const AddStudent = () => {
                 <div className="form-group">
                   <label htmlFor="parentEmail">Parent Email</label>
                   <div className="input-with-icon">
-                    <FiMail className="input-icon" />
+                    <EmailIcon className="input-icon" />
                     <input
                       type="email"
                       id="parentEmail"
@@ -276,7 +298,7 @@ const AddStudent = () => {
                 <div className="form-group">
                   <label htmlFor="parentPhone">Parent Phone</label>
                   <div className="input-with-icon">
-                    <FiPhone className="input-icon" />
+                    <PhoneIcon className="input-icon" />
                     <input
                       type="text"
                       id="parentPhone"
@@ -292,7 +314,10 @@ const AddStudent = () => {
             </div>
 
             <div className="form-section">
-              <h2>Subjects</h2>
+              <div className="section-header">
+                <MenuBookIcon className="section-icon" />
+                <h3>Subjects</h3>
+              </div>
               <div className="subjects-container">
                 {formData.subjects.map((subject, index) => (
                   <div key={index} className="subject-item">
@@ -303,7 +328,7 @@ const AddStudent = () => {
                           value={subject.name}
                           onChange={(e) => handleSubjectChange(index, 'name', e.target.value)}
                           placeholder="Select Subject"
-                          icon={<BsBookHalf />}
+                          icon={<MenuBookIcon />}
                           name={`subject-name-${index}`}
                           label="Subject"
                           required
@@ -326,7 +351,7 @@ const AddStudent = () => {
                       className="remove-subject-btn"
                       onClick={() => handleRemoveSubject(index)}
                     >
-                      <FiX />
+                      <RemoveIcon />
                     </button>
                   </div>
                 ))}
@@ -336,14 +361,17 @@ const AddStudent = () => {
                     className="add-subject-btn"
                     onClick={handleAddSubject}
                   >
-                    <FiPlus /> Add Subject
+                    <AddIcon /> Add Subject
                   </button>
                 )}
               </div>
             </div>
 
             <div className="form-section">
-              <h2>Additional Information</h2>
+              <div className="section-header">
+                <BusinessIcon className="section-icon" />
+                <h3>Additional Information</h3>
+              </div>
               <div className="form-grid">
                 <div className="form-group">
                   <CustomDropdown
@@ -351,7 +379,7 @@ const AddStudent = () => {
                     value={formData.status}
                     onChange={handleInputChange}
                     placeholder="Select Status"
-                    icon={<FiUser />}
+                    icon={<PersonIcon />}
                     name="status"
                     label="Status"
                     required
@@ -360,13 +388,13 @@ const AddStudent = () => {
               </div>
             </div>
 
-            <div className="form-actions">
+            <div className="form-buttons">
               <button
                 type="button"
                 className="cancel-btn"
                 onClick={() => navigate('/students')}
               >
-                Cancel
+                <CloseIcon /> Cancel
               </button>
               <button
                 type="submit"
@@ -374,10 +402,10 @@ const AddStudent = () => {
                 disabled={isLoading}
               >
                 {isLoading ? (
-                  <span className="loading-spinner"></span>
+                  <div className="loading-spinner" />
                 ) : (
                   <>
-                    <FiSave /> Save Student
+                    <SaveIcon /> Save Student
                   </>
                 )}
               </button>
