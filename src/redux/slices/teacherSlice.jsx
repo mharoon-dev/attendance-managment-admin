@@ -60,6 +60,7 @@ const teacherSlice = createSlice({
       state.loading = false;
       state.error = action.payload;
     },
+
   },
 });
 

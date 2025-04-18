@@ -124,8 +124,10 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
       <div className={`sidebar ${!isOpen ? 'closed' : ''}`}>
         <div className="sidebar-header">
           <div className="logo">
+            <Link to="/">
             <span className="logo-text">School</span>
             <span className="logo-highlight">Manager</span>
+            </Link>
           </div>
           <button className="close-sidebar" onClick={toggleSidebar}>
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

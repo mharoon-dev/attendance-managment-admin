@@ -20,7 +20,9 @@ import { useDispatch } from "react-redux";
 import BusinessIcon from "@mui/icons-material/Business";
 import { useSelector } from "react-redux";
 import { api } from "../../utils/url.js";
-import { updateTeacherFailure, updateTeacherStart, updateTeacherSuccess } from "../../redux/slices/teacherSlice";
+import { deleteTeacherFailure, deleteTeacherStart, deleteTeacherSuccess, updateTeacherFailure, updateTeacherStart, updateTeacherSuccess } from "../../redux/slices/teacherSlice";
+import Loader from "../../components/Loader/Loader.jsx";
+import { toast, Toaster } from "sonner";
 
 const Teachers = () => {
   const navigate = useNavigate();
@@ -168,6 +170,7 @@ const Teachers = () => {
   const handleSubmit = async(e) => {
 try {
   e.preventDefault();
+  setLoading(true);
   dispatch(updateTeacherStart(formData));
   console.log("Updated teacher data:", formData);
   
@@ -175,10 +178,30 @@ try {
   console.log(res);
   dispatch(updateTeacherSuccess(res.data.data));
   handleCloseModal();
+  setLoading(false);
 } catch (error) {
   console.log(error);
   dispatch(updateTeacherFailure(error.response.data.message));
+  setLoading(false);
 }
+  };
+
+  const handleDelete = async (teacherId) => {
+    try {
+      dispatch(deleteTeacherStart());
+      const res = await api.delete(`teachers/delete/${teacherId}`);
+      console.log(res);
+      if (res.status === 200) {
+        dispatch(deleteTeacherSuccess(teacherId));
+        toast.success('Teacher deleted successfully');
+      } else {
+        dispatch(deleteTeacherFailure(res.data.message));
+        toast.error(res.data.message);
+      }
+    } catch (error) {
+      console.log(error);
+      dispatch(deleteTeacherFailure(error.response.data.message));
+    }
   };
 
   // Sample teachers data based on the provided structure
@@ -231,6 +254,11 @@ try {
   });
 
   return (
+    <>
+    <Toaster position="top-right" />
+    {loading ? (
+      <Loader />
+    ) : (
     <div className={`layout-container ${sidebarOpen ? "sidebar-open" : ""}`}>
       <Navbar toggleSidebar={toggleSidebar} isSidebarOpen={sidebarOpen} />
       <Sidebar isOpen={sidebarOpen} toggleSidebar={toggleSidebar} />
@@ -293,8 +321,8 @@ try {
           </div>
         </div>
 
-        <div className="teachers-grid">
-          {sortedTeachers.map((teacher) => (
+       {sortedTeachers?.length > 0 ?  <div className="teachers-grid">
+          {sortedTeachers?.map((teacher) => (
             <div key={teacher.id} className="teacher-card">
               <div className="teacher-card-header">
                 <img
@@ -384,7 +412,7 @@ try {
               <div className="teacher-card-footer">
                 <button
                   className="view-profile-btn"
-                  onClick={() => handleViewProfile(teacher.id)}
+                  onClick={() => handleViewProfile(teacher._id)}
                 >
                   View Profile
                 </button>
@@ -395,14 +423,21 @@ try {
                   >
                     <EditIcon />
                   </button>
-                  <button className="action-btn delete">
+                  <button className="action-btn delete" onClick={() => handleDelete(teacher._id)}>
                     <DeleteIcon />
                   </button>
                 </div>
               </div>
             </div>
-          ))}
-        </div>
+          )) }
+        </div> 
+          : 
+          <div className="no-teachers">
+              <h1 className="no-teachers-text">There is no teacher</h1>
+            </div>
+          }
+
+
 
         {isEditModalOpen && (
           <div className="modal-overlay">
@@ -729,10 +764,9 @@ try {
                           <div key={index} className="marksheet-image-container">
                             <img
                               style={{
-                                width: '100px',
-                                height: '100px',
                                 objectFit: 'cover',
-                                borderRadius: '50%'
+                                width: '100%',
+                                height: '100%',
                               }}
                               src={url}
                               alt={`Marksheet ${index + 1}`}
@@ -769,6 +803,8 @@ try {
         )}
       </div>
     </div>
+    )}
+    </>
   );
 };
 

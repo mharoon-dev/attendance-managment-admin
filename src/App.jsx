@@ -24,7 +24,7 @@ import AddSubject from "./pages/Subjects/AddSubject.jsx";
 import MarkAttendance from "./pages/Attendance/MarkAttendance.jsx";
 import ViewAttendance from "./pages/Attendance/ViewAttendance.jsx";
 import { useDispatch, useSelector } from "react-redux";
-import { loginSuccess } from "./redux/slices/userSlice.jsx";
+import { loginFailure, loginSuccess } from "./redux/slices/userSlice.jsx";
 import { api } from "./utils/url.js";
 import Loader from "./components/Loader/Loader.jsx";
 function App() {
@@ -35,19 +35,25 @@ function App() {
     const token = JSON.parse(localStorage.getItem("token"));
 
     const isAuthenticated = async () => {
-      const response = await api.get("auth/isuserloggedin", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      console.log(response);
-
-      if (isAuthenticated) {
-        dispatch(loginSuccess(response?.data?.data));
+      try {
+        const response = await api.get("auth/isuserloggedin", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        console.log(response);
+  
+        if (isAuthenticated) {
+          dispatch(loginSuccess(response?.data?.data));
+          setLoading(false);
+        }
+        setLoading(false);
+      } catch (error) {
+        console.log(error);
+        dispatch(loginFailure(error?.response?.data?.message));
+        setLoading(false);
       }
-      setLoading(false);
     };
-
     isAuthenticated();
   }, []);
   return (
@@ -59,11 +65,11 @@ function App() {
           <Routes>
           <Route
             path="/login"
-            element={user ? <Navigate to="/" /> : <Login />}
+            element={<Login />}
           />
           <Route
             path="/"
-            element={!user ? <Navigate to="/login" /> : <Dashboard />}
+            element={user !== null ? <Dashboard /> : <Navigate to="/login" />}
           />
           <Route path="/teachers" element={<Teachers />} />
           <Route path="/teachers/add" element={<AddTeacher />} />

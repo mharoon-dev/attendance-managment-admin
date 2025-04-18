@@ -1,4 +1,4 @@
-import React, {  useState } from "react";
+import React, {  useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import CustomDropdown from "../../components/CustomDropdown/CustomDropdown";
 import Input from "../../components/Input/Input";
@@ -19,12 +19,19 @@ const Login = () => {
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
+  const user = useSelector((state) => state.user.user);
 
   const roleOptions = [
     { value: "superAdmin", label: "Super Admin" },
     { value: "admin", label: "Admin" },
     { value: "teacher", label: "Teacher" },
   ];
+
+  useEffect(() => {
+    if (user !== null) {
+      navigate("/");
+    }
+  }, [user]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;

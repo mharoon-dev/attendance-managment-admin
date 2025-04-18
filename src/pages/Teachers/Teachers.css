@@ -122,6 +122,19 @@
   background-size: 16px;
 }
 
+.no-teachers {
+  width: 100%;
+}
+
+.no-teachers-text {
+  color: #3a86ff;
+  margin: 0;
+  width: 100%;
+  margin: auto;
+  text-align: center;
+  margin-top: 2rem;
+}
+
 .filter-select:focus,
 .sort-select:focus {
   outline: none;

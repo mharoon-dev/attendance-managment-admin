@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Navbar from '../../components/Navbar/Navbar';
 import Sidebar from '../../components/Sidebar/Sidebar';
@@ -16,145 +16,107 @@ import BookIcon from '@mui/icons-material/Book';
 import BadgeIcon from '@mui/icons-material/Badge';
 import BusinessIcon from '@mui/icons-material/Business';
 import './TeacherProfile.css';
+import { useDispatch, useSelector } from 'react-redux';
 
 const TeacherProfile = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { sidebarOpen, toggleSidebar } = useSidebar();
   const [activeTab, setActiveTab] = useState('personal');
-
-  // Sample teacher data (replace with actual data from your API)
-  const teacher = {
-    id: 1,
-    name: 'Sarah Johnson',
-    email: 'sarah.johnson@school.com',
-    phone: '+1 234 567 8900',
-    department: 'Mathematics',
-    joiningDate: '2020-01-15',
-    qualification: 'Ph.D. in Mathematics',
-    experience: '8 years',
-    subjects: ['Calculus', 'Algebra', 'Statistics'],
-    address: '123 Education St, Learning City, ST 12345',
-    bio: 'Experienced mathematics teacher with a passion for making complex concepts accessible to students. Specializes in advanced calculus and statistics.',
-    avatar: 'https://randomuser.me/api/portraits/women/1.jpg',
-    performance: {
-      attendance: 98,
-      studentFeedback: 4.8,
-      classesTaught: 24,
-      studentsTaught: 480
-    },
-    schedule: [
-      { day: 'Monday', classes: ['Calculus 101', 'Statistics 201'] },
-      { day: 'Tuesday', classes: ['Algebra 202', 'Calculus 101'] },
-      { day: 'Wednesday', classes: ['Statistics 201', 'Algebra 202'] },
-      { day: 'Thursday', classes: ['Calculus 101', 'Statistics 201'] },
-      { day: 'Friday', classes: ['Algebra 202', 'Calculus 101'] }
-    ]
-  };
+  const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
+  const { teachers } = useSelector((state) => state.teachers);
+  console.log(teachers);
+  const [teacher, setTeacher] = useState(null);
+  console.log(teacher);
+  console.log(id);
+  
+  useEffect(() => {
+    const teacher = teachers.find((teacher) => teacher._id === id);
+    setTeacher(teacher);
+    console.log(teacher);
+  }, [id]);
 
   const getTabContent = () => {
-    switch (activeTab) {
-      case 'personal':
         return (
           <div className="profile-section">
             <div className="profile-header">
-              <img src={teacher.avatar} alt={teacher.name} className="profile-avatar" />
+              <img src={teacher?.profileImage} className="profile-avatar" alt={teacher?.fullName} />
               <div className="profile-info">
-                <h2>{teacher.name}</h2>
-                <p className="department">{teacher.department}</p>
+                <h2>{teacher?.fullName}</h2>
                 <div className="contact-info">
-                  <span><i className="fas fa-envelope"></i> {teacher.email}</span>
-                  <span><i className="fas fa-phone"></i> {teacher.phone}</span>
+                  <span><EmailIcon /> {teacher?.emailAddress}</span>
+                  <span><PhoneIcon /> {teacher?.phoneNumber}</span>
                 </div>
               </div>
             </div>
             <div className="profile-details">
               <div className="detail-item">
-                <label>Qualification</label>
-                <p>{teacher.qualification}</p>
+                <label>Date of Birth</label>
+                <p>{new Date(teacher?.dateOfBirth).toLocaleDateString()}</p>
               </div>
               <div className="detail-item">
-                <label>Experience</label>
-                <p>{teacher.experience}</p>
+                <label>Gender</label>
+                <p>{teacher?.gender}</p>
               </div>
               <div className="detail-item">
-                <label>Joining Date</label>
-                <p>{new Date(teacher.joiningDate).toLocaleDateString()}</p>
+                <label>NIC</label>
+                <p>{teacher?.nic}</p>
+              </div>
+              <div className="detail-item">
+                <label>Father's Name</label>
+                <p>{teacher?.fatherName}</p>
+              </div>
+              <div className="detail-item">
+                <label>Marital Status</label>
+                <p>{teacher?.maritalStatus}</p>
+              </div>
+              <div className="detail-item">
+                <label>Degree Title</label>
+                <p>{teacher?.degreeTitle}</p>
+              </div>
+              <div className="detail-item">
+                <label>Board</label>
+                <p>{teacher?.board}</p>
+              </div>
+              <div className="detail-item">
+                <label>Grade</label>
+                <p>{teacher?.grade}</p>
+              </div>
+              <div className="detail-item">
+                <label>Next of Kin</label>
+                <p>{teacher?.nextOfKinPhoneNumber}</p>
               </div>
               <div className="detail-item">
                 <label>Address</label>
-                <p>{teacher.address}</p>
+                <p>{teacher?.fullAddress}</p>
               </div>
-              <div className="detail-item full-width">
-                <label>Bio</label>
-                <p>{teacher.bio}</p>
+                <h3 className="">Job Details</h3>
+              <br />
+
+                <div className="detail-item"> 
+                  <label>Designation</label>
+                  <p>{teacher?.jobDetails?.designation}</p>
+                </div>
+                <div className="detail-item">
+                  <label>Joining Date</label>
+                  <p>{new Date(teacher?.jobDetails?.joiningDate).toLocaleDateString()}</p>
+                </div>
+                <div className="detail-item">
+                  <label>Working Hours</label>
+                  <p>{teacher?.jobDetails?.workingHours}</p>
+                </div>
+                <div className="detail-item">
+                  <label>Salary</label>
+                  <p>Rs. {teacher?.jobDetails?.salary}</p>
+                </div>
+                <div className="detail-item">
+                  <label>Teacher ID</label>
+                  <p>{teacher?.jobDetails?.teacherId}</p>
+                </div>
               </div>
-            </div>
-          </div>
+                </div>
         );
-      case 'performance':
-        return (
-          <div className="profile-section">
-            <div className="performance-stats">
-              <div className="stat-card">
-                <div className="stat-icon">
-                  <i className="fas fa-calendar-check"></i>
-                </div>
-                <div className="stat-info">
-                  <h3>{teacher.performance.attendance}%</h3>
-                  <p>Attendance</p>
-                </div>
-              </div>
-              <div className="stat-card">
-                <div className="stat-icon">
-                  <i className="fas fa-star"></i>
-                </div>
-                <div className="stat-info">
-                  <h3>{teacher.performance.studentFeedback}</h3>
-                  <p>Student Feedback</p>
-                </div>
-              </div>
-              <div className="stat-card">
-                <div className="stat-icon">
-                  <i className="fas fa-chalkboard-teacher"></i>
-                </div>
-                <div className="stat-info">
-                  <h3>{teacher.performance.classesTaught}</h3>
-                  <p>Classes Taught</p>
-                </div>
-              </div>
-              <div className="stat-card">
-                <div className="stat-icon">
-                  <i className="fas fa-users"></i>
-                </div>
-                <div className="stat-info">
-                  <h3>{teacher.performance.studentsTaught}</h3>
-                  <p>Students Taught</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        );
-      case 'schedule':
-        return (
-          <div className="profile-section">
-            <div className="schedule-grid">
-              {teacher.schedule.map((day, index) => (
-                <div key={index} className="schedule-day">
-                  <h3>{day.day}</h3>
-                  <ul>
-                    {day.classes.map((className, classIndex) => (
-                      <li key={classIndex}>{className}</li>
-                    ))}
-                  </ul>
-                </div>
-              ))}
-            </div>
-          </div>
-        );
-      default:
-        return null;
-    }
   };
 
   return (
@@ -172,26 +134,7 @@ const TeacherProfile = () => {
           </button>
         </div>
 
-        <div className="profile-tabs">
-          <button 
-            className={`tab-button ${activeTab === 'personal' ? 'active' : ''}`}
-            onClick={() => setActiveTab('personal')}
-          >
-            Personal Info
-          </button>
-          <button 
-            className={`tab-button ${activeTab === 'performance' ? 'active' : ''}`}
-            onClick={() => setActiveTab('performance')}
-          >
-            Performance
-          </button>
-          <button 
-            className={`tab-button ${activeTab === 'schedule' ? 'active' : ''}`}
-            onClick={() => setActiveTab('schedule')}
-          >
-            Schedule
-          </button>
-        </div>
+    
 
         <div className="profile-content">
           {getTabContent()}
