@@ -42,7 +42,7 @@ function App() {
           },
         });
         console.log(response);
-  
+
         if (isAuthenticated) {
           dispatch(loginSuccess(response?.data?.data));
           setLoading(false);
@@ -63,29 +63,26 @@ function App() {
       ) : (
         <Router>
           <Routes>
-          <Route
-            path="/login"
-            element={<Login />}
-          />
-          <Route
-            path="/"
-            element={user !== null ? <Dashboard /> : <Navigate to="/login" />}
-          />
-          <Route path="/teachers" element={<Teachers />} />
-          <Route path="/teachers/add" element={<AddTeacher />} />
-          <Route path="/teachers/:id" element={<TeacherProfile />} />
-          <Route path="/classes" element={<Classes />} />
-          <Route path="/classes/add" element={<AddClass />} />
-          <Route path="/classes/:id" element={<ClassProfile />} />
-          <Route path="/students" element={<Students />} />
-          <Route path="/students/:id" element={<StudentProfile />} />
-          <Route path="/students/add" element={<AddStudent />} />
-          <Route path="/library" element={<Library />} />
-          <Route path="/library/add" element={<AddBook />} />
-          <Route path="/subjects" element={<Subjects />} />
-          <Route path="/subjects/:id" element={<SubjectProfile />} />
-          <Route path="/subjects/add" element={<AddSubject />} />
-          <Route path="/attendance/mark" element={<MarkAttendance />} />
+            <Route path="/login" element={<Login />} />
+            <Route
+              path="/"
+              element={user !== null ? <Dashboard /> : <Navigate to="/login" />}
+            />
+            <Route path="/teachers" element={<Teachers />} />
+            <Route path="/teachers/add" element={<AddTeacher />} />
+            <Route path="/teachers/:id" element={<TeacherProfile />} />
+            <Route path="/classes" element={<Classes />} />
+            <Route path="/classes/add" element={<AddClass />} />
+            <Route path="/classes/:id" element={<ClassProfile />} />
+            <Route path="/students" element={<Students />} />
+            <Route path="/students/:id" element={<StudentProfile />} />
+            <Route path="/students/add" element={<AddStudent />} />
+            <Route path="/library" element={<Library />} />
+            <Route path="/library/add" element={<AddBook />} />
+            <Route path="/subjects" element={<Subjects />} />
+            <Route path="/subjects/:id" element={<SubjectProfile />} />
+            <Route path="/subjects/add" element={<AddSubject />} />
+            <Route path="/attendance/mark" element={<MarkAttendance />} />
             <Route path="/attendance" element={<ViewAttendance />} />
           </Routes>
         </Router>

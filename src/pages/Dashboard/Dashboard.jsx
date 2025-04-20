@@ -16,7 +16,21 @@ import {
   getTeachersSuccess,
   getTeachersFailure,
 } from "../../redux/slices/teacherSlice.jsx";
-import { getClassesFailure, getClassesStart, getClassesSuccess } from "../../redux/slices/classesSlice.jsx";
+import {
+  getClassesFailure,
+  getClassesStart,
+  getClassesSuccess,
+} from "../../redux/slices/classesSlice.jsx";
+import {
+  getBooksFailure,
+  getBooksStart,
+  getBooksSuccess,
+} from "../../redux/slices/librarySlice.jsx";
+import {
+  getSubjectsFailure,
+  getSubjectsStart,
+  getSubjectsSuccess,
+} from "../../redux/slices/subjectSlice.jsx";
 const Dashboard = () => {
   const { sidebarOpen, toggleSidebar } = useSidebar();
   const [loading, setLoading] = useState(false);
@@ -24,7 +38,7 @@ const Dashboard = () => {
   const { students } = useSelector((state) => state.students);
   const { teachers } = useSelector((state) => state.teachers);
   const { classes } = useSelector((state) => state.classes);
-
+  const { books } = useSelector((state) => state.library);
   useEffect(() => {
     const fetchStudents = async () => {
       dispatch(getStudentsStart());
@@ -57,11 +71,31 @@ const Dashboard = () => {
       }
     };
 
+    const fetchBooks = async () => {
+      dispatch(getBooksStart());
+      try {
+        const response = await api.get("library/books");
+        dispatch(getBooksSuccess(response.data.data));
+      } catch (error) {
+        dispatch(getBooksFailure(error.response.data.message));
+      }
+    };
 
+    const fetchSubjects = async () => {
+      dispatch(getSubjectsStart());
+      try {
+        const response = await api.get("subjects/subjects");
+        dispatch(getSubjectsSuccess(response.data.data));
+      } catch (error) {
+        dispatch(getSubjectsFailure(error.response.data.message));
+      }
+    };
 
     fetchStudents();
     fetchTeachers();
     fetchClasses();
+    fetchBooks();
+    fetchSubjects();
   }, []);
 
   // Sample data for dashboard
@@ -138,10 +172,8 @@ const Dashboard = () => {
     },
     {
       id: 4,
-      title: "Revenue",
-      value: "$52,450",
-      change: "-2%",
-      trend: "down",
+      title: "Total Books",
+      value: books?.length,
       icon: (
         <svg
           xmlns="http://www.w3.org/2000/svg"

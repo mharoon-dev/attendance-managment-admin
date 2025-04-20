@@ -1,28 +1,39 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FiSave, FiX, FiPlus, FiTrash2 } from 'react-icons/fi';
-import { BsBuilding, BsPeople, BsCalendar, BsPersonBadge, BsBook } from 'react-icons/bs';
+import { BsBuilding, BsPeople, BsCalendar, BsPersonBadge } from 'react-icons/bs';
 import Navbar from '../../components/Navbar/Navbar';
 import Sidebar from '../../components/Sidebar/Sidebar';
 import CustomDropdown from '../../components/CustomDropdown/CustomDropdown';
 import useSidebar from '../../hooks/useSidebar';
 import './AddClass.css';
+import { useDispatch, useSelector } from 'react-redux';
+import { addClassFailure, addClassStart, addClassSuccess } from '../../redux/slices/classesSlice';
+import { toast, Toaster } from 'sonner';
+import Loader from '../../components/Loader/Loader';
+import { api } from '../../utils/url';
 
 const AddClass = () => {
   const navigate = useNavigate();
   const { sidebarOpen, toggleSidebar } = useSidebar();
   const [loading, setLoading] = useState(false);
+  const { teachers } = useSelector((state) => state.teachers);
+  const [newTeacherId, setNewTeacherId] = useState('');
+  const [newTeacherYear, setNewTeacherYear] = useState(new Date().getFullYear());
+  const [teachersList, setTeachersList] = useState([]);
+  const [removedTeachers, setRemovedTeachers] = useState([]);
+  const dispatch = useDispatch();
   const [formData, setFormData] = useState({
+    className: '',
     grade: '',
-    section: '',
-    teacher: '',
-    room: '',
-    schedule: '',
-    description: '',
-    subjects: [''],
-    capacity: 30,
-    status: 'active'
+    classTeachers: [],
+    startDate: '',
+    endDate: ''
   });
+
+  useEffect(() => {
+    console.log(formData);
+  }, [formData]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -39,35 +50,76 @@ const AddClass = () => {
     }));
   };
 
-  const handleSubjectChange = (index, value) => {
-    const updatedSubjects = [...formData.subjects];
-    updatedSubjects[index] = value;
-    setFormData(prev => ({
-      ...prev,
-      subjects: updatedSubjects
-    }));
-  };
+  const handleAddTeacher = () => {
+    if (newTeacherId && newTeacherYear) {
+      // Check if teacher already exists for the given year
+      const teacherExistsForYear = teachersList.some(
+        teacher => teacher.year === parseInt(newTeacherYear)
+      );
 
-  const addSubject = () => {
-    setFormData(prev => ({
-      ...prev,
-      subjects: [...prev.subjects, '']
-    }));
-  };
+      if (teacherExistsForYear) {
+        alert('A teacher is already assigned for this year');
+        return;
+      }
 
-  const removeSubject = (index) => {
-    if (formData.subjects.length > 1) {
-      const updatedSubjects = formData.subjects.filter((_, i) => i !== index);
+      const newTeacher = {
+        teacherId: newTeacherId,
+        year: parseInt(newTeacherYear)
+      };
+      
+      setTeachersList([...teachersList, newTeacher]);
       setFormData(prev => ({
         ...prev,
-        subjects: updatedSubjects
+        classTeachers: [...prev.classTeachers, newTeacher]
       }));
+
+      // Reset input fields
+      setNewTeacherId('');
+      setNewTeacherYear(new Date().getFullYear());
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleRemoveTeacher = (index) => {
+    const removedTeacher = teachersList[index];
+    setRemovedTeachers([...removedTeachers, removedTeacher]);
+    
+    setTeachersList(prev => prev.filter((_, i) => i !== index));
+    setFormData(prev => ({
+      ...prev,
+      classTeachers: prev.classTeachers.filter((_, i) => i !== index)
+    }));
+  };
+
+  const handleRestoreTeacher = (removedTeacher) => {
+    setTeachersList([...teachersList, removedTeacher]);
+    setFormData(prev => ({
+      ...prev,
+      classTeachers: [...prev.classTeachers, removedTeacher]
+    }));
+    setRemovedTeachers(prev => prev.filter(t => t.teacherId !== removedTeacher.teacherId));
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+
+    try {
+      dispatch(addClassStart());
+      const response = await api.post('classes/create', formData);
+      dispatch(addClassSuccess(response.data.data));
+      setLoading(false);
+      toast.success('Class added successfully');
+      console.log(response);
+
+      setTimeout(() => {
+        navigate('/classes');
+      }, 1000);
+    } catch (error) {
+      dispatch(addClassFailure(error.response.data.message));
+      console.error('Error submitting class:', error);
+      setLoading(false);
+      toast.error('Error submitting class');
+    }
     
     // Simulate API call
     setTimeout(() => {
@@ -77,34 +129,19 @@ const AddClass = () => {
     }, 1500);
   };
 
-  // Sample data for dropdown options
-  const grades = [
-    { value: '10', label: 'Grade 10', icon: <BsBuilding /> },
-    { value: '11', label: 'Grade 11', icon: <BsBuilding /> },
-    { value: '12', label: 'Grade 12', icon: <BsBuilding /> }
-  ];
-
-  const sections = [
-    { value: 'A', label: 'Section A', icon: <BsPeople /> },
-    { value: 'B', label: 'Section B', icon: <BsPeople /> },
-    { value: 'C', label: 'Section C', icon: <BsPeople /> }
-  ];
-
-  const teachers = [
-    { value: '1', label: 'Dr. Sarah Wilson', icon: <BsPersonBadge /> },
-    { value: '2', label: 'Prof. Michael Brown', icon: <BsPersonBadge /> },
-    { value: '3', label: 'Dr. Emily Johnson', icon: <BsPersonBadge /> },
-    { value: '4', label: 'Dr. Robert Davis', icon: <BsPersonBadge /> },
-    { value: '5', label: 'Prof. Lisa Anderson', icon: <BsPersonBadge /> },
-    { value: '6', label: 'Dr. James Wilson', icon: <BsPersonBadge /> }
-  ];
-
-  const statuses = [
-    { value: 'active', label: 'Active', icon: <BsPeople /> },
-    { value: 'inactive', label: 'Inactive', icon: <BsPeople /> }
+  const teacherOptions = [
+    ...teachers.map(teacher => ({
+      value: teacher.jobDetails.teacherId,
+      label: `${teacher.fullName}`,
+      icon: <BsPersonBadge />,
+      disabled: teachersList.some(t => t.teacherId === teacher.jobDetails.teacherId)
+    }))
   ];
 
   return (
+    <>
+    <Toaster position="top-right" />
+    {loading && <Loader />}
     <div className={`layout-container ${sidebarOpen ? 'sidebar-open' : ''}`}>
       <Navbar toggleSidebar={toggleSidebar} isSidebarOpen={sidebarOpen} />
       <Sidebar isOpen={sidebarOpen} toggleSidebar={toggleSidebar} />
@@ -124,49 +161,33 @@ const AddClass = () => {
               
               <div className="form-row">
                 <div className="form-group">
-                  <label htmlFor="grade">Grade</label>
-                  <CustomDropdown
-                    options={grades}
-                    value={formData.grade}
-                    onChange={(value) => handleDropdownChange('grade', value)}
-                    placeholder="Select grade"
-                    icon={<BsBuilding />}
-                  />
-                </div>
-                <div className="form-group">
-                  <label htmlFor="section">Section</label>
-                  <CustomDropdown
-                    options={sections}
-                    value={formData.section}
-                    onChange={(value) => handleDropdownChange('section', value)}
-                    placeholder="Select section"
-                    icon={<BsPeople />}
-                  />
-                </div>
-              </div>
-
-              <div className="form-row">
-                <div className="form-group">
-                  <label htmlFor="teacher">Class Teacher</label>
-                  <CustomDropdown
-                    options={teachers}
-                    value={formData.teacher}
-                    onChange={(value) => handleDropdownChange('teacher', value)}
-                    placeholder="Select teacher"
-                    icon={<BsPersonBadge />}
-                  />
-                </div>
-                <div className="form-group">
-                  <label htmlFor="room">Room</label>
+                  <label htmlFor="className">Class Name</label>
                   <div className="input-with-icon">
                     <BsBuilding className="input-icon" />
                     <input
                       type="text"
-                      id="room"
-                      name="room"
-                      value={formData.room}
+                      id="className"
+                      name="className"
+                      value={formData.className}
                       onChange={handleInputChange}
-                      placeholder="Enter room number"
+                      placeholder="Enter class name"
+                      required
+                    />
+                  </div>
+                </div>
+                <div className="form-group">
+                  <label htmlFor="grade">Grade</label>
+                  <div className="input-with-icon">
+                    <BsBuilding className="input-icon" />
+                    <input
+                      type="number"
+                      id="grade"
+                      name="grade"
+                      value={formData.grade}
+                      onChange={handleInputChange}
+                      placeholder="Enter grade"
+                      min="1"
+                      max="12"
                       required
                     />
                   </div>
@@ -175,96 +196,117 @@ const AddClass = () => {
 
               <div className="form-row">
                 <div className="form-group">
-                  <label htmlFor="schedule">Schedule</label>
+                  <label htmlFor="startDate">Start Date</label>
                   <div className="input-with-icon">
                     <BsCalendar className="input-icon" />
                     <input
-                      type="text"
-                      id="schedule"
-                      name="schedule"
-                      value={formData.schedule}
+                      type="date"
+                      id="startDate"
+                      name="startDate"
+                      value={formData.startDate}
                       onChange={handleInputChange}
-                      placeholder="Enter class schedule"
                       required
                     />
                   </div>
                 </div>
                 <div className="form-group">
-                  <label htmlFor="capacity">Capacity</label>
+                  <label htmlFor="endDate">End Date</label>
                   <div className="input-with-icon">
-                    <BsPeople className="input-icon" />
+                    <BsCalendar className="input-icon" />
                     <input
-                      type="number"
-                      id="capacity"
-                      name="capacity"
-                      value={formData.capacity}
+                      type="date"
+                      id="endDate"
+                      name="endDate"
+                      value={formData.endDate}
                       onChange={handleInputChange}
-                      placeholder="Enter class capacity"
-                      min="1"
                       required
                     />
                   </div>
                 </div>
               </div>
-
-              <div className="form-group">
-                <label htmlFor="status">Status</label>
-                <CustomDropdown
-                  options={statuses}
-                  value={formData.status}
-                  onChange={(value) => handleDropdownChange('status', value)}
-                  placeholder="Select status"
-                  icon={<BsPeople />}
-                />
-              </div>
             </div>
 
             <div className="form-section">
-              <h2>Subjects</h2>
-              <div className="subjects-container">
-                {formData.subjects.map((subject, index) => (
-                  <div key={index} className="subject-input-group">
-                    <div className="input-with-icon">
-                      <BsBook className="input-icon" />
-                      <input
-                        type="text"
-                        value={subject}
-                        onChange={(e) => handleSubjectChange(index, e.target.value)}
-                        placeholder="Enter subject name"
+              <h2>Class Teachers</h2>
+              <div className="teachers-container">
+                <div className="teacher-input-group">
+                  <div className="form-row">
+                    <div className="form-group">
+                      <label>Teacher</label>
+                      <CustomDropdown
+                        value={newTeacherId}
+                        onChange={(value) => setNewTeacherId(value)}
+                        options={teacherOptions}
+                        placeholder="Select Teacher"
+                        icon={<BsPersonBadge />}
                       />
                     </div>
-                    <button 
-                      type="button" 
-                      className="remove-subject-btn"
-                      onClick={() => removeSubject(index)}
-                      disabled={formData.subjects.length === 1}
-                    >
-                      <FiTrash2 />
-                    </button>
+                    <div className="form-group">
+                      <label>Year</label>
+                      <div className="input-with-icon">
+                        <BsCalendar className="input-icon" />
+                        <input
+                          type="number"
+                          value={newTeacherYear}
+                          onChange={(e) => setNewTeacherYear(e.target.value)}
+                          placeholder="Enter year"
+                          min="2000"
+                          max="2100"
+                        />
+                      </div>
+                    </div>
                   </div>
-                ))}
-                <button 
-                  type="button" 
-                  className="add-subject-btn"
-                  onClick={addSubject}
-                >
-                  <FiPlus /> Add Subject
-                </button>
-              </div>
-            </div>
+                  <button
+                    type="button"
+                    className="add-teacher-btn"
+                    onClick={handleAddTeacher}
+                  >
+                    <FiPlus /> Add Teacher
+                  </button>
+                </div>
 
-            <div className="form-section">
-              <h2>Additional Information</h2>
-              <div className="form-group">
-                <label htmlFor="description">Description</label>
-                <textarea
-                  id="description"
-                  name="description"
-                  value={formData.description}
-                  onChange={handleInputChange}
-                  placeholder="Enter class description"
-                  rows="4"
-                />
+                <div className="classes-teachers-list">
+                  {teachersList.map((teacher, index) => {
+                    const selectedTeacher = teachers.find(t => t.jobDetails.teacherId === teacher.teacherId);
+                    return (
+                      <div key={index} className="classes-teacher-item">
+                        <span>{selectedTeacher?.fullName} ({teacher.year})</span>
+                        <button
+                          type="button"
+                          className=""
+                          onClick={() => handleRemoveTeacher(index)}
+                        >
+                          <FiTrash2 />
+                        </button>
+                      </div>
+                    );
+                  })}
+                </div>
+                <br />
+                <br />
+
+                {removedTeachers.length > 0 && (
+                  <div className="removed-teachers-section">
+                    <h3>Removed Teachers</h3>
+                    <div className="classes-teachers-list">
+                      {removedTeachers.map((teacher, index) => {
+                        const selectedTeacher = teachers.find(t => t.jobDetails.teacherId === teacher.teacherId);
+                        return (
+                          <div key={index} className="classes-teacher-item">
+                            <span>{selectedTeacher?.fullName} ({teacher.year})</span>
+                            <button
+                              type="button"
+                              className="restore-teacher-btn"
+                              onClick={() => handleRestoreTeacher(teacher)}
+                            >
+                              <FiPlus /> Restore
+                            </button>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
 
@@ -286,7 +328,8 @@ const AddClass = () => {
         </div>
       </div>
     </div>
+    </>
   );
 };
 
-export default AddClass; 
+export default AddClass;

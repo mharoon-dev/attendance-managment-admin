@@ -13,6 +13,7 @@ import Navbar from '../../components/Navbar/Navbar';
 import Sidebar from '../../components/Sidebar/Sidebar';
 import useSidebar from '../../hooks/useSidebar';
 import './AddBook.css';
+import Loader from '../../components/Loader/Loader';
 
 const AddBook = () => {
   const navigate = useNavigate();
@@ -282,7 +283,7 @@ const AddBook = () => {
                 disabled={isLoading}
               >
                 {isLoading ? (
-                  <div className="loading-spinner-small"></div>
+                  <Loader />
                 ) : (
                   <>
                     <SaveIcon /> Save Book

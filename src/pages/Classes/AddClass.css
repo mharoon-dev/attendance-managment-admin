@@ -133,31 +133,52 @@ textarea:focus {
   flex: 1;
 }
 
-.remove-subject-btn {
+
+/* Teachers Container */
+.teachers-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.teacher-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1.5rem;
+  background-color: #f9fafb;
+  border-radius: 8px;
+  position: relative;
+}
+
+.remove-teacher-btn {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 42px;
-  height: 42px;
+  width: 32px;
+  height: 32px;
   border: none;
-  border-radius: 8px;
+  border-radius: 50%;
   background-color: #fee2e2;
   color: #ef4444;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
-.remove-subject-btn:hover:not(:disabled) {
+.remove-teacher-btn:hover:not(:disabled) {
   background-color: #fecaca;
   color: #dc2626;
 }
 
-.remove-subject-btn:disabled {
+.remove-teacher-btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
 
-.add-subject-btn {
+.add-teacher-btn {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
@@ -172,7 +193,7 @@ textarea:focus {
   align-self: flex-start;
 }
 
-.add-subject-btn:hover {
+.add-teacher-btn:hover {
   background-color: #e5e7eb;
   color: #1f2937;
 }

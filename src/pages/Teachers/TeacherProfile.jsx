@@ -91,8 +91,14 @@ const TeacherProfile = () => {
                 <label>Address</label>
                 <p>{teacher?.fullAddress}</p>
               </div>
-                <h3 className="">Job Details</h3>
+
+            
+              </div>
+
               <br />
+              <h3 className="">Job Details</h3>
+              <br />
+              <div className="profile-details">
 
                 <div className="detail-item"> 
                   <label>Designation</label>

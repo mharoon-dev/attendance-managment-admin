@@ -3,8 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import SearchIcon from '@mui/icons-material/Search';
 import AddIcon from '@mui/icons-material/Add';
 import BusinessIcon from '@mui/icons-material/Business';
-import GroupIcon from '@mui/icons-material/Group';
-import PersonIcon from '@mui/icons-material/Person';
 import BadgeIcon from '@mui/icons-material/Badge';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import EditIcon from '@mui/icons-material/Edit';
@@ -17,167 +15,88 @@ import Sidebar from '../../components/Sidebar/Sidebar';
 import CustomDropdown from '../../components/CustomDropdown/CustomDropdown';
 import useSidebar from '../../hooks/useSidebar';
 import './Classes.css';
+import { useDispatch, useSelector } from 'react-redux';
+import { api } from '../../utils/url';
+import { deleteClassFailure, deleteClassStart, deleteClassSuccess, updateClassFailure, updateClassStart, updateClassSuccess } from '../../redux/slices/classesSlice';
+import { toast, Toaster } from 'sonner';
+import Loader from '../../components/Loader/Loader';
 
 const Classes = () => {
+  const dispatch = useDispatch();
+  const {classes} = useSelector((state) => state.classes);
+  const { teachers } = useSelector((state) => state.teachers);
+
   const navigate = useNavigate();
   const { sidebarOpen, toggleSidebar } = useSidebar();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedGrade, setSelectedGrade] = useState('all');
-  const [selectedSection, setSelectedSection] = useState('all');
   const [selectedTeacher, setSelectedTeacher] = useState('all');
   const [sortBy, setSortBy] = useState('name');
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editingClass, setEditingClass] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [newTeacherId, setNewTeacherId] = useState('');
+  const [newTeacherYear, setNewTeacherYear] = useState(new Date().getFullYear());
+  const [teachersList, setTeachersList] = useState([]);
+
   const [formData, setFormData] = useState({
+    className: '',
     grade: '',
-    section: '',
-    teacher: '',
-    room: '',
-    schedule: '',
-    description: '',
-    subjects: [''],
-    capacity: 30,
-    status: 'active'
+    classTeachers: [],
+    startDate: '',
+    endDate: ''
   });
 
-  // Sample data for classes
-  const classes = [
-    {
-      id: 1,
-      name: 'Class 10-A',
-      grade: '10',
-      section: 'A',
-      teacher: 'Dr. Sarah Wilson',
-      teacherId: 1,
-      students: 32,
-      schedule: 'Mon-Fri, 8:00 AM - 3:00 PM',
-      room: 'Room 101',
-      status: 'active',
-      description: 'Advanced Mathematics and Science focused class'
-    },
-    {
-      id: 2,
-      name: 'Class 10-B',
-      grade: '10',
-      section: 'B',
-      teacher: 'Prof. Michael Brown',
-      teacherId: 2,
-      students: 28,
-      schedule: 'Mon-Fri, 8:00 AM - 3:00 PM',
-      room: 'Room 102',
-      status: 'active',
-      description: 'Humanities and Social Sciences focused class'
-    },
-    {
-      id: 3,
-      name: 'Class 11-A',
-      grade: '11',
-      section: 'A',
-      teacher: 'Dr. Emily Johnson',
-      teacherId: 3,
-      students: 30,
-      schedule: 'Mon-Fri, 8:00 AM - 3:00 PM',
-      room: 'Room 201',
-      status: 'active',
-      description: 'Science and Technology focused class'
-    },
-    {
-      id: 4,
-      name: 'Class 11-B',
-      grade: '11',
-      section: 'B',
-      teacher: 'Dr. Robert Davis',
-      teacherId: 4,
-      students: 29,
-      schedule: 'Mon-Fri, 8:00 AM - 3:00 PM',
-      room: 'Room 202',
-      status: 'active',
-      description: 'Business and Economics focused class'
-    },
-    {
-      id: 5,
-      name: 'Class 12-A',
-      grade: '12',
-      section: 'A',
-      teacher: 'Prof. Lisa Anderson',
-      teacherId: 5,
-      students: 31,
-      schedule: 'Mon-Fri, 8:00 AM - 3:00 PM',
-      room: 'Room 301',
-      status: 'active',
-      description: 'Pre-Engineering focused class'
-    },
-    {
-      id: 6,
-      name: 'Class 12-B',
-      grade: '12',
-      section: 'B',
-      teacher: 'Dr. James Wilson',
-      teacherId: 6,
-      students: 27,
-      schedule: 'Mon-Fri, 8:00 AM - 3:00 PM',
-      room: 'Room 302',
-      status: 'active',
-      description: 'Pre-Medical focused class'
-    }
-  ];
+  useEffect(() => {
+    console.log(formData);
+  }, [formData]);
 
-  // Sample data for dropdown options
-  const grades = [
+  // Get unique grades from classes and sort them
+  const uniqueGrades = [...new Set(classes?.map(cls => cls.grade))].sort((a, b) => a - b);
+  
+  // Create grade options with proper formatting
+  const gradeOptions = [
     { value: 'all', label: 'All Grades', icon: <BusinessIcon /> },
-    { value: '10', label: 'Grade 10', icon: <BusinessIcon /> },
-    { value: '11', label: 'Grade 11', icon: <BusinessIcon /> },
-    { value: '12', label: 'Grade 12', icon: <BusinessIcon /> }
+    ...uniqueGrades.map(grade => ({
+      value: grade.toString(),
+      label: `Grade ${grade}`,
+      icon: <BusinessIcon />
+    }))
   ];
 
-  const sections = [
-    { value: 'all', label: 'All Sections', icon: <GroupIcon /> },
-    { value: 'A', label: 'Section A', icon: <GroupIcon /> },
-    { value: 'B', label: 'Section B', icon: <GroupIcon /> },
-    { value: 'C', label: 'Section C', icon: <GroupIcon /> }
-  ];
-
-  const teachers = [
+  const teacherOptions = [
     { value: 'all', label: 'All Teachers', icon: <BadgeIcon /> },
-    { value: '1', label: 'Dr. Sarah Wilson', icon: <BadgeIcon /> },
-    { value: '2', label: 'Prof. Michael Brown', icon: <BadgeIcon /> },
-    { value: '3', label: 'Dr. Emily Johnson', icon: <BadgeIcon /> },
-    { value: '4', label: 'Dr. Robert Davis', icon: <BadgeIcon /> },
-    { value: '5', label: 'Prof. Lisa Anderson', icon: <BadgeIcon /> },
-    { value: '6', label: 'Dr. James Wilson', icon: <BadgeIcon /> }
+    ...teachers.map(teacher => ({
+      value: teacher.jobDetails.teacherId,
+      label: `${teacher.fullName}`,
+      icon: <BadgeIcon />,
+      disabled: teachersList.some(t => t.teacherId === teacher.jobDetails.teacherId)
+    }))
   ];
 
   const sortOptions = [
     { value: 'name', label: 'Class Name', icon: <BusinessIcon /> },
     { value: 'grade', label: 'Grade', icon: <BusinessIcon /> },
-    { value: 'students', label: 'Students Count', icon: <BusinessIcon /> },
-    { value: 'teacher', label: 'Teacher Name', icon: <BusinessIcon /> }
+    { value: 'startDate', label: 'Start Date', icon: <CalendarMonthIcon /> }
   ];
 
   // Filter classes based on search term and selected filters
-  const filteredClasses = classes.filter(cls => {
-    const matchesSearch = cls.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         cls.teacher.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         cls.room.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesGrade = selectedGrade === 'all' || cls.grade === selectedGrade;
-    const matchesSection = selectedSection === 'all' || cls.section === selectedSection;
-    const matchesTeacher = selectedTeacher === 'all' || cls.teacherId.toString() === selectedTeacher;
+  const filteredClasses = classes?.filter(cls => {
+    const matchesSearch = cls.className.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesGrade = selectedGrade === 'all' || cls.grade.toString() === selectedGrade;
+    const matchesTeacher = selectedTeacher === 'all' || 
+      cls.classTeachers.some(teacher => teacher.teacherId === selectedTeacher);
     
-    return matchesSearch && matchesGrade && matchesSection && matchesTeacher;
+    return matchesSearch && matchesGrade && matchesTeacher;
   });
 
   // Sort classes based on selected sort option
   const sortedClasses = [...filteredClasses].sort((a, b) => {
     switch (sortBy) {
       case 'name':
-        return a.name.localeCompare(b.name);
+        return a.className.localeCompare(b.className);
       case 'grade':
-        return a.grade.localeCompare(b.grade) || a.section.localeCompare(b.section);
-      case 'students':
-        return b.students - a.students;
-      case 'teacher':
-        return a.teacher.localeCompare(b.teacher);
+        return a.grade - b.grade;
       default:
         return 0;
     }
@@ -189,15 +108,120 @@ const Classes = () => {
 
   const handleEditClass = (classItem) => {
     setEditingClass(classItem);
+    setFormData({
+      ...classItem,
+      classTeachers: [...classItem.classTeachers]
+    });
+    setTeachersList([...classItem.classTeachers]);
     setIsEditModalOpen(true);
   };
 
   const handleCloseModal = () => {
     setIsEditModalOpen(false);
     setEditingClass(null);
+    setFormData({
+      className: '',
+      grade: '',
+      classTeachers: [],
+      startDate: '',
+      endDate: ''
+    });
+    setTeachersList([]);
   };
 
+  const handleAddTeacher = () => {
+    if (newTeacherId && newTeacherYear) {
+      // Check if teacher already exists for the given year
+      const teacherExistsForYear = teachersList.some(
+        teacher => teacher.year === parseInt(newTeacherYear)
+      );
+
+      if (teacherExistsForYear) {
+        alert('A teacher is already assigned for this year');
+        return;
+      }
+
+      const newTeacher = {
+        teacherId: newTeacherId,
+        year: parseInt(newTeacherYear)
+      };
+      
+      setTeachersList([...teachersList, newTeacher]);
+      setFormData(prev => ({
+        ...prev,
+        classTeachers: [...prev.classTeachers, newTeacher]
+      }));
+
+      // Reset input fields
+      setNewTeacherId('');
+      setNewTeacherYear(new Date().getFullYear());
+    }
+  };
+
+  const handleRemoveTeacher = (index) => {
+    setTeachersList(prev => prev.filter((_, i) => i !== index));
+    setFormData(prev => ({
+      ...prev,
+      classTeachers: prev.classTeachers.filter((_, i) => i !== index)
+    }));
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    console.log(formData);
+
+    try {
+      setLoading(true);
+      dispatch(updateClassStart());
+      const response = await api.put(`classes/update/${editingClass._id}`, formData);
+      dispatch(updateClassSuccess(response.data.data));
+      console.log(response);
+      if (response.status === 200) {
+        toast.success('Class updated successfully');
+        setLoading(false);
+        handleCloseModal();
+      }
+    } catch (error) {
+      dispatch(updateClassFailure(error));
+      console.error('Error updating class:', error);
+      toast.error('Error updating class');
+      setLoading(false);
+    }
+  };
+
+  const handleDeleteClass = async (classId) => {
+    console.log(classId);
+    try {
+      setLoading(true);
+      dispatch(deleteClassStart());
+      const response = await api.delete(`classes/delete/${classId}`);
+      dispatch(deleteClassSuccess(classId));
+      console.log(response);
+      if (response.status === 200) {
+        toast.success('Class deleted successfully');
+        setLoading(false);
+      }
+    } catch (error) {
+      dispatch(deleteClassFailure(error));
+      console.error('Error deleting class:', error);
+      toast.error('Error deleting class');
+      setLoading(false);
+    }
+  };
   return (
+    <>
+    {
+      loading && <Loader />
+    }
+    <Toaster position="top-right" />
     <div className={`layout-container ${sidebarOpen ? 'sidebar-open' : ''}`}>
       <Navbar toggleSidebar={toggleSidebar} isSidebarOpen={sidebarOpen} />
       <Sidebar isOpen={sidebarOpen} toggleSidebar={toggleSidebar} />
@@ -230,79 +254,53 @@ const Classes = () => {
                 label="Grade"
                 value={selectedGrade}
                 onChange={(value) => setSelectedGrade(value)}
-                options={grades}
+                options={gradeOptions}
               />
-              <CustomDropdown
-                compact
-                icon={<GroupIcon />}
-                label="Section"
-                value={selectedSection}
-                onChange={(value) => setSelectedSection(value)}
-                options={sections}
-              />
-              <CustomDropdown
-                compact
-                icon={<BadgeIcon />}
-                label="Teacher"
-                value={selectedTeacher}
-                onChange={(value) => setSelectedTeacher(value)}
-                options={teachers}
-              />
-              <CustomDropdown
-                compact
-                icon={<BusinessIcon />}
-                label="Sort By"
-                value={sortBy}
-                onChange={(value) => setSortBy(value)}
-                options={sortOptions}
-              />
+           
+          
             </div>
           </div>
         </div>
 
         <div className="classes-grid">
           {sortedClasses.map(cls => (
-            <div key={cls.id} className="class-card">
+            <div key={cls._id} className="class-card">
               <div className="class-card-header">
-                <div className="class-name">{cls.name}</div>
-                <div className="class-status" data-status={cls.status}>
-                  {cls.status}
-                </div>
+                <div className="class-name">{cls.className}</div>
               </div>
               
               <div className="class-card-body">
                 <div className="class-info">
-                  <div className="info-item">
-                    <BusinessIcon className="info-icon" />
-                    <span>{cls.grade}</span>
+                  <div className="classes-info-item">
+                    <BusinessIcon className="classes-info-icon" />
+                    <span>Grade {cls.grade}</span>
                   </div>
-                  <div className="info-item">
-                    <GroupIcon className="info-icon" />
-                    <span>{cls.section}</span>
+                  <div className="classes-info-item">
+                    <CalendarMonthIcon className="classes-info-icon" />
+                    <span>Start: {new Date(cls.startDate).toLocaleDateString()}</span>
                   </div>
-                  <div className="info-item">
-                    <PersonIcon className="info-icon" />
-                    <span>{cls.teacher}</span>
-                  </div>
-                  <div className="info-item">
-                    <BadgeIcon className="info-icon" />
-                    <span>{cls.room}</span>
-                  </div>
-                  <div className="info-item">
-                    <CalendarMonthIcon className="info-icon" />
-                    <span>{cls.schedule}</span>
+                  <div className="classes-info-item">
+                    <CalendarMonthIcon className="classes-info-icon" />
+                    <span>End: {new Date(cls.endDate).toLocaleDateString()}</span>
                   </div>
                 </div>
 
-                <div className="class-description">
-                  <p>{cls.description}</p>
+                <div className="class-teachers">
+                  <h4>Class Teachers:</h4>
+                  <br />
+                  {cls.classTeachers.map((teacher, index) => (
+                    <div key={index} className="classes-info-item">
+                      <BadgeIcon className="classes-info-icon" />
+                      <span>{teacher.teacherId} ({teacher.year})</span>
+                    </div>
+                  ))}
                 </div>
               </div>
 
               <div className="class-card-footer">
                 <button 
                   className="view-class-btn"
-                  onClick={() => handleViewClass(cls.id)}
+                  onClick={() => handleViewClass(cls._id)}
                 >
                   <VisibilityIcon /> View Details
                 </button>
@@ -313,7 +311,7 @@ const Classes = () => {
                   >
                     <EditIcon />
                   </button>
-                  <button className="action-btn delete">
+                  <button className="action-btn delete" onClick={() => handleDeleteClass(cls._id)}>
                     <DeleteIcon />
                   </button>
                 </div>
@@ -334,73 +332,94 @@ const Classes = () => {
               </button>
             </div>
             <div className="modal-body">
-              <form>
-                <div className="form-row">
-                  <div className="form-group">
-                    <label htmlFor="grade">Grade</label>
-                    <CustomDropdown
-                      options={grades.filter(g => g.value !== 'all')}
-                      value={editingClass.grade}
-                      onChange={(value) => console.log('Grade changed:', value)}
-                      placeholder="Select grade"
-                      icon={<BusinessIcon />}
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label htmlFor="section">Section</label>
-                    <CustomDropdown
-                      options={sections.filter(s => s.value !== 'all')}
-                      value={editingClass.section}
-                      onChange={(value) => console.log('Section changed:', value)}
-                      placeholder="Select section"
-                      icon={<GroupIcon />}
-                    />
-                  </div>
-                </div>
-
-                <div className="form-row">
-                  <div className="form-group">
-                    <label htmlFor="teacher">Teacher</label>
-                    <CustomDropdown
-                      options={teachers.filter(t => t.value !== 'all')}
-                      value={editingClass.teacherId.toString()}
-                      onChange={(value) => console.log('Teacher changed:', value)}
-                      placeholder="Select teacher"
-                      icon={<BadgeIcon />}
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label htmlFor="room">Room</label>
-                    <input
-                      type="text"
-                      id="room"
-                      name="room"
-                      defaultValue={editingClass.room}
-                      placeholder="Enter room number"
-                    />
-                  </div>
-                </div>
-
+              <form onSubmit={handleSubmit}>
                 <div className="form-group">
-                  <label htmlFor="schedule">Schedule</label>
+                  <label htmlFor="className">Class Name</label>
                   <input
                     type="text"
-                    id="schedule"
-                    name="schedule"
-                    defaultValue={editingClass.schedule}
-                    placeholder="Enter class schedule"
+                    id="className"
+                    name="className"
+                    value={formData.className}
+                    onChange={handleInputChange}
+                    placeholder="Enter class name"
                   />
                 </div>
 
                 <div className="form-group">
-                  <label htmlFor="description">Description</label>
-                  <textarea
-                    id="description"
-                    name="description"
-                    defaultValue={editingClass.description}
-                    placeholder="Enter class description"
-                    rows="3"
+                  <label htmlFor="grade">Grade</label>
+                  <input
+                    type="number"
+                    id="grade"
+                    name="grade"
+                    value={formData.grade}
+                    onChange={handleInputChange}
+                    placeholder="Enter grade"
                   />
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="startDate">Start Date</label>
+                  <input
+                    type="date"
+                    id="startDate"
+                    name="startDate"
+                    value={formData.startDate.split('T')[0]}
+                    onChange={handleInputChange}
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="endDate">End Date</label>
+                  <input
+                    type="date"
+                    id="endDate"
+                    name="endDate"
+                    value={formData.endDate.split('T')[0]}
+                    onChange={handleInputChange}
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label>Class Teachers</label>
+                  <div className="teacher-input-group">
+                    <CustomDropdown
+                      value={newTeacherId}
+                      onChange={(value) => setNewTeacherId(value)}
+                      options={teacherOptions.filter(t => t.value !== 'all')}
+                      placeholder="Select Teacher"
+                      icon={<BadgeIcon />}
+                    />
+                    <br />
+                    <input
+                      type="number"
+                      value={newTeacherYear}
+                      onChange={(e) => setNewTeacherYear(e.target.value)}
+                      placeholder="Year"
+                    />
+                  </div>
+                  
+                  <button
+                    type="button"
+                    className="add-teacher-btn"
+                    onClick={handleAddTeacher}
+                  >
+                    <AddIcon /> Add Teacher
+                  </button>
+
+                  <div className="classes-teachers-list">
+                    {teachersList.map((teacher, index) => (
+                      <div key={index} className="classes-teacher-item">
+                        <span>{teacher.teacherId} ({teacher.year})</span>
+                        <button
+                          type="button"
+                          className="classes-remove-teacher-btn"
+                          onClick={() => handleRemoveTeacher(index)}
+                        >
+                          <CloseIcon />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
                 </div>
 
                 <div className="modal-footer">
@@ -423,7 +442,8 @@ const Classes = () => {
         </div>
       )}
     </div>
+    </>
   );
 };
 
-export default Classes; 
+export default Classes;

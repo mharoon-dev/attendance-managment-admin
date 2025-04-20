@@ -186,13 +186,14 @@ try {
 }
   };
 
-  const handleDelete = async (teacherId) => {
+  const handleDelete = async (id, teacherJobId) => {
     try {
       dispatch(deleteTeacherStart());
-      const res = await api.delete(`teachers/delete/${teacherId}`);
+      const res = await api.delete(`teachers/delete/${id}`);
       console.log(res);
       if (res.status === 200) {
-        dispatch(deleteTeacherSuccess(teacherId));
+        const deleteUser = await api.delete(`users/delete/${teacherJobId}`);
+        dispatch(deleteTeacherSuccess(id));
         toast.success('Teacher deleted successfully');
       } else {
         dispatch(deleteTeacherFailure(res.data.message));
@@ -423,7 +424,7 @@ try {
                   >
                     <EditIcon />
                   </button>
-                  <button className="action-btn delete" onClick={() => handleDelete(teacher._id)}>
+                  <button className="action-btn delete" onClick={() => handleDelete(teacher._id, teacher.jobDetails.teacherId)}>
                     <DeleteIcon />
                   </button>
                 </div>

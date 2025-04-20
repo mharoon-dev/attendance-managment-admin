@@ -17,6 +17,7 @@ import Navbar from '../../components/Navbar/Navbar';
 import Sidebar from '../../components/Sidebar/Sidebar';
 import useSidebar from '../../hooks/useSidebar';
 import './SubjectProfile.css';
+import Loader from '../../components/Loader/Loader';
 
 const SubjectProfile = () => {
   const { id } = useParams();
@@ -153,10 +154,7 @@ const SubjectProfile = () => {
       
       <div className={`subject-profile-container ${!sidebarOpen ? 'sidebar-closed' : ''}`}>
         {isLoading ? (
-          <div className="loading-container">
-            <div className="loading-spinner"></div>
-            <p>Loading subject data...</p>
-          </div>
+   <Loader />
         ) : (
           <>
             <div className="subject-profile-header">

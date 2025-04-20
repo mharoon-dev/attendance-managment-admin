@@ -19,133 +19,60 @@ import Sidebar from '../../components/Sidebar/Sidebar';
 import CustomDropdown from '../../components/CustomDropdown/CustomDropdown';
 import useSidebar from '../../hooks/useSidebar';
 import './Students.css';
+import { useDispatch, useSelector } from 'react-redux';
+import { api } from '../../utils/url';
+import { toast, Toaster } from 'sonner';
+import Loader from '../../components/Loader/Loader';
+import { FiSave, FiUpload, FiX } from 'react-icons/fi';
+import { deleteStudentStart, deleteStudentSuccess, updateStudentFailure, updateStudentStart, updateStudentSuccess } from '../../redux/slices/studentsSlice';
 
 const Students = () => {
+  const dispatch = useDispatch();
+  const { students } = useSelector((state) => state.students);
   const navigate = useNavigate();
   const { sidebarOpen, toggleSidebar } = useSidebar();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedGrade, setSelectedGrade] = useState('all');
-  const [selectedClass, setSelectedClass] = useState('all');
-  const [selectedStatus, setSelectedStatus] = useState('all');
+  const [selectedGender, setSelectedGender] = useState('all');
   const [sortBy, setSortBy] = useState('name');
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editingStudent, setEditingStudent] = useState(null);
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
-    name: '',
-    grade: '',
-    class: '',
-    rollNumber: '',
-    email: '',
-    phone: '',
-    address: '',
-    parentName: '',
-    parentPhone: '',
-    status: 'active',
-    subjects: []
+    fullName: '',
+    profileImage: '',
+    dateOfBirth: '',
+    phoneNumber: '',
+    fullAddress: '',
+    gender: '',
+    nicImage: '',
+    parentDetails: {
+      profileImage: '',
+      fullName: '',
+      dateOfBirth: '',
+      gender: '',
+      nic: '',
+      nicImage: '',
+      phoneNumber: '',
+      education: '',
+      profession: ''
+    },
+    schoolDetails: {
+      joiningDate: '',
+      rollNumber: '',
+      previousInstitute: '',
+      previousDegreeWithImage: ''
+    },
+    grade: ''
   });
-  const [isLoading, setIsLoading] = useState(false);
 
-  // Sample data for students
-  const students = [
-    {
-      id: 1,
-      name: 'John Smith',
-      grade: '10',
-      class: '10-A',
-      rollNumber: '1001',
-      email: 'john.smith@school.com',
-      phone: '+1 (555) 123-4567',
-      address: '123 Main St, City',
-      parentName: 'Michael Smith',
-      parentPhone: '+1 (555) 987-6543',
-      status: 'active',
-      joinDate: '2022-08-15',
-      avatar: 'https://randomuser.me/api/portraits/men/1.jpg',
-      subjects: ['Mathematics', 'Physics', 'Chemistry', 'English']
-    },
-    {
-      id: 2,
-      name: 'Emily Johnson',
-      grade: '10',
-      class: '10-B',
-      rollNumber: '1002',
-      email: 'emily.johnson@school.com',
-      phone: '+1 (555) 234-5678',
-      address: '456 Oak Ave, City',
-      parentName: 'Sarah Johnson',
-      parentPhone: '+1 (555) 876-5432',
-      status: 'active',
-      joinDate: '2022-08-15',
-      avatar: 'https://randomuser.me/api/portraits/women/2.jpg',
-      subjects: ['Mathematics', 'Biology', 'Chemistry', 'English']
-    },
-    {
-      id: 3,
-      name: 'Michael Brown',
-      grade: '11',
-      class: '11-A',
-      rollNumber: '1101',
-      email: 'michael.brown@school.com',
-      phone: '+1 (555) 345-6789',
-      address: '789 Pine St, City',
-      parentName: 'Robert Brown',
-      parentPhone: '+1 (555) 765-4321',
-      status: 'active',
-      joinDate: '2021-07-20',
-      avatar: 'https://randomuser.me/api/portraits/men/3.jpg',
-      subjects: ['Physics', 'Chemistry', 'Mathematics', 'Computer Science']
-    },
-    {
-      id: 4,
-      name: 'Sophia Davis',
-      grade: '11',
-      class: '11-B',
-      rollNumber: '1102',
-      email: 'sophia.davis@school.com',
-      phone: '+1 (555) 456-7890',
-      address: '321 Elm St, City',
-      parentName: 'Jennifer Davis',
-      parentPhone: '+1 (555) 654-3210',
-      status: 'inactive',
-      joinDate: '2021-07-20',
-      avatar: 'https://randomuser.me/api/portraits/women/4.jpg',
-      subjects: ['Biology', 'Chemistry', 'Physics', 'English']
-    },
-    {
-      id: 5,
-      name: 'William Wilson',
-      grade: '12',
-      class: '12-A',
-      rollNumber: '1201',
-      email: 'william.wilson@school.com',
-      phone: '+1 (555) 567-8901',
-      address: '654 Maple Ave, City',
-      parentName: 'David Wilson',
-      parentPhone: '+1 (555) 543-2109',
-      status: 'active',
-      joinDate: '2020-08-10',
-      avatar: 'https://randomuser.me/api/portraits/men/5.jpg',
-      subjects: ['Mathematics', 'Physics', 'Chemistry', 'Computer Science']
-    },
-    {
-      id: 6,
-      name: 'Olivia Taylor',
-      grade: '12',
-      class: '12-B',
-      rollNumber: '1202',
-      email: 'olivia.taylor@school.com',
-      phone: '+1 (555) 678-9012',
-      address: '987 Cedar St, City',
-      parentName: 'Lisa Taylor',
-      parentPhone: '+1 (555) 432-1098',
-      status: 'active',
-      joinDate: '2020-08-10',
-      avatar: 'https://randomuser.me/api/portraits/women/6.jpg',
-      subjects: ['Biology', 'Chemistry', 'Physics', 'Mathematics']
-    }
-  ];
+  const {classes} = useSelector((state) => state.classes);
+  
 
-  // Sample data for dropdown options
+  useEffect(() => {
+    console.log(formData);
+  }, [formData]);
+
   const grades = [
     { value: 'all', label: 'All Grades', icon: <BusinessIcon /> },
     { value: '10', label: 'Grade 10', icon: <BusinessIcon /> },
@@ -153,52 +80,38 @@ const Students = () => {
     { value: '12', label: 'Grade 12', icon: <BusinessIcon /> }
   ];
 
-  const classes = [
-    { value: 'all', label: 'All Classes', icon: <GroupIcon /> },
-    { value: '10-A', label: 'Class 10-A', icon: <GroupIcon /> },
-    { value: '10-B', label: 'Class 10-B', icon: <GroupIcon /> },
-    { value: '11-A', label: 'Class 11-A', icon: <GroupIcon /> },
-    { value: '11-B', label: 'Class 11-B', icon: <GroupIcon /> },
-    { value: '12-A', label: 'Class 12-A', icon: <GroupIcon /> },
-    { value: '12-B', label: 'Class 12-B', icon: <GroupIcon /> }
-  ];
-
-  const statuses = [
-    { value: 'all', label: 'All Status', icon: <PersonIcon /> },
-    { value: 'active', label: 'Active', icon: <PersonIcon /> },
-    { value: 'inactive', label: 'Inactive', icon: <PersonIcon /> }
+  const genderOptions = [
+    { value: 'all', label: 'All Genders', icon: <PersonIcon /> },
+    { value: 'Male', label: 'Male', icon: <PersonIcon /> },
+    { value: 'Female', label: 'Female', icon: <PersonIcon /> },
+    { value: 'Other', label: 'Other', icon: <PersonIcon /> }
   ];
 
   const sortOptions = [
     { value: 'name', label: 'Student Name', icon: <ArrowUpwardIcon /> },
     { value: 'grade', label: 'Grade', icon: <ArrowUpwardIcon /> },
-    { value: 'class', label: 'Class', icon: <ArrowUpwardIcon /> },
     { value: 'rollNumber', label: 'Roll Number', icon: <ArrowUpwardIcon /> }
   ];
 
   // Filter students based on search term and selected filters
-  const filteredStudents = students.filter(student => {
-    const matchesSearch = student.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         student.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         student.rollNumber.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesGrade = selectedGrade === 'all' || student.grade === selectedGrade;
-    const matchesClass = selectedClass === 'all' || student.class === selectedClass;
-    const matchesStatus = selectedStatus === 'all' || student.status === selectedStatus;
+  const filteredStudents = students?.filter(student => {
+    const matchesSearch = student.parentDetails.fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         student.schoolDetails.rollNumber.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesGrade = selectedGrade === 'all' || student.grade.toString() === selectedGrade;
+    const matchesGender = selectedGender === 'all' || student.gender === selectedGender;
     
-    return matchesSearch && matchesGrade && matchesClass && matchesStatus;
+    return matchesSearch && matchesGrade && matchesGender;
   });
 
   // Sort students based on selected sort option
   const sortedStudents = [...filteredStudents].sort((a, b) => {
     switch (sortBy) {
       case 'name':
-        return a.name.localeCompare(b.name);
+        return a.parentDetails.fullName.localeCompare(b.parentDetails.fullName);
       case 'grade':
-        return a.grade.localeCompare(b.grade) || a.class.localeCompare(b.class);
-      case 'class':
-        return a.class.localeCompare(b.class);
+        return a.grade - b.grade;
       case 'rollNumber':
-        return a.rollNumber.localeCompare(b.rollNumber);
+        return a.schoolDetails.rollNumber.localeCompare(b.schoolDetails.rollNumber);
       default:
         return 0;
     }
@@ -210,317 +123,747 @@ const Students = () => {
 
   const handleEditStudent = (student) => {
     setEditingStudent(student);
+    setFormData({
+      fullName: student.fullName || '',
+      profileImage: student.profileImage || '',
+      dateOfBirth: student.dateOfBirth?.split('T')[0] || '', // Split the date to remove time
+      phoneNumber: student.phoneNumber || '',
+      fullAddress: student.fullAddress || '',
+      gender: student.gender || '',
+      nicImage: student.nicImage || '',
+      parentDetails: {
+        profileImage: student.parentDetails?.profileImage || '',
+        fullName: student.parentDetails?.fullName || '',
+        dateOfBirth: student.parentDetails?.dateOfBirth?.split('T')[0] || '', // Split the date to remove time
+        gender: student.parentDetails?.gender || '',
+        nic: student.parentDetails?.nic || '',
+        nicImage: student.parentDetails?.nicImage || '',
+        phoneNumber: student.parentDetails?.phoneNumber || '',
+        education: student.parentDetails?.education || '',
+        profession: student.parentDetails?.profession || ''
+      },
+      schoolDetails: {
+        joiningDate: student.schoolDetails?.joiningDate?.split('T')[0] || '', // Split the date to remove time
+        rollNumber: student.schoolDetails?.rollNumber || '',
+        previousInstitute: student.schoolDetails?.previousInstitute || '',
+        previousDegreeWithImage: student.schoolDetails?.previousDegreeWithImage || ''
+      },
+      grade: student.grade || ''
+    });
     setIsEditModalOpen(true);
   };
 
   const handleCloseModal = () => {
     setIsEditModalOpen(false);
     setEditingStudent(null);
+    setFormData({
+      fullName: '',
+      profileImage: '',
+      dateOfBirth: '',
+      phoneNumber: '',
+      fullAddress: '',
+      gender: '',
+      nicImage: '',
+      parentDetails: {
+        profileImage: '',
+        fullName: '',
+        dateOfBirth: '',
+        gender: '',
+        nic: '',
+        nicImage: '',
+        phoneNumber: '',
+        education: '',
+        profession: ''
+      },
+      schoolDetails: {
+        joiningDate: '',
+        rollNumber: '',
+        previousInstitute: '',
+        previousDegreeWithImage: ''
+      },
+      grade: ''
+    });
+
   };
 
-  const handleSearch = (e) => {
-    setSearchTerm(e.target.value);
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    if (name.includes('.')) {
+      const [parent, child] = name.split('.');
+      setFormData(prev => ({
+        ...prev,
+        [parent]: {
+          ...prev[parent],
+          [child]: value
+        }
+      }));
+    } else {
+      setFormData(prev => ({
+        ...prev,
+        [name]: value
+      }));
+    }
   };
 
-  const handleGradeChange = (value) => {
-    setSelectedGrade(value);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      setLoading(true);
+      dispatch(updateStudentStart());
+      const response = await api.put(`students/update/${editingStudent._id}`, formData);
+      console.log(response.data.data)
+      if (response.status === 200) {
+        toast.success('Student updated successfully');
+        setLoading(false);
+        dispatch(updateStudentSuccess(response.data.data));
+        handleCloseModal();
+      }
+    } catch (error) {
+      console.error('Error updating student:', error);
+      dispatch(updateStudentFailure());
+      toast.error('Error updating student');
+      setLoading(false);
+    }
   };
 
-  const handleClassChange = (value) => {
-    setSelectedClass(value);
+  const handleDeleteStudent = async (studentId) => {
+    try {
+      setLoading(true);
+      dispatch(deleteStudentStart());
+      const response = await api.delete(`students/delete/${studentId}`);
+      if (response.status === 200) {
+        dispatch(deleteStudentSuccess(studentId));
+        toast.success('Student deleted successfully');
+        setLoading(false);
+      }
+    } catch (error) {
+      console.error('Error deleting student:', error);
+      dispatch(deleteStudentFailure(error));
+      toast.error('Error deleting student');
+      setLoading(false);
+    }
   };
 
-  const handleStatusChange = (value) => {
-    setSelectedStatus(value);
+  const handleFileUpload = async (e, fieldName) => {
+    const file = e.target.files[0];
+    if (file) {
+      try {
+        const formData = new FormData();
+        formData.append('image', file);
+        const response = await api.post('uploads/img', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        });
+        
+        if (fieldName === 'profileImage') {
+          setFormData(prev => ({ ...prev, profileImage: response.data.data }));
+        } else if (fieldName === 'nicImage') {
+          setFormData(prev => ({ ...prev, nicImage: response.data.data }));
+        } else if (fieldName === 'parentDetails.profileImage') {
+          setFormData(prev => ({
+            ...prev,
+            parentDetails: {
+              ...prev.parentDetails,
+              profileImage: response.data.data
+            }
+          }));
+        } else if (fieldName === 'parentDetails.nicImage') {
+          setFormData(prev => ({
+            ...prev,
+            parentDetails: {
+              ...prev.parentDetails,
+              nicImage: response.data.data
+            }
+          }));
+        } else if (fieldName === 'schoolDetails.previousDegreeWithImage') {
+          setFormData(prev => ({
+            ...prev,
+            schoolDetails: {
+              ...prev.schoolDetails,
+              previousDegreeWithImage: response.data.data
+            }
+          }));
+        }
+      } catch (error) {
+        console.error('Error uploading file:', error);
+        toast.error('Error uploading file');
+      }
+    }
   };
 
-  const handleSortChange = (value) => {
-    setSortBy(value);
-  };
-
-  const handleDeleteStudent = (studentId) => {
-    // Implement delete functionality
+  const handleRemoveImage = (fieldName) => {
+    if (fieldName === 'profileImage') {
+      setFormData(prev => ({ ...prev, profileImage: '' }));
+    } else if (fieldName === 'nicImage') {
+      setFormData(prev => ({ ...prev, nicImage: '' }));
+    } else if (fieldName === 'parentDetails.profileImage') {
+      setFormData(prev => ({
+        ...prev,
+        parentDetails: {
+          ...prev.parentDetails,
+          profileImage: ''
+        }
+      }));
+    } else if (fieldName === 'parentDetails.nicImage') {
+      setFormData(prev => ({
+        ...prev,
+        parentDetails: {
+          ...prev.parentDetails,
+          nicImage: ''
+        }
+      }));
+    } else if (fieldName === 'schoolDetails.previousDegreeWithImage') {
+      setFormData(prev => ({
+        ...prev,
+        schoolDetails: {
+          ...prev.schoolDetails,
+          previousDegreeWithImage: ''
+        }
+      }));
+    }
   };
 
   return (
-    <div className={`layout-container ${sidebarOpen ? 'sidebar-open' : ''}`}>
-      <Navbar toggleSidebar={toggleSidebar} isSidebarOpen={sidebarOpen} />
-      <Sidebar isOpen={sidebarOpen} toggleSidebar={toggleSidebar} />
-      
-      <div className={`students-container ${!sidebarOpen ? 'sidebar-closed' : ''}`}>
-        <div className="students-header">
-          <h1>All Students</h1>
-          <button className="add-student-btn" onClick={() => navigate('/students/add')}>
-            <AddIcon /> Add New Student
-          </button>
-        </div>
+    <>
+      {loading && <Loader />}
+      <Toaster position="top-right" />
+      <div className={`layout-container ${sidebarOpen ? 'sidebar-open' : ''}`}>
+        <Navbar toggleSidebar={toggleSidebar} isSidebarOpen={sidebarOpen} />
+        <Sidebar isOpen={sidebarOpen} toggleSidebar={toggleSidebar} />
+        
+        <div className={`students-container ${!sidebarOpen ? 'sidebar-closed' : ''}`}>
+          <div className="students-header">
+            <h1>All Students</h1>
+            <button className="add-student-btn" onClick={() => navigate('/students/add')}>
+              <AddIcon /> Add New Student
+            </button>
+          </div>
 
-        <div className="toolbar">
-          <div className="toolbar-actions">
-            <div className="search-box">
-              <div className="search-input">
-                <SearchIcon className="search-icon" />
-                <input
-                  type="text"
-                  placeholder="Search students..."
-                  value={searchTerm}
-                  onChange={handleSearch}
+          <div className="toolbar">
+            <div className="toolbar-actions">
+              <div className="search-box">
+                <div className="search-input">
+                  <SearchIcon className="search-icon" />
+                  <input
+                    type="text"
+                    placeholder="Search students..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                  />
+                </div>
+              </div>
+              <div className="dropdown-container">
+                <CustomDropdown
+                  compact
+                  icon={<BusinessIcon />}
+                  label="Grade"
+                  value={selectedGrade}
+                  onChange={(value) => setSelectedGrade(value)}
+                  options={classes.map(cls => ({
+                    value: cls.className,
+                    label: cls.className,
+                    icon: <BusinessIcon />
+                  }))}
                 />
+                <CustomDropdown
+                  compact
+                  icon={<PersonIcon />}
+                  label="Gender"
+                  value={selectedGender}
+                  onChange={(value) => setSelectedGender(value)}
+                  options={genderOptions}
+                />
+          
               </div>
-            </div>
-            <div className="dropdown-container">
-              <CustomDropdown
-                options={grades}
-                value={selectedGrade}
-                onChange={handleGradeChange}
-                placeholder="Grade"
-                icon={<BusinessIcon />}
-              />
-              <CustomDropdown
-                options={classes}
-                value={selectedClass}
-                onChange={handleClassChange}
-                placeholder="Class"
-                icon={<GroupIcon />}
-              />
-              <CustomDropdown
-                options={statuses}
-                value={selectedStatus}
-                onChange={handleStatusChange}
-                placeholder="Status"
-                icon={<PersonIcon />}
-              />
-              <CustomDropdown
-                options={sortOptions}
-                value={sortBy}
-                onChange={handleSortChange}
-                placeholder="Sort By"
-                icon={<ArrowUpwardIcon />}
-              />
             </div>
           </div>
-        </div>
 
-        <div className="students-grid">
-          {sortedStudents.map(student => (
-            <div key={student.id} className="student-card">
-              <div className="student-card-header">
-                <img src={student.avatar} alt={student.name} className="student-avatar" />
-                <div className="student-status" data-status={student.status}>
-                  {student.status}
+          <div className="students-grid">
+            {sortedStudents?.map(student => (
+              <div key={student._id} className="student-card">
+                <div className="student-card-header">
+                  <img src={student.profileImage || 'https://via.placeholder.com/150'} alt={student.parentDetails.fullName} className="student-avatar" />
                 </div>
-              </div>
-              
-              <div className="student-card-body">
-                <h3 className="student-name">{student.name}</h3>
-                <p className="student-class">{student.class} • Roll No: {student.rollNumber}</p>
                 
-                <div className="student-info">
-                  <div className="info-item">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
-                    </svg>
-                    <span>{student.phone}</span>
-                  </div>
-                  <div className="info-item">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
-                      <polyline points="22,6 12,13 2,6"></polyline>
-                    </svg>
-                    <span>{student.email}</span>
-                  </div>
-                  <div className="info-item">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                      <circle cx="12" cy="7" r="4"></circle>
-                    </svg>
-                    <span>{student.parentName}</span>
+                <div className="student-card-body">
+                  <h3 className="student-name">{student?.fullName}</h3>
+                  <p className="student-class">Grade {student?.grade} • Roll No: {student?.schoolDetails?.rollNumber}</p>
+                  
+                  <div className="student-info">
+                    <div className="info-item">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                      </svg>
+                      <span>{student.phoneNumber}</span>
+                    </div>
+                    <div className="info-item">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                      </svg>
+                      <span>{student.gender}</span>
+                    </div>
+                    <div className="info-item">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                      </svg>
+                      <span>{student.parentDetails.fullName}</span>
+                    </div>
                   </div>
                 </div>
 
-                <div className="student-subjects">
-                  <h4>Subjects</h4>
-                  <div className="subject-tags">
-                    {student.subjects.map((subject, index) => (
-                      <span key={index} className="subject-tag">{subject}</span>
-                    ))}
+                <div className="student-card-footer">
+                  <button 
+                    className="view-student-btn"
+                    onClick={() => handleViewStudent(student._id)}
+                  >
+                    <VisibilityIcon /> View Profile
+                  </button>
+                  <div className="quick-actions">
+                    <button 
+                      className="action-btn edit"
+                      onClick={() => handleEditStudent(student)}
+                    >
+                      <EditIcon />
+                    </button>
+                    <button 
+                      className="action-btn delete"
+                      onClick={() => handleDeleteStudent(student._id)}
+                    >
+                      <DeleteIcon />
+                    </button>
                   </div>
                 </div>
               </div>
-
-              <div className="student-card-footer">
-                <button 
-                  className="view-student-btn"
-                  onClick={() => handleViewStudent(student.id)}
-                >
-                  <VisibilityIcon /> View Profile
-                </button>
-                <div className="quick-actions">
-                  <button 
-                    className="action-btn edit"
-                    onClick={() => handleEditStudent(student)}
-                  >
-                    <EditIcon />
-                  </button>
-                  <button 
-                    className="action-btn delete"
-                    onClick={() => handleDeleteStudent(student.id)}
-                  >
-                    <DeleteIcon />
-                  </button>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Edit Student Modal */}
-      {isEditModalOpen && editingStudent && (
-        <div className="modal-overlay">
-          <div className="modal-container">
-            <div className="modal-header">
-              <h2>Edit Student</h2>
-              <button className="close-btn" onClick={handleCloseModal}>
-                <CloseIcon />
-              </button>
-            </div>
-            <div className="modal-body">
-              <form>
-                <div className="form-row">
-                  <div className="form-group">
-                    <label htmlFor="name">Full Name</label>
-                    <input
-                      type="text"
-                      id="name"
-                      name="name"
-                      defaultValue={editingStudent.name}
-                      placeholder="Enter student name"
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label htmlFor="rollNumber">Roll Number</label>
-                    <input
-                      type="text"
-                      id="rollNumber"
-                      name="rollNumber"
-                      defaultValue={editingStudent.rollNumber}
-                      placeholder="Enter roll number"
-                    />
-                  </div>
-                </div>
-
-                <div className="form-row">
-                  <div className="form-group">
-                    <label htmlFor="grade">Grade</label>
-                    <CustomDropdown
-                      options={grades.filter(g => g.value !== 'all')}
-                      value={editingStudent.grade}
-                      onChange={(value) => console.log('Grade changed:', value)}
-                      placeholder="Select grade"
-                      icon={<BusinessIcon />}
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label htmlFor="class">Class</label>
-                    <CustomDropdown
-                      options={classes.filter(c => c.value !== 'all')}
-                      value={editingStudent.class}
-                      onChange={(value) => console.log('Class changed:', value)}
-                      placeholder="Select class"
-                      icon={<GroupIcon />}
-                    />
-                  </div>
-                </div>
-
-                <div className="form-row">
-                  <div className="form-group">
-                    <label htmlFor="email">Email</label>
-                    <input
-                      type="email"
-                      id="email"
-                      name="email"
-                      defaultValue={editingStudent.email}
-                      placeholder="Enter email address"
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label htmlFor="phone">Phone</label>
-                    <input
-                      type="tel"
-                      id="phone"
-                      name="phone"
-                      defaultValue={editingStudent.phone}
-                      placeholder="Enter phone number"
-                    />
-                  </div>
-                </div>
-
-                <div className="form-row">
-                  <div className="form-group">
-                    <label htmlFor="parentName">Parent Name</label>
-                    <input
-                      type="text"
-                      id="parentName"
-                      name="parentName"
-                      defaultValue={editingStudent.parentName}
-                      placeholder="Enter parent name"
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label htmlFor="parentPhone">Parent Phone</label>
-                    <input
-                      type="tel"
-                      id="parentPhone"
-                      name="parentPhone"
-                      defaultValue={editingStudent.parentPhone}
-                      placeholder="Enter parent phone"
-                    />
-                  </div>
-                </div>
-
-                <div className="form-group">
-                  <label htmlFor="address">Address</label>
-                  <textarea
-                    id="address"
-                    name="address"
-                    defaultValue={editingStudent.address}
-                    placeholder="Enter address"
-                    rows="3"
-                  />
-                </div>
-
-                <div className="form-group">
-                  <label htmlFor="status">Status</label>
-                  <CustomDropdown
-                    options={statuses.filter(s => s.value !== 'all')}
-                    value={editingStudent.status}
-                    onChange={(value) => console.log('Status changed:', value)}
-                    placeholder="Select status"
-                    icon={<BadgeIcon />}
-                  />
-                </div>
-
-                <div className="modal-footer">
-                  <button type="button" className="cancel-btn" onClick={handleCloseModal}>
-                    Cancel
-                  </button>
-                  <button type="submit" className="save-btn" disabled={isLoading}>
-                    {isLoading ? (
-                      <div className="loading-spinner" />
-                    ) : (
-                      <>
-                        <SaveIcon /> Save Changes
-                      </>
-                    )}
-                  </button>
-                </div>
-              </form>
-            </div>
+            ))}
           </div>
         </div>
-      )}
-    </div>
+
+        {/* Edit Student Modal */}
+        {isEditModalOpen && editingStudent && (
+          <div className="modal-overlay">
+            <div className="modal-container">
+              <div className="modal-header">
+                <h2>Edit Student</h2>
+                <button className="close-btn" onClick={handleCloseModal}>
+                  <CloseIcon />
+                </button>
+              </div>
+              <div className="modal-body">
+                <form onSubmit={handleSubmit}>
+                  {/* Student Personal Information Section */}
+                  <div className="form-section">
+                    <h3 className="section-title">Personal Information</h3>
+                    <div className="form-row">
+                      <div className="form-group">
+                        <label htmlFor="fullName">Full Name</label>
+                        <input
+                          type="text"
+                          id="fullName"
+                          name="fullName"
+                          value={formData?.fullName}
+                          onChange={handleInputChange}
+                          required
+                          placeholder="Enter student's full name"
+                        />
+                      </div>
+                      <div className="form-group">
+                        <label htmlFor="gender">Gender</label>
+                        <select
+                          id="gender"
+                          name="gender"
+                          value={formData.gender}
+                          onChange={handleInputChange}
+                          required
+                        >
+                          <option value="">Select Gender</option>
+                          <option value="Male">Male</option>
+                          <option value="Female">Female</option>
+                          <option value="Other">Other</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div className="form-row">
+                      <div className="form-group">
+                        <label htmlFor="dateOfBirth">Date of Birth</label>
+                        <input
+                          type="date"
+                          id="dateOfBirth"
+                          name="dateOfBirth"
+                          value={formData.dateOfBirth}
+                          onChange={handleInputChange}
+                          required
+                        />
+                      </div>
+                      <div className="form-group">
+                        <label htmlFor="phoneNumber">Phone Number</label>
+                        <input
+                          type="tel"
+                          id="phoneNumber"
+                          name="phoneNumber"
+                          value={formData.phoneNumber}
+                          onChange={handleInputChange}
+                          required
+                        />
+                      </div>
+                    </div>
+
+                    <div className="form-group">
+                      <label htmlFor="fullAddress">Full Address</label>
+                      <textarea
+                        id="fullAddress"
+                        name="fullAddress"
+                        value={formData.fullAddress}
+                        onChange={handleInputChange}
+                        rows="3"
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  {/* Student Documents Section */}
+                  <div className="form-section">
+                    <h3 className="section-title">Documents</h3>
+                    <div className="form-row">
+                      <div className="form-group">
+                        <label htmlFor="profileImage">Profile Image</label>
+                        <div className="avatar-upload">
+                          <div className="image-preview-container">
+                            <img
+                              src={formData.profileImage || '/default-avatar.png'}
+                              alt="Profile"
+                              className="avatar-preview"
+                            />
+                            {formData.profileImage && (
+                              <button
+                                type="button"
+                                className="remove-image-btn"
+                                onClick={() => handleRemoveImage('profileImage')}
+                              >
+                                <FiX />
+                              </button>
+                            )}
+                          </div>
+                          <input
+                            type="file"
+                            accept="image/*"
+                            onChange={(e) => handleFileUpload(e, 'profileImage')}
+                            style={{ display: 'none' }}
+                            id="profileImage"
+                            name="profileImage"
+                          />
+                          <label htmlFor="profileImage" className="upload-btn">
+                            <FiUpload /> Change Image
+                          </label>
+                        </div>
+                      </div>
+                      <div className="form-group">
+                        <label htmlFor="nicImage">NIC Image</label>
+                        <div className="avatar-upload">
+                          <div className="image-preview-container">
+                            <img
+                              src={formData.nicImage || '/default-nic.png'}
+                              alt="NIC"
+                              className="avatar-preview"
+                            />
+                            {formData.nicImage && (
+                              <button
+                                type="button"
+                                className="remove-image-btn"
+                                onClick={() => handleRemoveImage('nicImage')}
+                              >
+                                <FiX />
+                              </button>
+                            )}
+                          </div>
+                          <input
+                            type="file"
+                            accept="image/*"
+                            onChange={(e) => handleFileUpload(e, 'nicImage')}
+                            style={{ display: 'none' }}
+                            id="nicImage"
+                            name="nicImage"
+                          />
+                          <label htmlFor="nicImage" className="upload-btn">
+                            <FiUpload /> Change NIC Image
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Parent Information Section */}
+                  <div className="form-section">
+                    <h3 className="section-title">Parent Information</h3>
+                    <div className="form-row">
+                      <div className="form-group">
+                        <label htmlFor="parentDetails.fullName">Parent Full Name</label>
+                        <input
+                          type="text"
+                          id="parentDetails.fullName"
+                          name="parentDetails.fullName"
+                          value={formData.parentDetails.fullName}
+                          onChange={handleInputChange}
+                          required
+                        />
+                      </div>
+                      <div className="form-group">
+                        <label htmlFor="parentDetails.gender">Parent Gender</label>
+                        <select
+                          id="parentDetails.gender"
+                          name="parentDetails.gender"
+                          value={formData.parentDetails.gender}
+                          onChange={handleInputChange}
+                          required
+                        >
+                          <option value="">Select Gender</option>
+                          <option value="Male">Male</option>
+                          <option value="Female">Female</option>
+                          <option value="Other">Other</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div className="form-row">
+                      <div className="form-group">
+                        <label htmlFor="parentDetails.dateOfBirth">Parent Date of Birth</label>
+                        <input
+                          type="date"
+                          id="parentDetails.dateOfBirth"
+                          name="parentDetails.dateOfBirth"
+                          value={formData.parentDetails.dateOfBirth}
+                          onChange={handleInputChange}
+                          required
+                        />
+                      </div>
+                      <div className="form-group">
+                        <label htmlFor="parentDetails.phoneNumber">Parent Phone Number</label>
+                        <input
+                          type="tel"
+                          id="parentDetails.phoneNumber"
+                          name="parentDetails.phoneNumber"
+                          value={formData.parentDetails.phoneNumber}
+                          onChange={handleInputChange}
+                          required
+                        />
+                      </div>
+                    </div>
+
+                    <div className="form-row">
+                      <div className="form-group">
+                        <label htmlFor="parentDetails.nic">Parent NIC</label>
+                        <input
+                          type="text"
+                          id="parentDetails.nic"
+                          name="parentDetails.nic"
+                          value={formData.parentDetails.nic}
+                          onChange={handleInputChange}
+                          required
+                        />
+                      </div>
+                      <div className="form-group">
+                        <label htmlFor="parentDetails.education">Parent Education</label>
+                        <input
+                          type="text"
+                          id="parentDetails.education"
+                          name="parentDetails.education"
+                          value={formData.parentDetails.education}
+                          onChange={handleInputChange}
+                          required
+                        />
+                      </div>
+                    </div>
+
+                    <div className="form-group">
+                      <label htmlFor="parentDetails.profession">Parent Profession</label>
+                      <input
+                        type="text"
+                        id="parentDetails.profession"
+                        name="parentDetails.profession"
+                        value={formData.parentDetails.profession}
+                        onChange={handleInputChange}
+                        required
+                      />
+                    </div>
+
+                    <div className="form-row">
+                      <div className="form-group">
+                        <label htmlFor="parentDetails.profileImage">Parent Profile Image</label>
+                        <div className="avatar-upload">
+                          <div className="image-preview-container">
+                            <img
+                              src={formData.parentDetails.profileImage || '/default-avatar.png'}
+                              alt="Parent Profile"
+                              className="avatar-preview"
+                            />
+                            {formData.parentDetails.profileImage && (
+                              <button
+                                type="button"
+                                className="remove-image-btn"
+                                onClick={() => handleRemoveImage('parentDetails.profileImage')}
+                              >
+                                <FiX />
+                              </button>
+                            )}
+                          </div>
+                          <input
+                            type="file"
+                            accept="image/*"
+                            onChange={(e) => handleFileUpload(e, 'parentDetails.profileImage')}
+                            style={{ display: 'none' }}
+                            id="parentDetails.profileImage"
+                            name="parentDetails.profileImage"
+                          />
+                          <label htmlFor="parentDetails.profileImage" className="upload-btn">
+                            <FiUpload /> Change Parent Image
+                          </label>
+                        </div>
+                      </div>
+                      <div className="form-group">
+                        <label htmlFor="parentDetails.nicImage">Parent NIC Image</label>
+                        <div className="avatar-upload">
+                          <div className="image-preview-container">
+                            <img
+                              src={formData.parentDetails.nicImage || '/default-nic.png'}
+                              alt="Parent NIC"
+                              className="avatar-preview"
+                            />
+                            {formData.parentDetails.nicImage && (
+                              <button
+                                type="button"
+                                className="remove-image-btn"
+                                onClick={() => handleRemoveImage('parentDetails.nicImage')}
+                              >
+                                <FiX />
+                              </button>
+                            )}
+                          </div>
+                          <input
+                            type="file"
+                            accept="image/*"
+                            onChange={(e) => handleFileUpload(e, 'parentDetails.nicImage')}
+                            style={{ display: 'none' }}
+                            id="parentDetails.nicImage"
+                            name="parentDetails.nicImage"
+                          />
+                          <label htmlFor="parentDetails.nicImage" className="upload-btn">
+                            <FiUpload /> Change Parent NIC Image
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* School Information Section */}
+                  <div className="form-section">
+                    <h3 className="section-title">School Information</h3>
+                    <div className="form-row">
+                      <div className="form-group">
+                        <label htmlFor="grade">Grade</label>
+                        <input
+                          type="text"
+                          id="grade"
+                          name="grade"
+                          value={formData.grade}
+                          onChange={handleInputChange}
+                          required
+                        />
+                      </div>
+                      <div className="form-group">
+                        <label htmlFor="schoolDetails.rollNumber">Roll Number</label>
+                        <input
+                          type="text"
+                          id="schoolDetails.rollNumber"
+                          name="schoolDetails.rollNumber"
+                          value={formData.schoolDetails.rollNumber}
+                          onChange={handleInputChange}
+                          required
+                        />
+                      </div>
+                    </div>
+
+                    <div className="form-row">
+                      <div className="form-group">
+                        <label htmlFor="schoolDetails.joiningDate">Joining Date</label>
+                        <input
+                          type="date"
+                          id="schoolDetails.joiningDate"
+                          name="schoolDetails.joiningDate"
+                          value={formData.schoolDetails.joiningDate}
+                          onChange={handleInputChange}
+                          required
+                        />
+                      </div>
+                      <div className="form-group">
+                        <label htmlFor="schoolDetails.previousInstitute">Previous Institute</label>
+                        <input
+                          type="text"
+                          id="schoolDetails.previousInstitute"
+                          name="schoolDetails.previousInstitute"
+                          value={formData.schoolDetails.previousInstitute}
+                          onChange={handleInputChange}
+                        />
+                      </div>
+                    </div>
+
+                    <div className="form-group">
+                      <label htmlFor="schoolDetails.previousDegreeWithImage">Previous Degree Image</label>
+                      <div className="avatar-upload">
+                        <div className="image-preview-container">
+                          <img
+                            src={formData.schoolDetails.previousDegreeWithImage || '/default-degree.png'}
+                            alt="Previous Degree"
+                            className="avatar-preview"
+                          />
+                          {formData.schoolDetails.previousDegreeWithImage && (
+                            <button
+                              type="button"
+                              className="remove-image-btn"
+                              onClick={() => handleRemoveImage('schoolDetails.previousDegreeWithImage')}
+                            >
+                              <FiX />
+                            </button>
+                          )}
+                        </div>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={(e) => handleFileUpload(e, 'schoolDetails.previousDegreeWithImage')}
+                          style={{ display: 'none' }}
+                          id="schoolDetails.previousDegreeWithImage"
+                          name="schoolDetails.previousDegreeWithImage"
+                        />
+                        <label htmlFor="schoolDetails.previousDegreeWithImage" className="upload-btn">
+                          <FiUpload /> Change Degree Image
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="modal-footer">
+                    <button type="button" className="cancel-btn" onClick={handleCloseModal}>
+                      Cancel
+                    </button>
+                    <button type="submit" className="save-btn">
+                      {loading ? (
+                        <span className="loading-spinner"></span>
+                      ) : (
+                        <>
+                          <FiSave /> Save Changes
+                        </>
+                      )}
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    </>
   );
 };
 
