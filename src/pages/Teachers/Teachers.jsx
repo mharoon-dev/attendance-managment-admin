@@ -192,7 +192,7 @@ try {
       const res = await api.delete(`teachers/delete/${id}`);
       console.log(res);
       if (res.status === 200) {
-        const deleteUser = await api.delete(`users/delete/${teacherJobId}`);
+        const deleteUser = await api.delete(`users/${teacherJobId}`);
         dispatch(deleteTeacherSuccess(id));
         toast.success('Teacher deleted successfully');
       } else {

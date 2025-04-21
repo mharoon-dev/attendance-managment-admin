@@ -25,7 +25,6 @@ const MarkAttendance = () => {
   const [error, setError] = useState('');
 
   // Sample teacher ID (in a real app, this would come from authentication)
-  const teacherId = 'teacher123';
 
   useEffect(() => {
     // Set current time
