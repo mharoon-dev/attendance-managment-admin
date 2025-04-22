@@ -35,6 +35,7 @@ import Loader from "../../components/Loader/Loader";
 const Subjects = () => {
   const navigate = useNavigate();
   const { sidebarOpen, toggleSidebar } = useSidebar();
+  const {user} = useSelector((state) => state.user);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedGrade, setSelectedGrade] = useState("all");
   const [selectedStatus, setSelectedStatus] = useState("all");
@@ -120,10 +121,6 @@ const Subjects = () => {
     setSelectedGrade(value);
   };
 
-  const handleSortChange = (value) => {
-    setSortBy(value);
-  };
-
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({
@@ -204,12 +201,16 @@ const Subjects = () => {
         >
           <div className="subjects-header">
             <h1>All Subjects</h1>
-            <button
-              className="add-subject-btn"
-              onClick={() => navigate("/subjects/add")}
-            >
-              <AddIcon /> Add New Subject
+            {
+              user.role === "admin" || user.role === "superAdmin" && (
+                <button
+                  className="add-subject-btn"
+                  onClick={() => navigate("/subjects/add")}
+                >
+                  <AddIcon /> Add New Subject
             </button>
+            )
+          }
           </div>
 
           <div className="toolbar">
@@ -263,22 +264,29 @@ const Subjects = () => {
                   </div>
                 </div>
 
+                    {
+                      user.role === "admin" || user.role === "superAdmin" && (
                 <div className="subject-card-footer">
                   <div className="quick-actions">
+                        <>
                     <button
                       className="action-btn edit"
                       onClick={() => handleEditSubject(subject)}
-                    >
+                      >
                       <EditIcon />
                     </button>
-                    <button
-                      className="action-btn delete"
-                      onClick={() => handleDeleteSubject(subject._id)}
-                    >
+                        <button
+                          className="action-btn delete"
+                          onClick={() => handleDeleteSubject(subject._id)}
+                          >
                       <DeleteIcon />
                     </button>
-                  </div>
-                </div>
+                      </>
+                      </div>
+                      </div>
+                      )
+                    }
+                
               </div>
             ))}
           </div>

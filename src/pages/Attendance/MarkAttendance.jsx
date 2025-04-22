@@ -7,10 +7,15 @@ import PersonIcon from '@mui/icons-material/Person';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CancelIcon from '@mui/icons-material/Cancel';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import Navbar from '../../components/Navbar/Navbar';
 import Sidebar from '../../components/Sidebar/Sidebar';
 import useSidebar from '../../hooks/useSidebar';
 import './MarkAttendance.css';
+import { useSelector } from 'react-redux';
+import Loader from '../../components/Loader/Loader.jsx';
+import {api} from '../../utils/url.js';
+import { toast, Toaster } from 'sonner';
 
 const MarkAttendance = () => {
   const navigate = useNavigate();
@@ -18,49 +23,55 @@ const MarkAttendance = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [rollNumber, setRollNumber] = useState('');
   const [status, setStatus] = useState('present');
-  const [currentDate, setCurrentDate] = useState(new Date().toISOString().split('T')[0]);
+  const [currentDate, setCurrentDate] = useState(() => {
+    const date = new Date();
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  });
   const [currentTime, setCurrentTime] = useState('');
   const [todayAttendance, setTodayAttendance] = useState([]);
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
-
-  // Sample teacher ID (in a real app, this would come from authentication)
+  const {user} = useSelector((state) => state.user);
+  const [teacherId, setTeacherId] = useState('');
+  console.log(user);
 
   useEffect(() => {
-    // Set current time
-    const now = new Date();
-    const hours = now.getHours().toString().padStart(2, '0');
-    const minutes = now.getMinutes().toString().padStart(2, '0');
-    setCurrentTime(`${hours}:${minutes}`);
+    setTeacherId(user?.teacher?.jobDetails?.teacherId);
+  }, [user]);
 
-    // Fetch today's attendance
-    fetchTodayAttendance();
-  }, []);
+  // useEffect(() => {
+  //   // Set default time to current time
+  //   const now = new Date();
+  //   const hours = now.getHours().toString().padStart(2, '0');
+  //   const minutes = now.getMinutes().toString().padStart(2, '0');
+  //   setCurrentTime(`${hours}:${minutes}`);
 
-  const fetchTodayAttendance = async () => {
-    try {
-      // In a real app, this would be an API call to fetch today's attendance
-      // const response = await fetch(`/api/attendance/today?date=${currentDate}`);
-      // const data = await response.json();
-      
-      // For demo purposes, using sample data
-      const sampleData = [
-        { id: '101', status: 'present', date: currentDate, time: '09:15' },
-        { id: '102', status: 'absent', date: currentDate, time: '09:20' },
-        { id: '103', status: 'late', date: currentDate, time: '09:30' }
-      ];
-      
-      setTodayAttendance(sampleData);
-    } catch (error) {
-      console.error('Error fetching today\'s attendance:', error);
-      setError('Failed to fetch today\'s attendance');
-    }
-  };
+  //   // Fetch today's attendance
+  //   fetchTodayAttendance();
+  // }, []);
+
+  // const fetchTodayAttendance = async () => {
+  //   try {
+  //     const response = await fetch(`/api/attendance?date=${currentDate.toISOString().split('T')[0]}`);
+  //     const data = await response.json();
+  //     setTodayAttendance(data);
+  //   } catch (error) {
+  //     console.error('Error fetching today\'s attendance:', error);
+  //     setError('Failed to fetch today\'s attendance');
+  //   }
+  // };
 
   const handleRollNumberChange = (e) => {
     setRollNumber(e.target.value);
     setMessage('');
     setError('');
+  };
+
+  const handleTimeChange = (e) => {
+    setCurrentTime(e.target.value);
   };
 
   const handleStatusChange = (newStatus) => {
@@ -74,52 +85,45 @@ const MarkAttendance = () => {
       setError('Please enter a roll number');
       return;
     }
+
+    if (!currentTime) {
+      setError('Please enter a time');
+      return;
+    }
     
     setIsLoading(true);
     setMessage('');
     setError('');
     
     try {
-      // In a real app, this would be an API call to mark attendance
-      // const response = await fetch('/api/attendance/mark', {
-      //   method: 'POST',
-      //   headers: {
-      //     'Content-Type': 'application/json',
-      //   },
-      //   body: JSON.stringify({
-      //     id: rollNumber,
-      //     status,
-      //     date: currentDate,
-      //     time: currentTime,
-      //     teacherId
-      //   }),
-      // });
+      const response = await api.post('attendance/student/mark', {
+          id: rollNumber,
+          status,
+          date: currentDate,
+          time: currentTime,
+          teacherId,
+        });
       
-      // const data = await response.json();
       
-      // Simulate API call delay
-      setTimeout(() => {
-        // Simulate successful response
+      if (response.data.message === 'Attendance marked successfully') {
         setMessage('Attendance marked successfully');
+        toast.success(response.data.message);
         setRollNumber('');
-        
-        // Add the new attendance to today's list
-        setTodayAttendance([
-          ...todayAttendance,
-          { id: rollNumber, status, date: currentDate, time: currentTime }
-        ]);
-        
+        setCurrentTime('');
+        setStatus('present');
         setIsLoading(false);
-      }, 1000);
-      
-      // If there was an error from the API:
-      // if (!response.ok) {
-      //   setError(data.message || 'Failed to mark attendance');
-      //   setIsLoading(false);
-      // }
+      } else {
+        setError(response.data.message);
+        console.log(response.data.message);
+        setIsLoading(false);
+        toast.error(response.data.message);
+        return;
+      }
     } catch (error) {
       console.error('Error marking attendance:', error);
-      setError('Failed to mark attendance');
+      setError(error.response.data.message || 'Failed to mark attendance');
+      toast.error(error.response.data.message || 'Failed to mark attendance');
+    } finally {
       setIsLoading(false);
     }
   };
@@ -141,7 +145,19 @@ const MarkAttendance = () => {
     return status.charAt(0).toUpperCase() + status.slice(1);
   };
 
+  const formatDate = (date) => {
+    return new Date(date).toLocaleDateString('en-US', {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+  };
+
   return (
+    <>
+    <Toaster position="top-right" />
+    {isLoading && <Loader/>}
     <div className={`layout-container ${sidebarOpen ? 'sidebar-open' : ''}`}>
       <Navbar toggleSidebar={toggleSidebar} isSidebarOpen={sidebarOpen} />
       <Sidebar isOpen={sidebarOpen} toggleSidebar={toggleSidebar} />
@@ -157,12 +173,7 @@ const MarkAttendance = () => {
         <div className="mark-attendance-content">
           <div className="current-date">
             <CalendarMonthIcon className="date-icon" />
-            <span>{new Date().toLocaleDateString('en-US', { 
-              weekday: 'long', 
-              year: 'numeric', 
-              month: 'long', 
-              day: 'numeric' 
-            })}</span>
+            <span>{formatDate(currentDate)}</span>
           </div>
 
           <form onSubmit={handleSubmit} className="mark-attendance-form">
@@ -180,6 +191,18 @@ const MarkAttendance = () => {
                     value={rollNumber}
                     onChange={handleRollNumberChange}
                     placeholder="Enter student roll number"
+                    required
+                  />
+                </div>
+                <div className="form-group">
+                  <label htmlFor="time">
+                    <AccessTimeIcon className="form-icon" /> Time
+                  </label>
+                  <input
+                    type="time"
+                    id="time"
+                    value={currentTime}
+                    onChange={handleTimeChange}
                     required
                   />
                 </div>
@@ -219,59 +242,22 @@ const MarkAttendance = () => {
                 <button 
                   type="submit" 
                   className="save-btn"
-                  disabled={isLoading || !rollNumber.trim()}
+                  disabled={isLoading || !rollNumber.trim() || !currentTime}
                 >
-                  {isLoading ? (
-                    <div className="loading-spinner" />
-                  ) : (
                     <>
                       <SaveIcon /> Mark Attendance
                     </>
-                  )}
                 </button>
               </div>
+                <br />
             </div>
           </form>
 
-          <div className="form-section">
-            <h2>Today's Attendance</h2>
-            
-            {todayAttendance.length > 0 ? (
-              <div className="attendance-table-container">
-                <table className="attendance-table">
-                  <thead>
-                    <tr>
-                      <th>Roll No.</th>
-                      <th>Status</th>
-                      <th>Time</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {todayAttendance.map((attendance, index) => (
-                      <tr key={index}>
-                        <td>{attendance.id}</td>
-                        <td className="status-cell">
-                          {getStatusIcon(attendance.status)}
-                          <span className="status-text">
-                            {getStatusText(attendance.status)}
-                          </span>
-                        </td>
-                        <td>{attendance.time}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            ) : (
-              <div className="no-attendance">
-                <p>No attendance marked yet for today</p>
-              </div>
-            )}
-          </div>
+   
         </div>
       </div>
-    </div>
+    </div></>
   );
 };
 
-export default MarkAttendance; 
+export default MarkAttendance;

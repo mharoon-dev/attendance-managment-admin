@@ -35,6 +35,7 @@ const Teachers = () => {
   const [selectedStatus, setSelectedStatus] = useState("all");
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editingTeacher, setEditingTeacher] = useState(null);
+  const {user} = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const [formData, setFormData] = useState({
     jobDetails: {
@@ -269,13 +270,17 @@ try {
       >
         <div className="teachers-header">
           <h1>Teachers</h1>
-          <button
-            className="add-teacher-btn"
-            onClick={() => navigate("/teachers/add")}
+          {
+            user.role === "admin" || user.role === "superAdmin" && (
+              <button
+                className="add-teacher-btn"
+                onClick={() => navigate("/teachers/add")}
           >
             <AddIcon />
             Add New Teacher
           </button>
+            )
+          }
         </div>
 
         <div className="toolbar">
@@ -418,7 +423,10 @@ try {
                   View Profile
                 </button>
                 <div className="quick-actions">
-                  <button
+                 {
+                  user.role === "admin" || user.role === "superAdmin" && (
+                    <>
+                     <button
                     className="action-btn edit"
                     onClick={() => handleEditClick(teacher)}
                   >
@@ -427,6 +435,9 @@ try {
                   <button className="action-btn delete" onClick={() => handleDelete(teacher._id, teacher.jobDetails.teacherId)}>
                     <DeleteIcon />
                   </button>
+                    </>
+                 )
+                }
                 </div>
               </div>
             </div>

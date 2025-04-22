@@ -29,7 +29,7 @@ import { api } from "./utils/url.js";
 import Loader from "./components/Loader/Loader.jsx";
 function App() {
   const dispatch = useDispatch();
-  const user = useSelector((state) => state.user);
+  const {user} = useSelector((state) => state.user);
   const [loading, setLoading] = useState(true);
   useEffect(() => {
     const token = JSON.parse(localStorage.getItem("token"));
@@ -69,21 +69,35 @@ function App() {
               element={user !== null ? <Dashboard /> : <Navigate to="/login" />}
             />
             <Route path="/teachers" element={<Teachers />} />
+           {user?.role === "admin" || user?.role === "superAdmin" && (
             <Route path="/teachers/add" element={<AddTeacher />} />
+           )}
             <Route path="/teachers/:id" element={<TeacherProfile />} />
             <Route path="/classes" element={<Classes />} />
+            {user?.role === "admin" || user?.role === "superAdmin" && (
             <Route path="/classes/add" element={<AddClass />} />
+            )}
             <Route path="/classes/:id" element={<ClassProfile />} />
             <Route path="/students" element={<Students />} />
             <Route path="/students/:id" element={<StudentProfile />} />
+            {user?.role === "admin" || user?.role === "superAdmin" && (
             <Route path="/students/add" element={<AddStudent />} />
+            )}
             <Route path="/library" element={<Library />} />
+            {user?.role === "admin" || user?.role === "superAdmin" && (
             <Route path="/library/add" element={<AddBook />} />
+            )}
             <Route path="/subjects" element={<Subjects />} />
             <Route path="/subjects/:id" element={<SubjectProfile />} />
+            {user?.role === "admin" || user?.role === "superAdmin" && (
             <Route path="/subjects/add" element={<AddSubject />} />
+            )}
+            {user?.role === "teacher" && (
             <Route path="/attendance/mark" element={<MarkAttendance />} />
+            )}
+            {user?.role === "teacher" && (
             <Route path="/attendance" element={<ViewAttendance />} />
+            )}
           </Routes>
         </Router>
       )}

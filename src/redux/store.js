@@ -5,6 +5,7 @@ import teachersReducer from "./slices/teacherSlice.jsx";
 import classesReducer from "./slices/classesSlice.jsx";
 import libraryReducer from "./slices/librarySlice.jsx";
 import subjectReducer from "./slices/subjectSlice.jsx";
+import dailyAttendanceReducer from "./slices/dailyAttendanceSlice.jsx";
 const store = configureStore({
   reducer: {
     user: userReducer,
@@ -13,6 +14,7 @@ const store = configureStore({
     classes: classesReducer,
     library: libraryReducer,
     subjects: subjectReducer,
+    dailyAttendance: dailyAttendanceReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

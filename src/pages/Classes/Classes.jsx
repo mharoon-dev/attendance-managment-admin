@@ -25,7 +25,7 @@ const Classes = () => {
   const dispatch = useDispatch();
   const {classes} = useSelector((state) => state.classes);
   const { teachers } = useSelector((state) => state.teachers);
-
+  const {user} = useSelector((state) => state.user);
   const navigate = useNavigate();
   const { sidebarOpen, toggleSidebar } = useSidebar();
   const [searchTerm, setSearchTerm] = useState('');
@@ -229,9 +229,13 @@ const Classes = () => {
       <div className={`classes-container ${!sidebarOpen ? 'sidebar-closed' : ''}`}>
         <div className="classes-header">
           <h1>All Classes</h1>
-          <button className="add-class-btn" onClick={() => navigate('/classes/add')}>
-            <AddIcon /> Add New Class
-          </button>
+          {
+            user.role === "admin" || user.role === "superAdmin" && (
+              <button className="add-class-btn" onClick={() => navigate('/classes/add')}>
+                <AddIcon /> Add New Class
+              </button>
+            )
+          }
         </div>
 
         <div className="toolbar">
@@ -304,8 +308,10 @@ const Classes = () => {
                 >
                   <VisibilityIcon /> View Details
                 </button>
-                <div className="quick-actions">
-                  <button 
+                {
+                  user.role === "admin" || user.role === "superAdmin" && (
+                    <div className="quick-actions">
+                      <button 
                     className="action-btn edit"
                     onClick={() => handleEditClass(cls)}
                   >
@@ -314,7 +320,9 @@ const Classes = () => {
                   <button className="action-btn delete" onClick={() => handleDeleteClass(cls._id)}>
                     <DeleteIcon />
                   </button>
-                </div>
+                    </div>
+                  )
+                }
               </div>
             </div>
           ))}

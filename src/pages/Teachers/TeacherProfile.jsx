@@ -26,6 +26,7 @@ const TeacherProfile = () => {
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
   const { teachers } = useSelector((state) => state.teachers);
+  const {user} = useSelector((state) => state.user);
   console.log(teachers);
   const [teacher, setTeacher] = useState(null);
   console.log(teacher);
@@ -112,10 +113,14 @@ const TeacherProfile = () => {
                   <label>Working Hours</label>
                   <p>{teacher?.jobDetails?.workingHours}</p>
                 </div>
-                <div className="detail-item">
-                  <label>Salary</label>
-                  <p>Rs. {teacher?.jobDetails?.salary}</p>
-                </div>
+                {
+                  user.role === "admin" || user.role === "superAdmin" && (
+                    <div className="detail-item">
+                      <label>Salary</label>
+                      <p>Rs. {teacher?.jobDetails?.salary}</p>
+                    </div>
+                  )
+                }
                 <div className="detail-item">
                   <label>Teacher ID</label>
                   <p>{teacher?.jobDetails?.teacherId}</p>

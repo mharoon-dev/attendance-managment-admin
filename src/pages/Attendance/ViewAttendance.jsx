@@ -8,11 +8,15 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CancelIcon from '@mui/icons-material/Cancel';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import DownloadIcon from '@mui/icons-material/Download';
+import RefreshIcon from '@mui/icons-material/Refresh';
 import CustomDropdown from '../../components/CustomDropdown/CustomDropdown';
 import Navbar from '../../components/Navbar/Navbar';
 import Sidebar from '../../components/Sidebar/Sidebar';
 import useSidebar from '../../hooks/useSidebar';
+import { api } from '../../utils/url';
 import './ViewAttendance.css';
+import Loader from '../../components/Loader/Loader';
+import { useSelector } from 'react-redux';
 
 const ViewAttendance = () => {
   const navigate = useNavigate();
@@ -21,9 +25,7 @@ const ViewAttendance = () => {
   const [attendanceData, setAttendanceData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
   const [filters, setFilters] = useState({
-    date: '',
-    grade: '',
-    class: '',
+    date: new Date().toISOString().split('T')[0],
     status: '',
     search: ''
   });
@@ -34,21 +36,11 @@ const ViewAttendance = () => {
     absent: 0,
     late: 0
   });
+  const {user} = useSelector((state) => state.user);
+  console.log(user);
 
   // Sample data for dropdowns
-  const grades = [
-    { value: '1', label: 'Grade 1' },
-    { value: '2', label: 'Grade 2' },
-    { value: '3', label: 'Grade 3' },
-    { value: '4', label: 'Grade 4' },
-    { value: '5', label: 'Grade 5' }
-  ];
 
-  const classes = [
-    { value: 'A', label: 'Class A' },
-    { value: 'B', label: 'Class B' },
-    { value: 'C', label: 'Class C' }
-  ];
 
   const statuses = [
     { value: 'present', label: 'Present' },
@@ -57,8 +49,10 @@ const ViewAttendance = () => {
   ];
 
   useEffect(() => {
-    fetchAttendanceData();
-  }, []);
+    if (filters.date) {
+      fetchAttendanceData();
+    }
+  }, [filters.date]);
 
   useEffect(() => {
     applyFilters();
@@ -67,21 +61,10 @@ const ViewAttendance = () => {
   const fetchAttendanceData = async () => {
     try {
       setLoading(true);
-      // Simulate API call
-      const sampleData = [
-        {
-          id: 1,
-          name: 'John Doe',
-          rollNo: '2024001',
-          grade: '1',
-          class: 'A',
-          status: 'present',
-          date: '2024-03-15',
-          time: '09:00 AM'
-        },
-        // Add more sample data as needed
-      ];
-      setAttendanceData(sampleData);
+      const response = await api.get(`attendance/students/get?teacherId=${user.teacher.jobDetails.teacherId}&date=${filters.date}`);
+      if (response.data.status) {
+        setAttendanceData(response.data.data);
+      }
     } catch (error) {
       console.error('Error fetching attendance data:', error);
     } finally {
@@ -94,12 +77,6 @@ const ViewAttendance = () => {
 
     if (filters.date) {
       filtered = filtered.filter(item => item.date === filters.date);
-    }
-    if (filters.grade) {
-      filtered = filtered.filter(item => item.grade === filters.grade);
-    }
-    if (filters.class) {
-      filtered = filtered.filter(item => item.class === filters.class);
     }
     if (filters.status) {
       filtered = filtered.filter(item => item.status === filters.status);
@@ -147,27 +124,65 @@ const ViewAttendance = () => {
   };
 
   const exportToCSV = () => {
-    const headers = ['Name', 'Roll No', 'Grade', 'Class', 'Status', 'Date', 'Time'];
-    const csvData = filteredData.map(item => [
-      item.name,
-      item.rollNo,
-      item.grade,
-      item.class,
-      item.status,
-      item.date,
-      item.time
-    ]);
-    
-    const csvContent = [
-      headers.join(','),
-      ...csvData.map(row => row.join(','))
-    ].join('\n');
+    // Create Excel XML Header with column width specifications
+    const excelHeader = `<?xml version="1.0"?>
+<?mso-application progid="Excel.Sheet"?>
+<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"
+xmlns:o="urn:schemas-microsoft-com:office:office"
+xmlns:x="urn:schemas-microsoft-com:office:excel"
+xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"
+xmlns:html="http://www.w3.org/TR/REC-html40">
+<Worksheet ss:Name="Sheet1">
+<Table>
+<Column ss:Width="120"/>
+<Column ss:Width="120"/>
+<Column ss:Width="120"/>
+<Column ss:Width="120"/>
+`;
 
-    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const headers = ['Roll No', 'Status', 'Date', 'Time'];
+    const csvData = filteredData.map(item => {
+      const formattedStatus = item.status.charAt(0).toUpperCase() + item.status.slice(1);
+      const dateParts = item.date.split('-');
+      const formattedDate = `${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`;
+      const formattedRollNo = `'${item.id}`;
+      const formattedTime = item.time || '';
+      
+      return [
+        formattedRollNo,
+        formattedStatus,
+        formattedDate,
+        formattedTime
+      ];
+    });
+
+    // Convert data to Excel XML format
+    let xmlContent = excelHeader;
+    
+    // Add headers row
+    xmlContent += '<Row>';
+    headers.forEach(header => {
+      xmlContent += `<Cell><Data ss:Type="String">${header}</Data></Cell>`;
+    });
+    xmlContent += '</Row>';
+
+    // Add data rows
+    csvData.forEach(row => {
+      xmlContent += '<Row>';
+      row.forEach(cell => {
+        xmlContent += `<Cell><Data ss:Type="String">${cell}</Data></Cell>`;
+      });
+      xmlContent += '</Row>';
+    });
+
+    // Close XML tags
+    xmlContent += '</Table></Worksheet></Workbook>';
+
+    const blob = new Blob([xmlContent], { type: 'application/vnd.ms-excel' });
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'attendance_report.csv';
+    a.download = `attendance_report_${new Date().toISOString().split('T')[0]}.xls`;
     a.click();
     window.URL.revokeObjectURL(url);
   };
@@ -179,8 +194,10 @@ const ViewAttendance = () => {
       
       <div className={`view-attendance-container ${!sidebarOpen ? 'sidebar-closed' : ''}`}>
         <div className="view-attendance-header">
-     
           <h1>View Attendance</h1>
+          <button className="refresh-button" onClick={fetchAttendanceData}>
+            <RefreshIcon /> Refresh Data
+          </button>
         </div>
 
         <div className="view-attendance-content">
@@ -203,21 +220,6 @@ const ViewAttendance = () => {
                   />
                 </div>
                 
-                <CustomDropdown
-                  label="Grade"
-                  options={grades}
-                  value={filters.grade}
-                  onChange={(value) => handleFilterChange('grade', value)}
-                  placeholder="Select Grade"
-                />
-                
-                <CustomDropdown
-                  label="Class"
-                  options={classes}
-                  value={filters.class}
-                  onChange={(value) => handleFilterChange('class', value)}
-                  placeholder="Select Class"
-                />
                 
                 <CustomDropdown
                   label="Status"
@@ -283,15 +285,12 @@ const ViewAttendance = () => {
           
           <div className="attendance-table-container">
             {loading ? (
-              <div className="loading-spinner">Loading...</div>
+              <Loader />
             ) : filteredData.length > 0 ? (
               <table className="attendance-table">
                 <thead>
                   <tr>
-                    <th>Name</th>
                     <th>Roll No</th>
-                    <th>Grade</th>
-                    <th>Class</th>
                     <th>Status</th>
                     <th>Date</th>
                     <th>Time</th>
@@ -299,18 +298,15 @@ const ViewAttendance = () => {
                 </thead>
                 <tbody>
                   {filteredData.map((record) => (
-                    <tr key={record.id}>
-                      <td>{record.name}</td>
-                      <td>{record.rollNo}</td>
-                      <td>Grade {record.grade}</td>
-                      <td>Class {record.class}</td>
+                    <tr key={record?.id}>
+                      <td>{record?.id}</td>
                       <td>
-                        <span className={`status-badge ${record.status}`}>
-                          {record.status.charAt(0).toUpperCase() + record.status.slice(1)}
+                        <span className={`status-badge ${record?.status}`}>
+                          {record?.status?.charAt(0).toUpperCase() + record?.status?.slice(1)}
                         </span>
                       </td>
-                      <td>{record.date}</td>
-                      <td>{record.time}</td>
+                      <td>{record?.date}</td>
+                      <td>{record?.time}</td>
                     </tr>
                   ))}
                 </tbody>

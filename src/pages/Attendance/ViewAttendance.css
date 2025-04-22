@@ -41,6 +41,30 @@
   transform: translateX(-2px);
 }
 
+.refresh-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background-color: #2196f3;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.refresh-button:hover {
+  background-color: #1976d2;
+  transform: translateY(-1px);
+}
+
+.refresh-button svg {
+  font-size: 1.2rem;
+}
+
 .view-attendance-header h1 {
   font-size: 1.5rem;
   color: #333;

@@ -34,6 +34,7 @@ const Students = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedGrade, setSelectedGrade] = useState('all');
   const [selectedGender, setSelectedGender] = useState('all');
+  const {user} = useSelector((state) => state.user);
   const [sortBy, setSortBy] = useState('name');
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editingStudent, setEditingStudent] = useState(null);
@@ -335,9 +336,13 @@ const Students = () => {
         <div className={`students-container ${!sidebarOpen ? 'sidebar-closed' : ''}`}>
           <div className="students-header">
             <h1>All Students</h1>
-            <button className="add-student-btn" onClick={() => navigate('/students/add')}>
-              <AddIcon /> Add New Student
-            </button>
+            {
+              user.role === "admin" || user.role === "superAdmin" && (
+                <button className="add-student-btn" onClick={() => navigate('/students/add')}>
+                  <AddIcon /> Add New Student
+                </button>
+              )
+            }
           </div>
 
           <div className="toolbar">
@@ -421,8 +426,10 @@ const Students = () => {
                   >
                     <VisibilityIcon /> View Profile
                   </button>
-                  <div className="quick-actions">
-                    <button 
+                  {
+                    user.role === "admin" || user.role === "superAdmin" && (
+                      <div className="quick-actions">
+                        <button 
                       className="action-btn edit"
                       onClick={() => handleEditStudent(student)}
                     >
@@ -434,7 +441,9 @@ const Students = () => {
                     >
                       <DeleteIcon />
                     </button>
-                  </div>
+                    </div>
+                  )
+                }
                 </div>
               </div>
             ))}

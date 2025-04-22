@@ -48,6 +48,7 @@ const Library = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [showAddModal, setShowAddModal] = useState(false);
+  const {user} = useSelector((state) => state.user);
   const [showEditModal, setShowEditModal] = useState(false);
   const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [selectedBook, setSelectedBook] = useState(null);
@@ -190,9 +191,13 @@ const Library = () => {
       >
         <div className="library-header">
           <h1>Library</h1>
-          <button className="add-book-btn" onClick={handleAddBook}>
-            <AddIcon /> Add New Book
-          </button>
+          {
+            user.role === "admin" || user.role === "superAdmin" && (
+              <button className="add-book-btn" onClick={handleAddBook}>
+                <AddIcon /> Add New Book
+              </button>
+            )
+          }
         </div>
 
         <div className="library-toolbar">
@@ -249,9 +254,12 @@ const Library = () => {
                       >
                         <VisibilityIcon />
                       </button>
-                      <button
-                        className="action-btn edit-btn"
-                        onClick={() => handleEditBook(book)}
+                      {
+                        user.role === "admin" || user.role === "superAdmin" && (
+                          <>
+                          <button
+                            className="action-btn edit-btn"
+                            onClick={() => handleEditBook(book)}
                       >
                         <EditIcon />
                       </button>
@@ -261,6 +269,9 @@ const Library = () => {
                       >
                         <DeleteIcon />
                       </button>
+                          </>
+                        )
+                      }
                     </div>
                   </div>
                 </div>
@@ -519,8 +530,10 @@ const Library = () => {
               >
                 Close
               </button>
-              <button
-                className="edit-btn"
+              {
+                user.role === "admin" || user.role === "superAdmin" && (
+                  <button
+                    className="edit-btn"
                 onClick={() => {
                   setShowDetailsModal(false);
                   handleEditBook(selectedBook);
@@ -528,6 +541,8 @@ const Library = () => {
               >
                 <EditIcon /> Edit Book
               </button>
+                )
+              }
             </div>
           </div>
         </div>

@@ -31,6 +31,13 @@ import {
   getSubjectsStart,
   getSubjectsSuccess,
 } from "../../redux/slices/subjectSlice.jsx";
+import {
+  getDailyAttendanceStart,
+  getDailyAttendanceSuccess,
+  getDailyAttendanceFailure,
+} from "../../redux/slices/dailyAttendanceSlice.jsx";
+import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip, Sector } from 'recharts';
+
 const Dashboard = () => {
   const { sidebarOpen, toggleSidebar } = useSidebar();
   const [loading, setLoading] = useState(false);
@@ -39,7 +46,20 @@ const Dashboard = () => {
   const { teachers } = useSelector((state) => state.teachers);
   const { classes } = useSelector((state) => state.classes);
   const { books } = useSelector((state) => state.library);
+  const { dailyAttendance } = useSelector((state) => state.dailyAttendance);
+  const { user } = useSelector((state) => state.user);
+  const [currentMonth, setCurrentMonth] = useState('');
+  const [currentYear, setCurrentYear] = useState('');
+  const [activeIndex, setActiveIndex] = useState(0);
+
   useEffect(() => {
+    // Set current month and year
+    const now = new Date();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const year = now.getFullYear();
+    setCurrentMonth(month);
+    setCurrentYear(year);
+
     const fetchStudents = async () => {
       dispatch(getStudentsStart());
       try {
@@ -91,12 +111,101 @@ const Dashboard = () => {
       }
     };
 
+    const fetchMonthlyAttendance = async () => {
+      dispatch(getDailyAttendanceStart());
+      try {
+        const response = await api.get(`attendance/students/get/month?month=${month}&year=${year}`);
+        dispatch(getDailyAttendanceSuccess(response.data.data));
+      } catch (error) {
+        dispatch(getDailyAttendanceFailure(error.response.data.message));
+      }
+    };
+
     fetchStudents();
     fetchTeachers();
     fetchClasses();
     fetchBooks();
     fetchSubjects();
+    fetchMonthlyAttendance();
   }, []);
+
+  // Calculate attendance statistics
+  const attendanceStats = {
+    total: dailyAttendance?.length || 0,
+    present: dailyAttendance?.filter(record => record.status === 'present').length || 0,
+    absent: dailyAttendance?.filter(record => record.status === 'absent').length || 0,
+    late: dailyAttendance?.filter(record => record.status === 'late').length || 0
+  };
+
+  // Group attendance by day
+  const getAttendanceByDay = () => {
+    if (!dailyAttendance) return [];
+    
+    // Create an object to store attendance by day
+    const attendanceByDay = {};
+    
+    dailyAttendance.forEach(record => {
+      const date = new Date(record.date);
+      const day = date.getDate();
+      
+      if (!attendanceByDay[day]) {
+        attendanceByDay[day] = {
+          present: 0,
+          absent: 0,
+          late: 0,
+          total: 0
+        };
+      }
+      
+      attendanceByDay[day][record.status]++;
+      attendanceByDay[day].total++;
+    });
+
+    // Convert to array and sort by day
+    return Object.entries(attendanceByDay)
+      .map(([day, stats]) => ({
+        day: parseInt(day),
+        ...stats
+      }))
+      .sort((a, b) => a.day - b.day);
+  };
+
+  const attendanceByDay = getAttendanceByDay();
+
+  // Get days in current month
+  const getDaysInMonth = () => {
+    const year = parseInt(currentYear);
+    const month = parseInt(currentMonth);
+    return new Date(year, month, 0).getDate();
+  };
+
+  const daysInMonth = getDaysInMonth();
+
+  // Format month name
+  const getMonthName = (month) => {
+    const date = new Date();
+    date.setMonth(month - 1);
+    return date.toLocaleString('default', { month: 'long' });
+  };
+
+  // Calculate totals for the circular progress
+  const calculateTotalPercentage = (value, total) => {
+    return Math.round((value / total) * 100);
+  };
+
+  const totalItems = students?.length + teachers?.length + classes?.length + books?.length;
+  const studentPercentage = calculateTotalPercentage(students?.length || 0, totalItems);
+  const teacherPercentage = calculateTotalPercentage(teachers?.length || 0, totalItems);
+  const classPercentage = calculateTotalPercentage(classes?.length || 0, totalItems);
+  const bookPercentage = calculateTotalPercentage(books?.length || 0, totalItems);
+
+  // Prepare data for pie chart
+  const pieChartData = [
+    { name: 'Students', value: students?.length || 0, color: '#3A86FF' },
+    { name: 'Teachers', value: teachers?.length || 0, color: '#FF006E' },
+    { name: 'Classes', value: classes?.length || 0, color: '#8338EC' },
+    { name: 'Books', value: books?.length || 0, color: '#38B000' }
+  ];
 
   // Sample data for dashboard
   const stats = [
@@ -104,8 +213,6 @@ const Dashboard = () => {
       id: 1,
       title: "Total Students",
       value: students?.length,
-      // change: '+12%',
-      // trend: 'up',
       icon: (
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -186,8 +293,8 @@ const Dashboard = () => {
           strokeLinecap="round"
           strokeLinejoin="round"
         >
-          <line x1="12" y1="1" x2="12" y2="23"></line>
-          <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+          <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+          <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
         </svg>
       ),
       color: "#38B000",
@@ -263,6 +370,57 @@ const Dashboard = () => {
     },
   ];
 
+  // Custom active shape renderer
+  const renderActiveShape = (props) => {
+    const { cx, cy, innerRadius, outerRadius, startAngle, endAngle, fill, payload, percent, value } = props;
+    return (
+      <g>
+        <text x={cx} y={cy} dy={-20} textAnchor="middle" fill={fill} style={{ fontSize: '16px', fontWeight: 'bold' }}>
+          {payload.name}
+        </text>
+        <text x={cx} y={cy} dy={0} textAnchor="middle" fill={fill} style={{ fontSize: '14px' }}>
+          {`${value} items`}
+        </text>
+        <text x={cx} y={cy} dy={20} textAnchor="middle" fill={fill} style={{ fontSize: '14px' }}>
+          {`(${(percent * 100).toFixed(1)}%)`}
+        </text>
+        <Sector
+          cx={cx}
+          cy={cy}
+          innerRadius={innerRadius}
+          outerRadius={outerRadius + 10}
+          startAngle={startAngle}
+          endAngle={endAngle}
+          fill={fill}
+        />
+      </g>
+    );
+  };
+
+  // Custom tooltip
+  const CustomTooltip = ({ active, payload }) => {
+    if (active && payload && payload.length) {
+      return (
+        <div className="custom-tooltip" style={{
+          backgroundColor: 'rgba(255, 255, 255, 0.9)',
+          padding: '10px',
+          borderRadius: '5px',
+          boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+          border: `2px solid ${payload[0].payload.color}`
+        }}>
+          <p style={{ margin: '0', color: payload[0].payload.color, fontWeight: 'bold' }}>
+            {payload[0].name}
+          </p>
+          <p style={{ margin: '5px 0 0 0', color: '#666' }}>
+            Count: {payload[0].value}
+          </p>
+       
+        </div>
+      );
+    }
+    return null;
+  };
+
   return (
     <div className="dashboard-container">
       <Navbar toggleSidebar={toggleSidebar} isSidebarOpen={sidebarOpen} />
@@ -270,21 +428,16 @@ const Dashboard = () => {
 
       <main className={`main-content ${sidebarOpen ? "" : "sidebar-closed"}`}>
         {loading ? (
-          <Loader
-            variant="ripple"
-            color="#3A86FF"
-            text="Loading dashboard..."
-          />
+          <Loader variant="ripple" color="#3A86FF" text="Loading dashboard..." />
         ) : (
           <>
             <div className="dashboard-header">
               <h1>Dashboard</h1>
-              {/* <div className="date-filter">
-                <button className="date-filter-button active">Today</button>
-                <button className="date-filter-button">This Week</button>
-                <button className="date-filter-button">This Month</button>
-                <button className="date-filter-button">This Year</button>
-              </div> */}
+              <div className="date-display">
+                <span className="month-year">
+                  {getMonthName(currentMonth)} {currentYear}
+                </span>
+              </div>
             </div>
 
             <div className="stats-grid">
@@ -346,7 +499,7 @@ const Dashboard = () => {
             <div className="dashboard-grid">
               <div className="dashboard-card chart-card">
                 <div className="card-header">
-                  <h2>Student Enrollment</h2>
+                  <h2 id="chart-title">Student Attendance - {getMonthName(currentMonth)} {currentYear}</h2>
                   <div className="card-actions">
                     <button className="card-action-button">
                       <svg
@@ -368,62 +521,93 @@ const Dashboard = () => {
                   </div>
                 </div>
                 <div className="chart-container">
-                  {/* Chart would go here - using placeholder for now */}
                   <div className="chart-placeholder">
-                    <div className="chart-bar" style={{ height: "60%" }}></div>
-                    <div className="chart-bar" style={{ height: "80%" }}></div>
-                    <div className="chart-bar" style={{ height: "40%" }}></div>
-                    <div className="chart-bar" style={{ height: "70%" }}></div>
-                    <div className="chart-bar" style={{ height: "90%" }}></div>
-                    <div className="chart-bar" style={{ height: "50%" }}></div>
-                    <div className="chart-bar" style={{ height: "75%" }}></div>
-                    <div className="chart-bar" style={{ height: "65%" }}></div>
-                    <div className="chart-bar" style={{ height: "85%" }}></div>
-                    <div className="chart-bar" style={{ height: "55%" }}></div>
-                    <div className="chart-bar" style={{ height: "70%" }}></div>
-                    <div className="chart-bar" style={{ height: "45%" }}></div>
+                    {Array.from({ length: daysInMonth }, (_, i) => i + 1).map(day => {
+                      const dayData = attendanceByDay.find(d => d.day === day) || { present: 0, absent: 0, late: 0, total: 0 };
+                      const maxHeight = Math.max(dayData.present, dayData.absent, dayData.late, 1);
+                      
+                      return (
+                        <div key={day} className="chart-day">
+                          <div className="chart-bars">
+                            {dayData.present > 0 && (
+                              <div 
+                                className="chart-bar present" 
+                                style={{ 
+                                  height: `${(dayData.present / maxHeight) * 200}px`
+                                }}
+                              />
+                            )}
+                            {dayData.absent > 0 && (
+                              <div 
+                                className="chart-bar absent" 
+                                style={{ 
+                                  height: `${(dayData.absent / maxHeight) * 200}px`
+                                }}
+                              />
+                            )}
+                            {dayData.late > 0 && (
+                              <div 
+                                className="chart-bar late" 
+                                style={{ 
+                                  height: `${(dayData.late / maxHeight) * 200}px`
+                                }}
+                              />
+                            )}
+                          </div>
+                          <span className="chart-day-label">{day}</span>
+                        </div>
+                      );
+                    })}
                   </div>
                   <div className="chart-legend">
-                    <div className="legend-item">
-                      <span
-                        className="legend-color"
-                        style={{ backgroundColor: "#3A86FF" }}
-                      ></span>
-                      <span className="legend-label">2022</span>
-                    </div>
-                    <div className="legend-item">
-                      <span
-                        className="legend-color"
-                        style={{ backgroundColor: "#FF006E" }}
-                      ></span>
-                      <span className="legend-label">2023</span>
-                    </div>
+                  
+               
                   </div>
                 </div>
               </div>
 
               <div className="dashboard-card activity-card">
                 <div className="card-header">
-                  <h2>Recent Activity</h2>
-                  <button className="view-all-button">View All</button>
+                  <h2>Distribution Overview</h2>
                 </div>
-                <div className="activity-list">
-                  {recentActivity.map((activity) => (
-                    <div key={activity.id} className="activity-item">
-                      <img
-                        src={activity.avatar}
-                        alt={activity.user}
-                        className="activity-avatar"
+                <div className="pie-chart-container">
+                  <ResponsiveContainer width="100%" height={290}>
+                    <PieChart>
+                      <Pie
+                        activeIndex={activeIndex}
+                        activeShape={renderActiveShape}
+                        data={pieChartData}
+                        cx="50%"
+                        cy="50%"
+                        innerRadius={60}
+                        outerRadius={120}
+                        paddingAngle={5}
+                        dataKey="value"
+                        onMouseEnter={(_, index) => setActiveIndex(index)}
+                        animationBegin={0}
+                        animationDuration={1000}
+                        animationEasing="ease-out"
+                      >
+                        {pieChartData.map((entry, index) => (
+                          <Cell 
+                            key={`cell-${index}`} 
+                            fill={entry.color}
+                            stroke="#fff"
+                            strokeWidth={2}
+                          />
+                        ))}
+                      </Pie>
+                      <Tooltip content={<CustomTooltip />} />
+                      <Legend 
+                        layout="vertical" 
+                        align="right" 
+                        verticalAlign="middle"
+                        wrapperStyle={{
+                          paddingLeft: '20px'
+                        }}
                       />
-                      <div className="activity-content">
-                        <p className="activity-text">
-                          <span className="activity-user">{activity.user}</span>{" "}
-                          {activity.action}
-                        </p>
-                        <span className="activity-time">{activity.time}</span>
-                      </div>
-                    </div>
-                  ))}
+                    </PieChart>
+                  </ResponsiveContainer>
                 </div>
               </div>
 
