@@ -7,7 +7,6 @@
 
 .teachers-container {
   padding: 2rem;
-  margin-top: 64px;
   min-height: calc(100vh - 64px);
   background-color: #f8f9fa;
   transition: all 0.3s ease;
@@ -431,7 +430,6 @@
 @media (max-width: 320px) {
   .teachers-container {
     padding: 0.5rem;
-    margin-top: 56px;
     min-height: calc(100vh - 56px);
   }
 

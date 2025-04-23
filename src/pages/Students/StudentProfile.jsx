@@ -12,12 +12,14 @@ import BadgeIcon from '@mui/icons-material/Badge';
 import SchoolIcon from '@mui/icons-material/School';
 import WorkIcon from '@mui/icons-material/Work';
 import EmailIcon from '@mui/icons-material/Email';
+import DownloadIcon from '@mui/icons-material/Download';
 import Navbar from '../../components/Navbar/Navbar';
 import Sidebar from '../../components/Sidebar/Sidebar';
 import useSidebar from '../../hooks/useSidebar';
 import './StudentProfile.css';
 import { useDispatch, useSelector } from 'react-redux';
 import Loader from '../../components/Loader/Loader';
+import { jsPDF } from 'jspdf';
 
 const StudentProfile = () => {
   const { id } = useParams();
@@ -31,8 +33,201 @@ const StudentProfile = () => {
   useEffect(() => {
     if (student) {
       setIsLoading(false);
+      console.log('Student School Details:', {
+        fullSchoolDetails: student.schoolDetails,
+        joiningDate: student.schoolDetails?.joiningDate,
+        previousInstitute: student.schoolDetails?.previousInstitute
+      });
     }
   }, [student]);
+
+  const generatePDF = () => {
+    // Create new PDF document
+    const doc = new jsPDF({
+      orientation: 'portrait',
+      unit: 'mm',
+      format: 'a4'
+    });
+
+    // Define constants
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const pageHeight = doc.internal.pageSize.getHeight();
+    const margin = 15;
+    let yPos = 15;
+
+    // Define colors - Green theme
+    const primaryColor = [44, 139, 59]; // RGB for #2c8b3b
+    const secondaryColor = [102, 102, 102];
+    
+    // Add logo on the left
+    try {
+      doc.addImage('/assets/logo.png', 'PNG', margin, 8, 25, 25, undefined, 'FAST');
+    } catch (error) {
+      console.error('Error adding logo:', error);
+      // Fallback: Create colored rectangle if image fails to load
+      doc.setFillColor(primaryColor[0], primaryColor[1], primaryColor[2]);
+      doc.rect(margin, 8, 25, 25, 'F');
+    }
+
+    // Add profile image on the right
+    if (student.profileImage) {
+      try {
+        // Position the profile image on the right side
+        const profileImageSize = 25; // Same size as logo
+        const profileImageX = pageWidth - margin - profileImageSize; // Right aligned
+        
+        doc.addImage(
+          student.profileImage,
+          'PNG',
+          profileImageX, // X position from right
+          8, // Same Y position as logo
+          profileImageSize, // Width
+          profileImageSize, // Height
+          undefined,
+          'FAST'
+        );
+      } catch (error) {
+        console.error('Error adding profile image:', error);
+      }
+    }
+
+    // Add school name and address (centered between logo and profile image)
+    doc.setTextColor(primaryColor[0], primaryColor[1], primaryColor[2]);
+    doc.setFontSize(16);
+    doc.setFont('helvetica', 'bold');
+    doc.text('Jamia Fatima tul zahra', margin + 35, 15);
+    
+    // Add registration number and address
+    doc.setTextColor(secondaryColor[0], secondaryColor[1], secondaryColor[2]);
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'normal');
+    doc.text([
+      'Reg No: 9879349493',
+      'Address: piplaan miyanwale'
+    ], margin + 35, 23);
+
+    // Add horizontal line
+    yPos = 40;
+    doc.setDrawColor(primaryColor[0], primaryColor[1], primaryColor[2]);
+    doc.setLineWidth(0.5);
+    doc.line(margin, yPos, pageWidth - margin, yPos);
+
+    // Helper function to create table
+    const createTable = (headers, data, startY) => {
+      const cellPadding = 2;
+      const lineHeight = 7;
+      const colWidth = (pageWidth - 2 * margin) / headers.length;
+      
+      // Draw headers with green color
+      doc.setFillColor(primaryColor[0], primaryColor[1], primaryColor[2]);
+      doc.rect(margin, startY, pageWidth - 2 * margin, lineHeight, 'F');
+      doc.setTextColor(255, 255, 255);
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(10);
+      
+      headers.forEach((header, i) => {
+        doc.text(header, margin + (i * colWidth) + cellPadding, startY + lineHeight - 2);
+      });
+
+      // Draw data
+      let currentY = startY + lineHeight;
+      doc.setTextColor(0, 0, 0);
+      doc.setFont('helvetica', 'normal');
+      
+      data.forEach((row, rowIndex) => {
+        if (rowIndex % 2 === 1) {
+          // Light green for alternate rows
+          doc.setFillColor(240, 247, 241);
+          doc.rect(margin, currentY, pageWidth - 2 * margin, lineHeight, 'F');
+        }
+        
+        row.forEach((cell, i) => {
+          const cellText = cell ? cell.toString() : 'N/A';
+          doc.text(cellText, margin + (i * colWidth) + cellPadding, currentY + lineHeight - 2);
+        });
+        currentY += lineHeight;
+      });
+
+      return currentY + 3;
+    };
+
+    // Add title
+    yPos += 8;
+    doc.setTextColor(primaryColor[0], primaryColor[1], primaryColor[2]);
+    doc.setFontSize(14);
+    doc.setFont('helvetica', 'bold');
+    doc.text('STUDENT PROFILE', pageWidth / 2, yPos, { align: 'center' });
+    yPos += 10;
+
+    // Personal Information Table
+    doc.setFontSize(12);
+    doc.setTextColor(primaryColor[0], primaryColor[1], primaryColor[2]);
+    doc.text('Personal Information', margin, yPos);
+    yPos += 7;
+    
+    const personalHeaders = ['Field', 'Details'];
+    const personalData = [
+      ['Full Name', student.fullName || 'N/A'],
+      ['Date of Birth', student.dateOfBirth ? new Date(student.dateOfBirth).toLocaleDateString() : 'N/A'],
+      ['Gender', student.gender || 'N/A'],
+      ['Phone Number', student.phoneNumber || 'N/A'],
+      ['Address', student.fullAddress || 'N/A']
+    ];
+    yPos = createTable(personalHeaders, personalData, yPos);
+
+    // Parent Information Table
+    yPos += 7;
+    doc.setTextColor(primaryColor[0], primaryColor[1], primaryColor[2]);
+    doc.setFontSize(12);
+    doc.text('Parent Information', margin, yPos);
+    yPos += 7;
+
+    const parentHeaders = ['Field', 'Details'];
+    const parentData = [
+      ['Parent Name', student.parentDetails?.fullName || 'N/A'],
+      ['Date of Birth', student.parentDetails?.dateOfBirth ? new Date(student.parentDetails.dateOfBirth).toLocaleDateString() : 'N/A'],
+      ['Gender', student.parentDetails?.gender || 'N/A'],
+      ['Phone Number', student.parentDetails?.phoneNumber || 'N/A'],
+      ['Education', student.parentDetails?.education || 'N/A'],
+      ['Profession', student.parentDetails?.profession || 'N/A']
+    ];
+    yPos = createTable(parentHeaders, parentData, yPos);
+
+    // Academic Information Table
+    yPos += 7;
+    doc.setTextColor(primaryColor[0], primaryColor[1], primaryColor[2]);
+    doc.setFontSize(12);
+    doc.text('Academic Information', margin, yPos);
+    yPos += 7;
+
+    const academicHeaders = ['Field', 'Details'];
+    const academicData = [
+      ['Roll Number', student.schoolDetails?.rollNumber || 'N/A'],
+      ['Grade', student.grade || 'N/A'],
+      ['Joining Date', student.schoolDetails?.joiningDate ? 
+          new Date(student.schoolDetails.joiningDate).toLocaleDateString() : 'N/A'],
+      ['Previous Institute', student.schoolDetails?.previousInstitute || 'N/A']
+    ];
+    yPos = createTable(academicHeaders, academicData, yPos);
+
+    // Add footer
+    doc.setDrawColor(primaryColor[0], primaryColor[1], primaryColor[2]);
+    doc.setLineWidth(0.5);
+    doc.line(margin, pageHeight - 15, pageWidth - margin, pageHeight - 15);
+
+    doc.setTextColor(secondaryColor[0], secondaryColor[1], secondaryColor[2]);
+    doc.setFontSize(8);
+    doc.setFont('helvetica', 'italic');
+    doc.text(
+      `Generated on ${new Date().toLocaleDateString()}`,
+      pageWidth / 2,
+      pageHeight - 8,
+      { align: 'center' }
+    );
+
+    // Save the PDF
+    doc.save(`${student.fullName}_profile.pdf`);
+  };
 
   return (
     <div className={`layout-container ${sidebarOpen ? 'sidebar-open' : ''}`}>
@@ -49,18 +244,20 @@ const StudentProfile = () => {
                 <ArrowBackIcon /> Back to Students
               </div>
               <div className="student-profile-title">
-                <h1>{student.fullName}</h1>
                 <div className="student-status">
                   <BadgeIcon className="status-icon" />
                   <span>Grade {student.grade}</span>
                 </div>
               </div>
+              <button className="download-pdf-btn" onClick={generatePDF}>
+                <DownloadIcon /> Download PDF
+              </button>
             </div>
 
             <div className="student-profile-content">
               <div className="profile-grid">
                 {/* Student Information Card */}
-                <div className="profile-card student-info-card">
+                <div className="profile-card ">
                   <div className="card-header">
                     <div className="card-header-icon">
                       <PersonIcon />
@@ -71,6 +268,7 @@ const StudentProfile = () => {
                     <div className="student-avatar">
                       <img src={student.profileImage} alt={student.fullName} />
                     </div>
+                    <br />
                     <div className="info-grid">
                       <div className="info-item">
                         <PersonIcon className="info-icon" />
@@ -112,7 +310,7 @@ const StudentProfile = () => {
                 </div>
 
                 {/* Parent Information Card */}
-                <div className="profile-card parent-info-card">
+                <div className="profile-card ">
                   <div className="card-header">
                     <div className="card-header-icon">
                       <GroupIcon />
@@ -123,6 +321,7 @@ const StudentProfile = () => {
                     <div className="student-avatar">
                       <img src={student.parentDetails.profileImage || 'https://via.placeholder.com/150'} alt={student.parentDetails.fullName} />
                     </div>
+                    <br />
                     <div className="info-grid">
                       <div className="info-item">
                         <PersonIcon className="info-icon" />
@@ -171,7 +370,7 @@ const StudentProfile = () => {
                 </div>
 
                 {/* School Information Card */}
-                <div className="profile-card school-info-card">
+                <div className="profile-card ">
                   <div className="card-header">
                     <div className="card-header-icon">
                       <SchoolIcon />
@@ -209,56 +408,6 @@ const StudentProfile = () => {
                           <span className="info-value">{student.grade}</span>
                         </div>
                       </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Documents Card */}
-                <div className="profile-card documents-card">
-                  <div className="card-header">
-                    <div className="card-header-icon">
-                      <MenuBookIcon />
-                    </div>
-                    <h2>Documents</h2>
-                  </div>
-                  <div className="card-content">
-                    <div className="documents-grid">
-                      {student.nicImage && (
-                        <div className="document-item">
-                          <div className="document-icon">
-                            <BadgeIcon />
-                          </div>
-                          <h3>Student NIC</h3>
-                          <div className="document-image-container">
-                            <img src={student.nicImage} alt="Student NIC" />
-                          </div>
-                        </div>
-                      )}
-                      {student.parentDetails.nicImage && (
-                        <div className="document-item">
-                          <div className="document-icon">
-                            <BadgeIcon />
-                          </div>
-                          <h3>Parent NIC</h3>
-                          <div className="document-image-container">
-                            <img src={student.parentDetails.nicImage} alt="Parent NIC" />
-                          </div>
-                        </div>
-                      )}
-                      {student.schoolDetails.previousDegreeWithImage && (
-                        <div className="document-item">
-                          <div className="document-icon">
-                            <MenuBookIcon />
-                          </div>
-                          <h3>Previous Degree</h3>
-                          <div className="document-image-container">
-                            <img 
-                              src={student.schoolDetails.previousDegreeWithImage} 
-                              alt="Previous Degree" 
-                            />
-                          </div>
-                        </div>
-                      )}
                     </div>
                   </div>
                 </div>

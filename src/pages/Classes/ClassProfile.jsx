@@ -96,7 +96,7 @@ const ClassProfile = () => {
              
             </div>
 
-            <div className="class-profile-content">
+            <div className="">
               <div className="overview-section">
                 <div className="class-info-card">
                   <h2>Class Information</h2>

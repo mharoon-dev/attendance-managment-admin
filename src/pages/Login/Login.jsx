@@ -8,6 +8,7 @@ import { api } from "../../utils/url.js";
 import Loader from "../../components/Loader/Loader";
 import { useDispatch, useSelector } from "react-redux";
 import { loginStart, loginSuccess } from "../../redux/slices/userSlice.jsx";
+import { toast, Toaster } from "sonner";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -95,6 +96,7 @@ const Login = () => {
         const response = await api.post("auth/login", formData);
         console.log(response);
         dispatch(loginSuccess(response?.data?.data));
+        toast.success(response?.data?.message);
         localStorage.setItem(
           "token",
           JSON.stringify(response?.data?.token)
@@ -103,6 +105,7 @@ const Login = () => {
         navigate("/");
       }
     } catch (error) {
+      toast.error(error?.response?.data?.message);
       console.log(error);
       setIsLoading(false);
     }
@@ -110,6 +113,7 @@ const Login = () => {
 
   return (
     <>
+    <Toaster position="top-right" />
       <div className="login-container">
         <div className="login-card">
           <div className="login-header">

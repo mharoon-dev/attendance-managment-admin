@@ -4,7 +4,6 @@
   background-color: #f5f6fa;
   min-height: 100vh;
   transition: margin-left 0.3s ease;
-  margin-top: 60px;
 }
 
 .subjects-container.sidebar-closed {

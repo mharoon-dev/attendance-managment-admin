@@ -23,13 +23,16 @@ import SubjectProfile from "./pages/Subjects/SubjectProfile.jsx";
 import AddSubject from "./pages/Subjects/AddSubject.jsx";
 import MarkAttendance from "./pages/Attendance/MarkAttendance.jsx";
 import ViewAttendance from "./pages/Attendance/ViewAttendance.jsx";
+import MarkTeacherAttendance from "./pages/Attendance/MarkTeacherAttendance.jsx";
+import ViewTeacherAttendance from "./pages/Attendance/ViewTeacherAttendance.jsx";
+import ViewStudentAttendance from "./pages/Attendance/ViewStudentAttendance.jsx";
 import { useDispatch, useSelector } from "react-redux";
 import { loginFailure, loginSuccess } from "./redux/slices/userSlice.jsx";
 import { api } from "./utils/url.js";
 import Loader from "./components/Loader/Loader.jsx";
 function App() {
   const dispatch = useDispatch();
-  const {user} = useSelector((state) => state.user);
+  const { user } = useSelector((state) => state.user);
   const [loading, setLoading] = useState(true);
   useEffect(() => {
     const token = JSON.parse(localStorage.getItem("token"));
@@ -69,35 +72,53 @@ function App() {
               element={user !== null ? <Dashboard /> : <Navigate to="/login" />}
             />
             <Route path="/teachers" element={<Teachers />} />
-           {user?.role === "admin" || user?.role === "superAdmin" && (
-            <Route path="/teachers/add" element={<AddTeacher />} />
-           )}
+            {user?.role === "admin" ||
+              (user?.role === "superAdmin" && (
+                <Route path="/teachers/add" element={<AddTeacher />} />
+              ))}
             <Route path="/teachers/:id" element={<TeacherProfile />} />
             <Route path="/classes" element={<Classes />} />
-            {user?.role === "admin" || user?.role === "superAdmin" && (
-            <Route path="/classes/add" element={<AddClass />} />
-            )}
+            {user?.role === "admin" ||
+              (user?.role === "superAdmin" && (
+                <Route path="/classes/add" element={<AddClass />} />
+              ))}
             <Route path="/classes/:id" element={<ClassProfile />} />
             <Route path="/students" element={<Students />} />
             <Route path="/students/:id" element={<StudentProfile />} />
-            {user?.role === "admin" || user?.role === "superAdmin" && (
-            <Route path="/students/add" element={<AddStudent />} />
-            )}
+            {user?.role === "admin" ||
+              (user?.role === "superAdmin" && (
+                <Route path="/students/add" element={<AddStudent />} />
+              ))}
             <Route path="/library" element={<Library />} />
-            {user?.role === "admin" || user?.role === "superAdmin" && (
-            <Route path="/library/add" element={<AddBook />} />
-            )}
+            {user?.role === "admin" ||
+              (user?.role === "superAdmin" && (
+                <Route path="/library/add" element={<AddBook />} />
+              ))}
             <Route path="/subjects" element={<Subjects />} />
             <Route path="/subjects/:id" element={<SubjectProfile />} />
-            {user?.role === "admin" || user?.role === "superAdmin" && (
-            <Route path="/subjects/add" element={<AddSubject />} />
+            {user?.role === "admin" ||
+              (user?.role === "superAdmin" && (
+                <Route path="/subjects/add" element={<AddSubject />} />
+              ))}
+            {user?.role === "teacher" && (
+              <Route path="/attendance/mark" element={<MarkAttendance />} />
             )}
             {user?.role === "teacher" && (
-            <Route path="/attendance/mark" element={<MarkAttendance />} />
+              <Route path="/attendance" element={<ViewAttendance />} />
             )}
-            {user?.role === "teacher" && (
-            <Route path="/attendance" element={<ViewAttendance />} />
+            {(user?.role === "admin" || user?.role === "superAdmin") && (
+              <Route
+                path="/attendance/teacher/mark"
+                element={<MarkTeacherAttendance />}
+              />
             )}
+            {(user?.role === "admin" || user?.role === "superAdmin") && (
+              <Route
+                path="/attendance/teacher/view"
+                element={<ViewTeacherAttendance />}
+              />
+            )}
+              <Route path="/attendance/student/view" element={<ViewStudentAttendance />} />
           </Routes>
         </Router>
       )}

@@ -57,14 +57,16 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
           <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
         </svg>
       ),
-      subItems: [
-        { label: "All Teachers", path: "/teachers" },
-        user.role === "admin" ||
-          (user.role === "superAdmin" && {
-            label: "Add Teacher",
-            path: "/teachers/add",
-          }),
-      ],
+      subItems:
+        user?.role === "admin" || user?.role === "superAdmin"
+          ? [
+              { label: "All Teachers", path: "/teachers" },
+              {
+                label: "Add Teacher",
+                path: "/teachers/add",
+              },
+            ]
+          : [{ label: "All Teachers", path: "/teachers" }],
     },
     {
       key: "classes",
@@ -87,14 +89,16 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
           <line x1="8" y1="15" x2="12" y2="15"></line>
         </svg>
       ),
-      subItems: [
-        { label: "All Classes", path: "/classes" },
-        user.role === "admin" ||
-          (user.role === "superAdmin" && {
-            label: "Add Class",
-            path: "/classes/add",
-          }),
-      ],
+      subItems:
+        user?.role === "admin" || user?.role === "superAdmin"
+          ? [
+              { label: "All Classes", path: "/classes" },
+              {
+                label: "Add Class",
+                path: "/classes/add",
+              },
+            ]
+          : [{ label: "All Classes", path: "/classes" }],
     },
     {
       key: "students",
@@ -115,14 +119,16 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
           <circle cx="9" cy="7" r="4"></circle>
         </svg>
       ),
-      subItems: [
-        { label: "All Students", path: "/students" },
-        user.role === "admin" ||
-          (user.role === "superAdmin" && {
-            label: "Add Student",
-            path: "/students/add",
-          }),
-      ],
+      subItems:
+        user?.role === "admin" || user?.role === "superAdmin"
+          ? [
+              { label: "All Students", path: "/students" },
+              {
+                label: "Add Student",
+                path: "/students/add",
+              },
+            ]
+          : [{ label: "All Students", path: "/students" }],
     },
     {
       key: "library",
@@ -145,14 +151,16 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
           <line x1="8" y1="15" x2="12" y2="15"></line>
         </svg>
       ),
-      subItems: [
-        { label: "All Books", path: "/library" },
-        user.role === "admin" ||
-          (user.role === "superAdmin" && {
-            label: "Add Book",
-            path: "/library/add",
-          }),
-      ],
+      subItems:
+        user?.role === "admin" || user?.role === "superAdmin"
+          ? [
+              { label: "All Books", path: "/library" },
+              {
+                label: "Add Book",
+                path: "/library/add",
+              },
+            ]
+          : [{ label: "All Books", path: "/library" }],
     },
     {
       key: "subjects",
@@ -173,14 +181,22 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
           <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
         </svg>
       ),
-      subItems: [
-        { label: "All Subjects", path: "/subjects" },
-        user.role === "admin" ||
-          (user.role === "superAdmin" && {
-            label: "Add Subject",
-            path: "/subjects/add",
-          }),
-      ],
+      subItems:
+        user?.role === "admin" ||
+        (user?.role === "superAdmin"
+          ? [
+              { label: "All Subjects", path: "/subjects" },
+              {
+                label: "Add Subject",
+                path: "/subjects/add",
+              },
+            ]
+          : [
+              {
+                label: "All Subjects",
+                path: "/subjects",
+              },
+            ]),
     },
     {
       key: "attendance",
@@ -202,10 +218,36 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
           <path d="M9 14l2 2 4-4"></path>
         </svg>
       ),
-      subItems: [
-        { label: "Mark Student Attendance", path: "/attendance/mark" },
-        { label: "View Student Attendance", path: "/attendance" },
-      ],
+      subItems:
+        user?.role === "admin" || user?.role === "superAdmin"
+          ? [
+              {
+                label: "Mark Teacher Attendance",
+                path: "/attendance/teacher/mark",
+              },
+              {
+                label: "View Teacher Attendance",
+                path: "/attendance/teacher/view",
+              },
+              {
+                label: "View Student Attendance",
+                path: "/attendance/student/view",
+              },
+            ]
+          : [
+              {
+                label: "Mark Student Attendance",
+                path: "/attendance/mark",
+              },
+              {
+                label: "View Daily Student Attendance",
+                path: "/attendance",
+              },
+              {
+                label: "View Student Attendance",
+                path: "/attendance/student/view",
+              },
+            ],
     },
   ];
 

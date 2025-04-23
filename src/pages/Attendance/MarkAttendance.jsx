@@ -36,33 +36,10 @@ const MarkAttendance = () => {
   const [error, setError] = useState('');
   const {user} = useSelector((state) => state.user);
   const [teacherId, setTeacherId] = useState('');
-  console.log(user);
 
   useEffect(() => {
     setTeacherId(user?.teacher?.jobDetails?.teacherId);
   }, [user]);
-
-  // useEffect(() => {
-  //   // Set default time to current time
-  //   const now = new Date();
-  //   const hours = now.getHours().toString().padStart(2, '0');
-  //   const minutes = now.getMinutes().toString().padStart(2, '0');
-  //   setCurrentTime(`${hours}:${minutes}`);
-
-  //   // Fetch today's attendance
-  //   fetchTodayAttendance();
-  // }, []);
-
-  // const fetchTodayAttendance = async () => {
-  //   try {
-  //     const response = await fetch(`/api/attendance?date=${currentDate.toISOString().split('T')[0]}`);
-  //     const data = await response.json();
-  //     setTodayAttendance(data);
-  //   } catch (error) {
-  //     console.error('Error fetching today\'s attendance:', error);
-  //     setError('Failed to fetch today\'s attendance');
-  //   }
-  // };
 
   const handleRollNumberChange = (e) => {
     setRollNumber(e.target.value);
@@ -76,6 +53,9 @@ const MarkAttendance = () => {
 
   const handleStatusChange = (newStatus) => {
     setStatus(newStatus);
+    if (newStatus === 'absent') {
+      setCurrentTime('');
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -86,7 +66,7 @@ const MarkAttendance = () => {
       return;
     }
 
-    if (!currentTime) {
+    if (status !== 'absent' && !currentTime) {
       setError('Please enter a time');
       return;
     }
@@ -100,7 +80,7 @@ const MarkAttendance = () => {
           id: rollNumber,
           status,
           date: currentDate,
-          time: currentTime,
+          time: status === 'absent' ? null : currentTime,
           teacherId,
         });
       
@@ -114,7 +94,6 @@ const MarkAttendance = () => {
         setIsLoading(false);
       } else {
         setError(response.data.message);
-        console.log(response.data.message);
         setIsLoading(false);
         toast.error(response.data.message);
         return;
@@ -203,7 +182,8 @@ const MarkAttendance = () => {
                     id="time"
                     value={currentTime}
                     onChange={handleTimeChange}
-                    required
+                    required={status !== 'absent'}
+                    disabled={status === 'absent'}
                   />
                 </div>
               </div>
@@ -242,7 +222,7 @@ const MarkAttendance = () => {
                 <button 
                   type="submit" 
                   className="save-btn"
-                  disabled={isLoading || !rollNumber.trim() || !currentTime}
+                  disabled={isLoading || !rollNumber.trim() || (status !== 'absent' && !currentTime)}
                 >
                     <>
                       <SaveIcon /> Mark Attendance
@@ -252,8 +232,6 @@ const MarkAttendance = () => {
                 <br />
             </div>
           </form>
-
-   
         </div>
       </div>
     </div></>
