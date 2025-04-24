@@ -2,9 +2,7 @@
   padding: 2rem;
   background-color: #f5f5f5;
   min-height: 100vh;
-  margin-top: 60px;
   transition: margin-left 0.3s ease;
-  margin-top: 60px;
 }
 
 .mark-attendance-container.sidebar-closed {

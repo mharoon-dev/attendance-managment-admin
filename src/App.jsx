@@ -26,10 +26,13 @@ import ViewAttendance from "./pages/Attendance/ViewAttendance.jsx";
 import MarkTeacherAttendance from "./pages/Attendance/MarkTeacherAttendance.jsx";
 import ViewTeacherAttendance from "./pages/Attendance/ViewTeacherAttendance.jsx";
 import ViewStudentAttendance from "./pages/Attendance/ViewStudentAttendance.jsx";
+import NotFound from "./pages/NotFound/NotFound.jsx";
 import { useDispatch, useSelector } from "react-redux";
 import { loginFailure, loginSuccess } from "./redux/slices/userSlice.jsx";
 import { api } from "./utils/url.js";
 import Loader from "./components/Loader/Loader.jsx";
+import Finance from "./pages/Finance/Finance.jsx";
+
 function App() {
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.user);
@@ -118,7 +121,11 @@ function App() {
                 element={<ViewTeacherAttendance />}
               />
             )}
-              <Route path="/attendance/student/view" element={<ViewStudentAttendance />} />
+            <Route path="/attendance/student/view" element={<ViewStudentAttendance />} />
+            {user?.role === "superAdmin" && (
+              <Route path="/finance" element={<Finance />} />
+            )}
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </Router>
       )}

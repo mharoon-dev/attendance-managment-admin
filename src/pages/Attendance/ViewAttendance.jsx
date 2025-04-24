@@ -306,7 +306,7 @@ xmlns:html="http://www.w3.org/TR/REC-html40">
                         </span>
                       </td>
                       <td>{record?.date}</td>
-                      <td>{record?.time}</td>
+                      <td>{record?.time || "N/A"}</td>
                     </tr>
                   ))}
                 </tbody>
