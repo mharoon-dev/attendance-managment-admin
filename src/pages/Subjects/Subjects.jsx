@@ -202,7 +202,7 @@ const Subjects = () => {
           <div className="subjects-header">
             <h1>All Subjects</h1>
             {
-              user.role === "admin" || user.role === "superAdmin" && (
+              (user.role === "admin" || user.role === "superAdmin") && (
                 <button
                   className="add-subject-btn"
                   onClick={() => navigate("/subjects/add")}

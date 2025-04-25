@@ -74,35 +74,42 @@ function App() {
               path="/"
               element={user !== null ? <Dashboard /> : <Navigate to="/login" />}
             />
+            
+            {/* Teachers Routes */}
             <Route path="/teachers" element={<Teachers />} />
-            {user?.role === "admin" ||
-              (user?.role === "superAdmin" || user?.role === "admin" && (
-                <Route path="/teachers/add" element={<AddTeacher />} />
-              ))}
+            {(user?.role === "admin" || user?.role === "superAdmin") && (
+              <Route path="/teachers/add" element={<AddTeacher />} />
+            )}
             <Route path="/teachers/:id" element={<TeacherProfile />} />
+            
+            {/* Classes Routes */}
             <Route path="/classes" element={<Classes />} />
-            {user?.role === "admin" ||
-              (user?.role === "superAdmin" || user?.role === "admin" && (
-                <Route path="/classes/add" element={<AddClass />} />
-              ))}
+            {(user?.role === "admin" || user?.role === "superAdmin") && (
+              <Route path="/classes/add" element={<AddClass />} />
+            )}
             <Route path="/classes/:id" element={<ClassProfile />} />
+            
+            {/* Students Routes */}
             <Route path="/students" element={<Students />} />
+            {(user?.role === "admin" || user?.role === "superAdmin") && (
+              <Route path="/students/add" element={<AddStudent />} />
+            )}
             <Route path="/students/:id" element={<StudentProfile />} />
-            {user?.role === "admin" ||
-              (user?.role === "superAdmin" || user?.role === "admin" && (
-                <Route path="/students/add" element={<AddStudent />} />
-              ))}
+            
+            {/* Library Routes */}
             <Route path="/library" element={<Library />} />
-            {user?.role === "admin" ||
-              (user?.role === "superAdmin" || user?.role === "admin" && (
-                <Route path="/library/add" element={<AddBook />} />
-              ))}
+            {(user?.role === "admin" || user?.role === "superAdmin") && (
+              <Route path="/library/add" element={<AddBook />} />
+            )}
+            
+            {/* Subjects Routes */}
             <Route path="/subjects" element={<Subjects />} />
+            {(user?.role === "admin" || user?.role === "superAdmin") && (
+              <Route path="/subjects/add" element={<AddSubject />} />
+            )}
             <Route path="/subjects/:id" element={<SubjectProfile />} />
-            {user?.role === "admin" ||
-              (user?.role === "superAdmin" || user?.role === "admin" && (
-                <Route path="/subjects/add" element={<AddSubject />} />
-              ))}
+            
+            {/* Attendance Routes */}
             {user?.role === "teacher" && (
               <Route path="/attendance/mark" element={<MarkAttendance />} />
             )}
@@ -122,9 +129,12 @@ function App() {
               />
             )}
             <Route path="/attendance/student/view" element={<ViewStudentAttendance />} />
+            
+            {/* Finance Route */}
             {user?.role === "superAdmin" && (
               <Route path="/finance" element={<Finance />} />
             )}
+            
             <Route path="*" element={<NotFound />} />
           </Routes>
         </Router>

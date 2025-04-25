@@ -270,17 +270,15 @@ try {
       >
         <div className="teachers-header">
           <h1>Teachers</h1>
-          {
-            user.role === "admin" || user.role === "superAdmin" && (
-              <button
-                className="add-teacher-btn"
-                onClick={() => navigate("/teachers/add")}
-          >
-            <AddIcon />
-            Add New Teacher
-          </button>
-            )
-          }
+          {(user?.role === "admin" || user?.role === "superAdmin") && (
+            <button
+              className="add-teacher-btn"
+              onClick={() => navigate("/teachers/add")}
+            >
+              <AddIcon />
+              Add New Teacher
+            </button>
+          )}
         </div>
 
         <div className="toolbar">
@@ -295,34 +293,7 @@ try {
               />
             </div>
             <div className="dropdown-container">
-              <CustomDropdown
-                compact
-                icon={<FilterListIcon />}
-                label="Department"
-                value={selectedDepartment}
-                onChange={(value) => setSelectedDepartment(value)}
-                options={departments}
-              />
-              <CustomDropdown
-                compact
-                icon={<FilterListIcon />}
-                label="Status"
-                value={selectedStatus}
-                onChange={(value) => setSelectedStatus(value)}
-                options={statuses}
-              />
-              <CustomDropdown
-                compact
-                icon={<ArrowUpwardIcon />}
-                label="Sort By"
-                value={sortBy}
-                onChange={(value) => setSortBy(value)}
-                options={[
-                  { value: "name", label: "Name" },
-                  { value: "designation", label: "Designation" },
-                  { value: "joinDate", label: "Join Date" },
-                ]}
-              />
+              
             </div>
           </div>
         </div>

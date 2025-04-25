@@ -337,7 +337,7 @@ const Students = () => {
           <div className="students-header">
             <h1>All Students</h1>
             {
-              user.role === "admin" || user.role === "superAdmin" && (
+              (user.role === "admin" || user.role === "superAdmin") && (
                 <button className="add-student-btn" onClick={() => navigate('/students/add')}>
                   <AddIcon /> Add New Student
                 </button>

@@ -4,7 +4,6 @@
   transition: margin-left 0.3s ease, padding 0.3s ease;
   min-height: calc(100vh - 64px);
   background-color: #f5f7fa;
-  margin-top: 64px; /* Add top margin to account for navbar height */
 }
 
 .add-book-container.sidebar-closed {

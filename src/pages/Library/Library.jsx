@@ -187,7 +187,7 @@ const Library = () => {
         <div className="library-header">
           <h1>Library</h1>
           {
-            user.role === "admin" || user.role === "superAdmin" && (
+            (user.role === "admin" || user.role === "superAdmin") && (
               <button className="add-book-btn" onClick={handleAddBook}>
                 <AddIcon /> Add New Book
               </button>

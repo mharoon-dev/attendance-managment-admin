@@ -230,7 +230,7 @@ const Classes = () => {
         <div className="classes-header">
           <h1>All Classes</h1>
           {
-            user.role === "admin" || user.role === "superAdmin" && (
+            (user.role === "admin" || user.role === "superAdmin") && (
               <button className="add-class-btn" onClick={() => navigate('/classes/add')}>
                 <AddIcon /> Add New Class
               </button>
