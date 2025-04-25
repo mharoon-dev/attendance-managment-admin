@@ -182,8 +182,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
         </svg>
       ),
       subItems:
-        user?.role === "admin" ||
-        (user?.role === "superAdmin"
+        user?.role === "admin" || user?.role === "superAdmin"
           ? [
               { label: "All Subjects", path: "/subjects" },
               {
@@ -196,7 +195,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
                 label: "All Subjects",
                 path: "/subjects",
               },
-            ]),
+            ],
     },
     {
       key: "attendance",
@@ -234,24 +233,23 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
                 path: "/attendance/student/view",
               },
             ]
-            : [
-                {
-                  label: "Mark Student Attendance",
-                  path: "/attendance/mark",
-                },
-                {
-                  label: "View Daily Student Attendance",
-                  path: "/attendance",
-                },
-                {
-                  label: "View Student Attendance",
-                  path: "/attendance/student/view",
-                },
-              ],
+          : [
+              {
+                label: "Mark Student Attendance",
+                path: "/attendance/mark",
+              },
+              {
+                label: "View Daily Student Attendance",
+                path: "/attendance",
+              },
+              {
+                label: "View Student Attendance",
+                path: "/attendance/student/view",
+              },
+            ],
     },
-  
-  
-    {
+
+    user?.role === "superAdmin" && {
       key: "finance",
       label: "Finance",
       icon: (
@@ -269,13 +267,12 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
           <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
         </svg>
       ),
-      subItems:
-        [
-          {
-            label: "Finance",
-            path: "/finance",
-          },
-        ]
+      subItems: [
+        {
+          label: "Finance",
+          path: "/finance",
+        },
+      ],
     },
   ];
 
@@ -341,7 +338,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
                         expandedItems[item.key] ? "expanded" : ""
                       }`}
                     >
-                      {item.subItems.map((subItem) => (
+                      {item?.subItems?.map((subItem) => (
                         <Link
                           key={subItem.path}
                           to={subItem.path}

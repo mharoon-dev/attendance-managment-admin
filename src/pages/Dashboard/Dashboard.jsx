@@ -598,20 +598,22 @@ const Dashboard = () => {
                         ))}
                       </Pie>
                       <Tooltip content={<CustomTooltip />} />
-                      <Legend 
-                        layout="vertical" 
-                        align="right" 
-                        verticalAlign="middle"
+                      {window.innerWidth > 768 && (
+                        <Legend
+                          layout="vertical"
+                          align="right"
+                          verticalAlign="middle"
                         wrapperStyle={{
                           paddingLeft: '20px'
                         }}
-                      />
+                        />
+                      )}
                     </PieChart>
                   </ResponsiveContainer>
                 </div>
               </div>
 
-              <div className="dashboard-card events-card">
+              {/* <div className="dashboard-card events-card">
                 <div className="card-header">
                   <h2>Upcoming Events</h2>
                   <button className="view-all-button">View All</button>
@@ -708,7 +710,7 @@ const Dashboard = () => {
                     </div>
                   ))}
                 </div>
-              </div>
+              </div> */}
             </div>
           </>
         )}
