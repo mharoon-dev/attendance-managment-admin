@@ -45,7 +45,7 @@ import { toast, Toaster } from "sonner";
 const Library = () => {
   const navigate = useNavigate();
   const { sidebarOpen, toggleSidebar } = useSidebar();
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [showAddModal, setShowAddModal] = useState(false);
   const {user} = useSelector((state) => state.user);
@@ -62,11 +62,6 @@ const Library = () => {
     issuedDate: "",
   });
 
-  useEffect(() => {
-    if (books.length > 0) {
-      setIsLoading(false);
-    }
-  }, [books]);
 
   const handleSearch = (e) => {
     setSearchTerm(e.target.value);
