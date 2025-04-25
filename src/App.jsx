@@ -76,31 +76,31 @@ function App() {
             />
             <Route path="/teachers" element={<Teachers />} />
             {user?.role === "admin" ||
-              (user?.role === "superAdmin" && (
+              (user?.role === "superAdmin" || user?.role === "admin" && (
                 <Route path="/teachers/add" element={<AddTeacher />} />
               ))}
             <Route path="/teachers/:id" element={<TeacherProfile />} />
             <Route path="/classes" element={<Classes />} />
             {user?.role === "admin" ||
-              (user?.role === "superAdmin" && (
+              (user?.role === "superAdmin" || user?.role === "admin" && (
                 <Route path="/classes/add" element={<AddClass />} />
               ))}
             <Route path="/classes/:id" element={<ClassProfile />} />
             <Route path="/students" element={<Students />} />
             <Route path="/students/:id" element={<StudentProfile />} />
             {user?.role === "admin" ||
-              (user?.role === "superAdmin" && (
+              (user?.role === "superAdmin" || user?.role === "admin" && (
                 <Route path="/students/add" element={<AddStudent />} />
               ))}
             <Route path="/library" element={<Library />} />
             {user?.role === "admin" ||
-              (user?.role === "superAdmin" && (
+              (user?.role === "superAdmin" || user?.role === "admin" && (
                 <Route path="/library/add" element={<AddBook />} />
               ))}
             <Route path="/subjects" element={<Subjects />} />
             <Route path="/subjects/:id" element={<SubjectProfile />} />
             {user?.role === "admin" ||
-              (user?.role === "superAdmin" && (
+              (user?.role === "superAdmin" || user?.role === "admin" && (
                 <Route path="/subjects/add" element={<AddSubject />} />
               ))}
             {user?.role === "teacher" && (
