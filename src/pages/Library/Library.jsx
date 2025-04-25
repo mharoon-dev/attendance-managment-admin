@@ -250,7 +250,7 @@ const Library = () => {
                         <VisibilityIcon />
                       </button>
                       {
-                        user.role === "admin" || user.role === "superAdmin" && (
+                        (user.role === "admin" || user.role === "superAdmin") && (
                           <>
                           <button
                             className="action-btn edit-btn"

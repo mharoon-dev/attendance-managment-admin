@@ -309,7 +309,7 @@ const Classes = () => {
                   <VisibilityIcon /> View Details
                 </button>
                 {
-                  user.role === "admin" || user.role === "superAdmin" && (
+                  (user.role === "admin" || user.role === "superAdmin") && (
                     <div className="quick-actions">
                       <button 
                     className="action-btn edit"

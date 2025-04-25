@@ -265,7 +265,7 @@ const Subjects = () => {
                 </div>
 
                     {
-                      user.role === "admin" || user.role === "superAdmin" && (
+                      (user.role === "admin" || user.role === "superAdmin") && (
                 <div className="subject-card-footer">
                   <div className="quick-actions">
                         <>

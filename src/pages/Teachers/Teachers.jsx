@@ -395,7 +395,7 @@ try {
                 </button>
                 <div className="quick-actions">
                  {
-                  user.role === "admin" || user.role === "superAdmin" && (
+                  (user.role === "admin" || user.role === "superAdmin") && (
                     <>
                      <button
                     className="action-btn edit"
