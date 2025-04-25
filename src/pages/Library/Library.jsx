@@ -93,7 +93,7 @@ const Library = () => {
       category: book.category,
       shelfNo: book.shelfNo,
       issuedTo: book.issuedTo,
-      issuedDate: book.issuedDate,
+      issuedDate: book.issuedDate ? new Date(book.issuedDate).toISOString().split('T')[0] : '',
     });
     setShowEditModal(true);
   };

@@ -229,18 +229,7 @@ xmlns:html="http://www.w3.org/TR/REC-html40">
                   placeholder="Select Status"
                 />
                 
-                <div className="filter-group">
-                  <label>Search</label>
-                  <div className="search-input">
-                    <SearchIcon />
-                    <input
-                      type="text"
-                      placeholder="Search by name or roll number"
-                      value={filters.search}
-                      onChange={(e) => handleFilterChange('search', e.target.value)}
-                    />
-                  </div>
-                </div>
+            
               </div>
             )}
             

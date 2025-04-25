@@ -162,6 +162,7 @@ const StudentProfile = () => {
     // Personal Information Table
     doc.setFontSize(12);
     doc.setTextColor(primaryColor[0], primaryColor[1], primaryColor[2]);
+    doc.setFont('helvetica', 'normal');
     doc.text('Personal Information', margin, yPos);
     yPos += 7;
     
@@ -179,6 +180,7 @@ const StudentProfile = () => {
     yPos += 7;
     doc.setTextColor(primaryColor[0], primaryColor[1], primaryColor[2]);
     doc.setFontSize(12);
+    doc.setFont('helvetica', 'normal');
     doc.text('Parent Information', margin, yPos);
     yPos += 7;
 
@@ -197,6 +199,7 @@ const StudentProfile = () => {
     yPos += 7;
     doc.setTextColor(primaryColor[0], primaryColor[1], primaryColor[2]);
     doc.setFontSize(12);
+    doc.setFont('helvetica', 'normal');
     doc.text('Academic Information', margin, yPos);
     yPos += 7;
 
@@ -265,8 +268,19 @@ const StudentProfile = () => {
                     <h2>Student Information</h2>
                   </div>
                   <div className="card-content">
-                    <div className="student-avatar">
-                      <img src={student.profileImage} alt={student.fullName} />
+                    <div className="student-images-container">
+                      <div className="student-profile-section">
+                        <div className="image-label">Profile Photo</div>
+                        <div className="image-container">
+                          <img src={student.profileImage} alt={student.fullName} />
+                        </div>
+                      </div>
+                      <div className="student-nic-section">
+                        <div className="image-label">NIC Document</div>
+                        <div className="image-container">
+                          <img src={student.nicImage || 'https://via.placeholder.com/150'} alt="Student NIC" />
+                        </div>
+                      </div>
                     </div>
                     <br />
                     <div className="info-grid">
@@ -318,8 +332,19 @@ const StudentProfile = () => {
                     <h2>Parent Information</h2>
                   </div>
                   <div className="card-content">
-                    <div className="student-avatar">
-                      <img src={student.parentDetails.profileImage || 'https://via.placeholder.com/150'} alt={student.parentDetails.fullName} />
+                    <div className="parent-images-container">
+                      <div className="parent-profile-section">
+                        <div className="image-label">Profile Photo</div>
+                        <div className="image-container">
+                          <img src={student.parentDetails.profileImage || 'https://via.placeholder.com/150'} alt={student.parentDetails.fullName} />
+                        </div>
+                      </div>
+                      <div className="parent-nic-section">
+                        <div className="image-label">NIC Document</div>
+                        <div className="image-container">
+                          <img src={student.parentDetails.nicImage || 'https://via.placeholder.com/150'} alt="Parent NIC" />
+                        </div>
+                      </div>
                     </div>
                     <br />
                     <div className="info-grid">

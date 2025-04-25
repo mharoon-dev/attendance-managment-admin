@@ -32,7 +32,7 @@ import { loginFailure, loginSuccess } from "./redux/slices/userSlice.jsx";
 import { api } from "./utils/url.js";
 import Loader from "./components/Loader/Loader.jsx";
 import Finance from "./pages/Finance/Finance.jsx";
-
+import Profile from "./pages/Profile/Profile.jsx";
 function App() {
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.user);
@@ -134,6 +134,8 @@ function App() {
             {user?.role === "superAdmin" && (
               <Route path="/finance" element={<Finance />} />
             )}
+
+            <Route path="/profile" element={<Profile />} />
             
             <Route path="*" element={<NotFound />} />
           </Routes>
