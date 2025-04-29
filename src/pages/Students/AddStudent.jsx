@@ -21,6 +21,7 @@ import { addStudentFailure, addStudentStart, addStudentSuccess } from '../../red
 import { useDispatch, useSelector } from 'react-redux';
 import Loader from '../../components/Loader/Loader';
 import { Toaster, toast } from 'sonner';
+import ImageViewer from '../../components/ImageViewer/ImageViewer';
 
 const AddStudent = () => {
   const navigate = useNavigate();
@@ -37,6 +38,8 @@ const AddStudent = () => {
       previousDegreeWithImage: false
     }
   });
+  const [showImageViewer, setShowImageViewer] = useState(false);
+  const [selectedImage, setSelectedImage] = useState('');
   const studentId = Math.floor(Math.random() * 900000) + 100000; // Generates a 6-digit number
   const [formData, setFormData] = useState({
     fullName: '',
@@ -216,6 +219,11 @@ const AddStudent = () => {
     };
   });
 
+  const handleImageClick = (imageUrl) => {
+    setSelectedImage(imageUrl);
+    setShowImageViewer(true);
+  };
+
   return (
     <>
     <Toaster position="top-right" />
@@ -253,8 +261,10 @@ const AddStudent = () => {
                     ) : (
                       <>
                         <img
-                          src={formData.profileImage}
+                          src={formData.profileImage || '/default-avatar.png'}
                           className="avatar-preview"
+                          onClick={() => handleImageClick(formData.profileImage || '/default-avatar.png')}
+                          style={{ cursor: 'pointer' }}
                         />
                         {formData.profileImage && (
                           <button
@@ -364,8 +374,10 @@ const AddStudent = () => {
                     ) : (
                       <>
                         <img
-                          src={formData.nicImage}
+                          src={formData.nicImage || '/default-nic.png'}
                           className="avatar-preview"
+                          onClick={() => handleImageClick(formData.nicImage || '/default-nic.png')}
+                          style={{ cursor: 'pointer' }}
                         />
                         {formData.nicImage && (
                           <button
@@ -407,8 +419,10 @@ const AddStudent = () => {
                     ) : (
                       <>
                         <img
-                          src={formData.parentDetails.profileImage}
+                          src={formData.parentDetails.profileImage || '/default-avatar.png'}
                           className="avatar-preview"
+                          onClick={() => handleImageClick(formData.parentDetails.profileImage || '/default-avatar.png')}
+                          style={{ cursor: 'pointer' }}
                         />
                         {formData.parentDetails.profileImage && (
                           <button
@@ -554,8 +568,10 @@ const AddStudent = () => {
                     ) : (
                       <>
                         <img
-                          src={formData.parentDetails.nicImage}
+                          src={formData.parentDetails.nicImage || '/default-nic.png'}
                           className="avatar-preview"
+                          onClick={() => handleImageClick(formData.parentDetails.nicImage || '/default-nic.png')}
+                          style={{ cursor: 'pointer' }}
                         />
                         {formData.parentDetails.nicImage && (
                           <button
@@ -656,8 +672,10 @@ const AddStudent = () => {
                     ) : (
                       <>
                         <img
-                          src={formData.schoolDetails.previousDegreeWithImage}
+                          src={formData.schoolDetails.previousDegreeWithImage || '/default-degree.png'}
                           className="avatar-preview"
+                          onClick={() => handleImageClick(formData.schoolDetails.previousDegreeWithImage || '/default-degree.png')}
+                          style={{ cursor: 'pointer' }}
                         />
                         {formData.schoolDetails.previousDegreeWithImage && (
                           <button
@@ -706,6 +724,12 @@ const AddStudent = () => {
     </>
     )
     }
+    {showImageViewer && (
+      <ImageViewer
+        imageUrl={selectedImage}
+        onClose={() => setShowImageViewer(false)}
+      />
+    )}
     </>
   );
 };

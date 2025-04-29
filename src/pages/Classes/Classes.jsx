@@ -38,6 +38,7 @@ const Classes = () => {
   const [newTeacherId, setNewTeacherId] = useState('');
   const [newTeacherYear, setNewTeacherYear] = useState(new Date().getFullYear());
   const [teachersList, setTeachersList] = useState([]);
+  const [deleteConfirmation, setDeleteConfirmation] = useState({ show: false, classId: null });
 
   const [formData, setFormData] = useState({
     className: '',
@@ -197,25 +198,33 @@ const Classes = () => {
     }
   };
 
+  const handleDeleteClick = (classId) => {
+    setDeleteConfirmation({ show: true, classId });
+  };
+
+  const handleCancelDelete = () => {
+    setDeleteConfirmation({ show: false, classId: null });
+  };
+
   const handleDeleteClass = async (classId) => {
-    console.log(classId);
     try {
       setLoading(true);
       dispatch(deleteClassStart());
       const response = await api.delete(`classes/delete/${classId}`);
       dispatch(deleteClassSuccess(classId));
-      console.log(response);
       if (response.status === 200) {
         toast.success('Class deleted successfully');
-        setLoading(false);
+        setDeleteConfirmation({ show: false, classId: null });
       }
     } catch (error) {
       dispatch(deleteClassFailure(error));
       console.error('Error deleting class:', error);
       toast.error('Error deleting class');
+    } finally {
       setLoading(false);
     }
   };
+
   return (
     <>
     {
@@ -312,14 +321,17 @@ const Classes = () => {
                   (user.role === "admin" || user.role === "superAdmin") && (
                     <div className="quick-actions">
                       <button 
-                    className="action-btn edit"
-                    onClick={() => handleEditClass(cls)}
-                  >
-                    <EditIcon />
-                  </button>
-                  <button className="action-btn delete" onClick={() => handleDeleteClass(cls._id)}>
-                    <DeleteIcon />
-                  </button>
+                        className="action-btn edit"
+                        onClick={() => handleEditClass(cls)}
+                      >
+                        <EditIcon />
+                      </button>
+                      <button 
+                        className="action-btn delete" 
+                        onClick={() => handleDeleteClick(cls._id)}
+                      >
+                        <DeleteIcon />
+                      </button>
                     </div>
                   )
                 }
@@ -328,6 +340,34 @@ const Classes = () => {
           ))}
         </div>
       </div>
+
+      {/* Delete Confirmation Modal */}
+      {deleteConfirmation.show && (
+        <div className="modal-overlay">
+          <div className="delete-confirmation-modal">
+            <div className="modal-header">
+              <h2>Confirm Delete</h2>
+              <button className="modal-close-btn" onClick={handleCancelDelete}>
+                <CloseIcon />
+              </button>
+            </div>
+            <div className="modal-body">
+              <p>Are you sure you want to delete this class? This action cannot be undone.</p>
+            </div>
+            <div className="modal-footer">
+              <button className="cancel-btn" onClick={handleCancelDelete}>
+                Cancel
+              </button>
+              <button 
+                className="delete-btn" 
+                onClick={() => handleDeleteClass(deleteConfirmation.classId)}
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Edit Class Modal */}
       {isEditModalOpen && editingClass && (

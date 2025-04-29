@@ -134,8 +134,11 @@ function App() {
             {user?.role === "superAdmin" && (
               <Route path="/finance" element={<Finance />} />
             )}
-
-            <Route path="/profile" element={<Profile />} />
+{
+  user?.role === "teacher" && (
+    <Route path="/profile" element={<Profile />} />
+  )
+}
             
             <Route path="*" element={<NotFound />} />
           </Routes>

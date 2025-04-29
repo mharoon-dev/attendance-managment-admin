@@ -61,7 +61,7 @@ const Library = () => {
     issuedTo: "",
     issuedDate: "",
   });
-
+  const [deleteConfirmation, setDeleteConfirmation] = useState({ show: false, bookId: null });
 
   const handleSearch = (e) => {
     setSearchTerm(e.target.value);
@@ -103,19 +103,29 @@ const Library = () => {
     setShowDetailsModal(true);
   };
 
-  const handleDeleteBook = async (book) => {
+  const handleDeleteClick = (bookId) => {
+    setDeleteConfirmation({ show: true, bookId });
+  };
+
+  const handleCancelDelete = () => {
+    setDeleteConfirmation({ show: false, bookId: null });
+  };
+
+  const handleDeleteBook = async (bookId) => {
     try {
-      if (
-        window.confirm(`Are you sure you want to delete "${book.bookName}"?`)
-      ) {
-        dispatch(deleteBookStart());
-        const response = await api.delete(`library/books/${book._id}`);
-        dispatch(deleteBookSuccess(book._id));
-        toast.success("Book deleted successfully");
+      setIsLoading(true);
+      dispatch(deleteBookStart());
+      const response = await api.delete(`library/books/${bookId}`);
+      dispatch(deleteBookSuccess(bookId));
+      if (response.status === 200) {
+        toast.success('Book deleted successfully');
+        setDeleteConfirmation({ show: false, bookId: null });
       }
     } catch (error) {
       dispatch(deleteBookFailure(error.response.data.message));
-      toast.error("Book delete failed");
+      toast.error('Error deleting book');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -215,7 +225,7 @@ const Library = () => {
           <div className="books-grid">
             {filteredBooks.length > 0 ? (
               filteredBooks.map((book) => (
-                <div key={book.id} className="book-card">
+                <div key={book._id} className="book-card">
                   <div className="book-info">
                     <h3 className="book-title">{book.bookName}</h3>
                     <div className="book-details">
@@ -242,29 +252,29 @@ const Library = () => {
                         </div>
                       )}
                     </div>
-                    <div className="book-actions">
-                      <button
-                        className="action-btn view-btn"
+                    <div className="book-card-footer">
+                      <button 
+                        className="view-book-btn"
                         onClick={() => handleViewBook(book)}
                       >
-                        <VisibilityIcon />
+                        <VisibilityIcon /> View Details
                       </button>
                       {
                         (user.role === "admin" || user.role === "superAdmin") && (
-                          <>
-                          <button
-                            className="action-btn edit-btn"
-                            onClick={() => handleEditBook(book)}
-                      >
-                        <EditIcon />
-                      </button>
-                      <button
-                        className="action-btn delete-btn"
-                        onClick={() => handleDeleteBook(book)}
-                      >
-                        <DeleteIcon />
-                      </button>
-                          </>
+                          <div className="quick-actions">
+                            <button 
+                              className="action-btn edit"
+                              onClick={() => handleEditBook(book)}
+                            >
+                              <EditIcon />
+                            </button>
+                            <button 
+                              className="action-btn delete" 
+                              onClick={() => handleDeleteClick(book._id)}
+                            >
+                              <DeleteIcon />
+                            </button>
+                          </div>
                         )
                       }
                     </div>
@@ -538,6 +548,34 @@ const Library = () => {
               </button>
                 )
               }
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {deleteConfirmation.show && (
+        <div className="modal-overlay">
+          <div className="delete-confirmation-modal">
+            <div className="modal-header">
+              <h2>Confirm Delete</h2>
+              <button className="modal-close-btn" onClick={handleCancelDelete}>
+                <CloseIcon />
+              </button>
+            </div>
+            <div className="modal-body">
+              <p>Are you sure you want to delete this book? This action cannot be undone.</p>
+            </div>
+            <div className="modal-footer">
+              <button className="cancel-btn" onClick={handleCancelDelete}>
+                Cancel
+              </button>
+              <button 
+                className="delete-btn" 
+                onClick={() => handleDeleteBook(deleteConfirmation.bookId)}
+              >
+                Delete
+              </button>
             </div>
           </div>
         </div>

@@ -20,6 +20,7 @@ import './StudentProfile.css';
 import { useDispatch, useSelector } from 'react-redux';
 import Loader from '../../components/Loader/Loader';
 import { jsPDF } from 'jspdf';
+import ImageViewer from '../../components/ImageViewer/ImageViewer';
 
 const StudentProfile = () => {
   const { id } = useParams();
@@ -29,6 +30,8 @@ const StudentProfile = () => {
   const student = students.find((student) => student._id === id);
   const { sidebarOpen, toggleSidebar } = useSidebar();
   const [isLoading, setIsLoading] = useState(true);
+  const [showImageViewer, setShowImageViewer] = useState(false);
+  const [selectedImage, setSelectedImage] = useState('');
 
   useEffect(() => {
     if (student) {
@@ -232,6 +235,11 @@ const StudentProfile = () => {
     doc.save(`${student.fullName}_profile.pdf`);
   };
 
+  const handleImageClick = (imageUrl) => {
+    setSelectedImage(imageUrl);
+    setShowImageViewer(true);
+  };
+
   return (
     <div className={`layout-container ${sidebarOpen ? 'sidebar-open' : ''}`}>
       <Navbar toggleSidebar={toggleSidebar} isSidebarOpen={sidebarOpen} />
@@ -272,13 +280,23 @@ const StudentProfile = () => {
                       <div className="student-profile-section">
                         <div className="image-label">Profile Photo</div>
                         <div className="image-container">
-                          <img src={student.profileImage} alt={student.fullName} />
+                          <img 
+                            src={student.profileImage} 
+                            alt={student.fullName}
+                            onClick={() => handleImageClick(student.profileImage)}
+                            style={{ cursor: 'pointer' }}
+                          />
                         </div>
                       </div>
                       <div className="student-nic-section">
                         <div className="image-label">NIC Document</div>
                         <div className="image-container">
-                          <img src={student.nicImage || 'https://via.placeholder.com/150'} alt="Student NIC" />
+                          <img 
+                            src={student.nicImage || 'https://via.placeholder.com/150'} 
+                            alt="Student NIC"
+                            onClick={() => handleImageClick(student.nicImage)}
+                            style={{ cursor: 'pointer' }}
+                          />
                         </div>
                       </div>
                     </div>
@@ -336,13 +354,23 @@ const StudentProfile = () => {
                       <div className="parent-profile-section">
                         <div className="image-label">Profile Photo</div>
                         <div className="image-container">
-                          <img src={student.parentDetails.profileImage || 'https://via.placeholder.com/150'} alt={student.parentDetails.fullName} />
+                          <img 
+                            src={student.parentDetails.profileImage || 'https://via.placeholder.com/150'} 
+                            alt={student.parentDetails.fullName}
+                            onClick={() => handleImageClick(student.parentDetails.profileImage)}
+                            style={{ cursor: 'pointer' }}
+                          />
                         </div>
                       </div>
                       <div className="parent-nic-section">
                         <div className="image-label">NIC Document</div>
                         <div className="image-container">
-                          <img src={student.parentDetails.nicImage || 'https://via.placeholder.com/150'} alt="Parent NIC" />
+                          <img 
+                            src={student.parentDetails.nicImage || 'https://via.placeholder.com/150'} 
+                            alt="Parent NIC"
+                            onClick={() => handleImageClick(student.parentDetails.nicImage)}
+                            style={{ cursor: 'pointer' }}
+                          />
                         </div>
                       </div>
                     </div>
@@ -439,6 +467,13 @@ const StudentProfile = () => {
               </div>
             </div>
           </>
+        )}
+
+        {showImageViewer && (
+          <ImageViewer
+            imageUrl={selectedImage}
+            onClose={() => setShowImageViewer(false)}
+          />
         )}
       </div>
     </div>

@@ -680,4 +680,37 @@
     width: 100%;
     justify-content: center;
   }
+}
+
+.view-book-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background-color: #e3f2fd;
+  color: #1976d2;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  margin: 8px 0;
+}
+
+.view-book-btn:hover {
+  background-color: #bbdefb;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.view-book-btn:active {
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+.view-book-btn .MuiSvgIcon-root {
+  font-size: 20px;
+  margin-right: 4px;
 } 

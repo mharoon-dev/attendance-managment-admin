@@ -2,6 +2,9 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import EditNoteIcon from '@mui/icons-material/EditNote';
+import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import {
   getIncomesStart,
   getIncomesSuccess,
@@ -54,6 +57,7 @@ const Finance = () => {
   const [editMode, setEditMode] = useState(false);
   const [editId, setEditId] = useState(null);
   const { sidebarOpen, toggleSidebar } = useSidebar();
+  const [viewMode, setViewMode] = useState(false);
 
   useEffect(() => {
     fetchIncomes();
@@ -174,6 +178,64 @@ const Finance = () => {
   const totalExpense = expenses.reduce((sum, expense) => sum + Number(expense.spend), 0);
   const balance = totalIncome - totalExpense;
 
+  const formatDateForCSV = (dateString) => {
+    if (!dateString) return "";
+    if (/^\d{4}-\d{2}-\d{2}$/.test(dateString)) return dateString;
+    if (/^\d{4}-\d{2}-\d{2}T/.test(dateString)) return dateString.slice(0, 10);
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) return "";
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+
+  const exportToCSV = () => {
+    const headers = ['Total', 'Income', 'Expense'];
+    const totalRow = [balance, totalIncome, totalExpense];
+
+    const incomeSectionTitle = ['Income'];
+    const incomeTableHeader = ['Date', 'Details', 'Credit'];
+    const incomeRows = incomes.map(income => [
+      income.date ? income.date.slice(0, 10) : "",
+      `"${income.details}"`,
+      income.credit
+    ]);
+    const expenseSectionTitle = ['Expenses'];
+    const expenseTableHeader = ['Date', 'Details', 'Spend'];
+    const expenseRows = expenses.map(expense => [
+      expense.date ? expense.date.slice(0, 10) : "",
+      `"${expense.details}"`,
+      expense.spend
+    ]);
+
+    const csvContent = [
+      headers.join(','),
+      totalRow.join(','),
+      '',
+      incomeSectionTitle.join(','),
+      incomeTableHeader.join(','),
+      ...incomeRows.map(row => row.join(',')),
+      '',
+      expenseSectionTitle.join(','),
+      expenseTableHeader.join(','),
+      ...expenseRows.map(row => row.join(',')),
+    ].join('\n');
+
+    const BOM = '\uFEFF';
+    const blob = new Blob([BOM + csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', 'finance_report.csv');
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    console.log("CSV Content:\n", csvContent);
+  };
+
   return (
     <div className="finance-container">
       <Sidebar isOpen={sidebarOpen} toggleSidebar={toggleSidebar} />
@@ -182,6 +244,23 @@ const Finance = () => {
         <div className="finance-main">
           <br />
           <h1>Finance Management</h1>
+
+          <div className="finance-actions">
+            <button
+              className="mode-toggle-btn"
+              onClick={() => setViewMode(!viewMode)}
+            >
+              {viewMode ? <EditNoteIcon /> : <VisibilityIcon />}
+              {viewMode ? ' Edit Mode' : ' View Mode'}
+            </button>
+            <button
+              className="export-btn"
+              onClick={exportToCSV}
+            >
+              <FileDownloadIcon />
+              Export CSV
+            </button>
+          </div>
 
           <div className="finance-summary">
             <div className="summary-card income">
@@ -198,179 +277,228 @@ const Finance = () => {
             </div>
           </div>
 
-          <div className="finance-tabs">
-            <button
-              className={`tab-btn ${activeTab === "incomes" ? "active" : ""}`}
-              onClick={() => setActiveTab("incomes")}
-            >
-              Incomes
-            </button>
-            <button
-              className={`tab-btn ${activeTab === "expenses" ? "active" : ""}`}
-              onClick={() => setActiveTab("expenses")}
-            >
-              Expenses
-            </button>
-          </div>
+          {!viewMode && (
+            <div className="finance-tabs">
+              <button
+                className={`tab-btn ${activeTab === "incomes" ? "active" : ""}`}
+                onClick={() => setActiveTab("incomes")}
+              >
+                Incomes
+              </button>
+              <button
+                className={`tab-btn ${activeTab === "expenses" ? "active" : ""}`}
+                onClick={() => setActiveTab("expenses")}
+              >
+                Expenses
+              </button>
+            </div>
+          )}
 
-          {activeTab === "incomes" ? (
-            <>
-              <form onSubmit={handleIncomeSubmit} className="finance-form">
-                <div className="form-group">
-                  <label>Date</label>
-                  <input
-                    type="date"
-                    name="date"
-                    value={incomeFormData.date}
-                    onChange={handleIncomeChange}
-                    required
-                  />
-                </div>
-                <div className="form-group">
-                  <label>Details</label>
-                  <input
-                    type="text"
-                    name="details"
-                    value={incomeFormData.details}
-                    onChange={handleIncomeChange}
-                    placeholder="Enter income details"
-                    required
-                  />
-                </div>
-                <div className="form-group">
-                  <label>Amount</label>
-                  <input
-                    type="number"
-                    name="credit"
-                    value={incomeFormData.credit}
-                    onChange={handleIncomeChange}
-                    placeholder="Enter amount"
-                    required
-                  />
-                </div>
-                <button type="submit" className="submit-btn">
-                  {editMode ? "Update Income" : "Add Income"}
-                </button>
-              </form>
-
-              {incomesLoading && <div className="loading">Loading...</div>}
-              {incomesError && <div className="error">{incomesError}</div>}
-
+          {viewMode ? (
+            <div className="finance-viewmode-tables">
               <div className="finance-table">
+                <h2>Incomes</h2>
                 <table>
                   <thead>
                     <tr>
                       <th>Date</th>
                       <th>Details</th>
                       <th>Credit</th>
-                      <th>Actions</th>
                     </tr>
                   </thead>
                   <tbody>
                     {incomes?.map((income) => (
                       <tr key={income._id}>
-                        <td style={{width: "30%", padding: "10px"}}>{new Date(income.date).toLocaleDateString()}</td>
-                        <td style={{width: "40%", padding: "10px"}}>{income.details}</td>
-                        <td style={{width: "30%", padding: "10px"}}>{income.credit}</td>
-                        <td id="actions" style={{width: "30%", padding: "10px"}}>
-                          <button
-                            className="edit-btn"
-                            onClick={() => handleIncomeEdit(income)}
-                          >
-                            <EditIcon />
-                          </button>
-                          <button
-                            className="delete-btn"
-                            onClick={() => handleIncomeDelete(income._id)}
-                          >
-                            <DeleteIcon />
-                          </button>
-                        </td>
+                        <td>{new Date(income.date).toLocaleDateString()}</td>
+                        <td>{income.details}</td>
+                        <td>{income.credit}</td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
               </div>
-            </>
-          ) : (
-            <>
-              <form onSubmit={handleExpenseSubmit} className="finance-form">
-                <div className="form-group">
-                  <label>Date</label>
-                  <input
-                    type="date"
-                    name="date"
-                    value={expenseFormData.date}
-                    onChange={handleExpenseChange}
-                    required
-                  />
-                </div>
-                <div className="form-group">
-                  <label>Details</label>
-                  <input
-                    type="text"
-                    name="details"
-                    value={expenseFormData.details}
-                    onChange={handleExpenseChange}
-                    placeholder="Enter expense details"
-                    required
-                  />
-                </div>
-                <div className="form-group">
-                  <label>Amount</label>
-                  <input
-                    type="number"
-                    name="spend"
-                    value={expenseFormData.spend}
-                    onChange={handleExpenseChange}
-                    placeholder="Enter amount"
-                    required
-                  />
-                </div>
-                <button type="submit" className="submit-btn">
-                  {editMode ? "Update Expense" : "Add Expense"}
-                </button>
-              </form>
-
-              {expensesLoading && <div className="loading">Loading...</div>}
-              {expensesError && <div className="error">{expensesError}</div>}
-
               <div className="finance-table">
+                <h2>Expenses</h2>
                 <table>
                   <thead>
-                    <tr style={{gap: "20px !important"}}>
+                    <tr>
                       <th>Date</th>
                       <th>Details</th>
                       <th>Spend</th>
-                      <th>Actions</th>
                     </tr>
                   </thead>
                   <tbody>
                     {expenses?.map((expense) => (
                       <tr key={expense._id}>
-                        <td style={{width: "30%", padding: "10px"}}>{new Date(expense.date).toLocaleDateString()}</td>
-                        <td style={{width: "40%", padding: "10px"}}>{expense.details}</td>
-                        <td style={{width: "30%", padding: "10px"}}>{expense.spend}</td>
-                        <td id="actions" style={{width: "30%", padding: "10px"}}>
-                          <button
-                            className="edit-btn"
-                            onClick={() => handleExpenseEdit(expense)}
-                          >
-                            <EditIcon />
-                          </button>
-                          <button
-                            className="delete-btn"
-                            onClick={() => handleExpenseDelete(expense?._id)}
-                          >
-                            <DeleteIcon />
-                          </button>
-                        </td>
+                        <td>{new Date(expense.date).toLocaleDateString()}</td>
+                        <td>{expense.details}</td>
+                        <td>{expense.spend}</td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
               </div>
-            </>
+            </div>
+          ) : (
+            activeTab === "incomes" ? (
+              <>
+                <form onSubmit={handleIncomeSubmit} className="finance-form">
+                  <div className="form-group">
+                    <label>Date</label>
+                    <input
+                      type="date"
+                      name="date"
+                      value={incomeFormData.date}
+                      onChange={handleIncomeChange}
+                      required
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Details</label>
+                    <input
+                      type="text"
+                      name="details"
+                      value={incomeFormData.details}
+                      onChange={handleIncomeChange}
+                      placeholder="Enter income details"
+                      required
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Amount</label>
+                    <input
+                      type="number"
+                      name="credit"
+                      value={incomeFormData.credit}
+                      onChange={handleIncomeChange}
+                      placeholder="Enter amount"
+                      required
+                    />
+                  </div>
+                  <button type="submit" className="submit-btn">
+                    {editMode ? "Update Income" : "Add Income"}
+                  </button>
+                </form>
+
+                {incomesLoading && <div className="loading">Loading...</div>}
+                {incomesError && <div className="error">{incomesError}</div>}
+
+                <div className="finance-table">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Date</th>
+                        <th>Details</th>
+                        <th>Credit</th>
+                        <th>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {incomes?.map((income) => (
+                        <tr key={income._id}>
+                          <td style={{width: "30%", padding: "10px"}}>{new Date(income.date).toLocaleDateString()}</td>
+                          <td style={{width: "40%", padding: "10px"}}>{income.details}</td>
+                          <td style={{width: "30%", padding: "10px"}}>{income.credit}</td>
+                          <td id="actions" style={{width: "30%", padding: "10px"}}>
+                            <button
+                              className="edit-btn"
+                              onClick={() => handleIncomeEdit(income)}
+                            >
+                              <EditIcon />
+                            </button>
+                            <button
+                              className="delete-btn"
+                              onClick={() => handleIncomeDelete(income._id)}
+                            >
+                              <DeleteIcon />
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </>
+            ) : (
+              <>
+                <form onSubmit={handleExpenseSubmit} className="finance-form">
+                  <div className="form-group">
+                    <label>Date</label>
+                    <input
+                      type="date"
+                      name="date"
+                      value={expenseFormData.date}
+                      onChange={handleExpenseChange}
+                      required
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Details</label>
+                    <input
+                      type="text"
+                      name="details"
+                      value={expenseFormData.details}
+                      onChange={handleExpenseChange}
+                      placeholder="Enter expense details"
+                      required
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Amount</label>
+                    <input
+                      type="number"
+                      name="spend"
+                      value={expenseFormData.spend}
+                      onChange={handleExpenseChange}
+                      placeholder="Enter amount"
+                      required
+                    />
+                  </div>
+                  <button type="submit" className="submit-btn">
+                    {editMode ? "Update Expense" : "Add Expense"}
+                  </button>
+                </form>
+
+                {expensesLoading && <div className="loading">Loading...</div>}
+                {expensesError && <div className="error">{expensesError}</div>}
+
+                <div className="finance-table">
+                  <table>
+                    <thead>
+                      <tr style={{gap: "20px !important"}}>
+                        <th>Date</th>
+                        <th>Details</th>
+                        <th>Spend</th>
+                        <th>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {expenses?.map((expense) => (
+                        <tr key={expense._id}>
+                          <td style={{width: "30%", padding: "10px"}}>{new Date(expense.date).toLocaleDateString()}</td>
+                          <td style={{width: "40%", padding: "10px"}}>{expense.details}</td>
+                          <td style={{width: "30%", padding: "10px"}}>{expense.spend}</td>
+                          <td id="actions" style={{width: "30%", padding: "10px"}}>
+                            <button
+                              className="edit-btn"
+                              onClick={() => handleExpenseEdit(expense)}
+                            >
+                              <EditIcon />
+                            </button>
+                            <button
+                              className="delete-btn"
+                              onClick={() => handleExpenseDelete(expense?._id)}
+                            >
+                              <DeleteIcon />
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </>
+            )
           )}
         </div>
       </div>

@@ -39,11 +39,6 @@ const Profile = () => {
       <div className={`profile-page-container ${!sidebarOpen ? 'sidebar-closed' : ''}`}>
         <div className="profile-page-header">
           <h1>My Profile</h1>
-          <div className="profile-page-header-actions">
-            <button className="profile-page-edit-btn">
-              Edit Profile
-            </button>
-          </div>
         </div>
 
         <div className="profile-page-content">

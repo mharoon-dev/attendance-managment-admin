@@ -21,6 +21,7 @@ import { addTeacherFailure, addTeacherStart, addTeacherSuccess } from '../../red
 import { useDispatch } from 'react-redux';
 import Loader from '../../components/Loader/Loader';
 import { Toaster, toast } from 'sonner';
+import ImageViewer from '../../components/ImageViewer/ImageViewer';
 
 const AddTeacher = () => {
   const navigate = useNavigate();
@@ -60,6 +61,8 @@ const AddTeacher = () => {
   });
   const dispatch = useDispatch();
   const [error, setError] = useState(null);
+  const [showImageViewer, setShowImageViewer] = useState(false);
+  const [selectedImage, setSelectedImage] = useState('');
 
   useEffect(() => {
     console.log(formData);
@@ -176,6 +179,11 @@ const AddTeacher = () => {
     { value: 'Widowed', label: 'Widowed', icon: <PersonIcon /> }
   ];
 
+  const handleImageClick = (imageUrl) => {
+    setSelectedImage(imageUrl);
+    setShowImageViewer(true);
+  };
+
   return (
     <>
     <Toaster position="top-right" />
@@ -213,8 +221,10 @@ const AddTeacher = () => {
                     ) : (
                       <>
                         <img
-                          src={formData.profileImage }
+                          src={formData.profileImage || '/default-avatar.png'}
                           className="avatar-preview"
+                          onClick={() => handleImageClick(formData.profileImage || '/default-avatar.png')}
+                          style={{ cursor: 'pointer' }}
                         />
                         {formData.profileImage && (
                           <button
@@ -538,8 +548,10 @@ const AddTeacher = () => {
                     ) : (
                       <>
                         <img
-                          src={formData.nicImage }
+                          src={formData.nicImage || '/default-nic.png'}
                           className="avatar-preview"
+                          onClick={() => handleImageClick(formData.nicImage || '/default-nic.png')}
+                          style={{ cursor: 'pointer' }}
                         />
                         {formData.nicImage && (
                           <button
@@ -591,6 +603,8 @@ const AddTeacher = () => {
                             <img
                               src={url}
                               className="marksheet-preview-image"
+                              onClick={() => handleImageClick(url)}
+                              style={{ cursor: 'pointer' }}
                             />
                             <button
                               type="button"
@@ -625,6 +639,13 @@ const AddTeacher = () => {
           </form>
         </div>
       </div>
+
+      {showImageViewer && (
+        <ImageViewer
+          imageUrl={selectedImage}
+          onClose={() => setShowImageViewer(false)}
+        />
+      )}
     </div>
     </>
     )

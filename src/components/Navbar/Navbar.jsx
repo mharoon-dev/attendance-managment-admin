@@ -24,7 +24,7 @@ const Navbar = ({ toggleSidebar, isSidebarOpen }) => {
     dispatch(logout());
     navigate('/login');
   };
-  
+
   // Sample notifications data
   const notifications = [
     { id: 1, message: 'New student registration', time: '5 minutes ago', read: false },
@@ -32,10 +32,10 @@ const Navbar = ({ toggleSidebar, isSidebarOpen }) => {
     { id: 3, message: 'Parent meeting scheduled', time: '2 hours ago', read: true },
     { id: 4, message: 'School event reminder', time: '1 day ago', read: true },
   ];
-  
+
   // Count unread notifications
   const unreadCount = notifications.filter(notification => !notification.read).length;
-  
+
   return (
     <nav className={`navbar ${isSidebarOpen ? 'sidebar-open' : 'sidebar-closed'}`}>
       <div className="navbar-left">
@@ -48,18 +48,18 @@ const Navbar = ({ toggleSidebar, isSidebarOpen }) => {
         </button>
         <div className="logo">
           <Link to="/">
-          <span className="logo-text">School</span>
-          <span className="logo-highlight">Manager</span>
+            <span className="logo-text">School</span>
+            <span className="logo-highlight">Manager</span>
           </Link>
         </div>
       </div>
-      
+
       <div className="navbar-right">
-        
+
         <div className="navbar-actions">
           <div className="notification-container">
-      
-            
+
+
             {showNotifications && (
               <div className="notification-dropdown">
                 <div className="notification-header">
@@ -83,30 +83,30 @@ const Navbar = ({ toggleSidebar, isSidebarOpen }) => {
               </div>
             )}
           </div>
-          
+
           <div className="profile-container">
-            <button 
-              className="profile-button" 
+            <button
+              className="profile-button"
               onClick={() => setShowProfileMenu(!showProfileMenu)}
             >
-              <img 
-                src={user?.teacher?.profileImage || "/assets/profile-avatar.jpg"} 
-                alt="Profile" 
-                className="profile-image" 
+              <img
+                src={user?.teacher?.profileImage || "/assets/profile-avatar.jpg"}
+                alt="Profile"
+                className="profile-image"
               />
               <span className="profile-name">{user?.teacher?.fullName || user?.role}</span>
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <polyline points="6 9 12 15 18 9"></polyline>
               </svg>
             </button>
-            
+
             {showProfileMenu && (
               <div className="profile-dropdown">
                 <div className="navbar-profile-header">
-                  <img 
-                    src={user?.teacher?.profileImage || "/assets/profile-avatar.jpg"} 
-                    alt="Profile" 
-                    className="profile-image-large" 
+                  <img
+                    src={user?.teacher?.profileImage || "/assets/profile-avatar.jpg"}
+                    alt="Profile"
+                    className="profile-image-large"
                   />
                   <div className="profile-info">
                     <h3>{user?.teacher?.fullName || user?.role}</h3>
@@ -114,14 +114,15 @@ const Navbar = ({ toggleSidebar, isSidebarOpen }) => {
                   </div>
                 </div>
                 <div className="profile-menu">
-                  <button className="profile-menu-item" onClick={() => navigate('/profile')}>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                      <circle cx="12" cy="7" r="4"></circle>
-                    </svg>
-                    My Profile
-                  </button>
-                 
+                  {user?.role === "teacher" && (
+                    <button className="profile-menu-item" onClick={() => navigate('/profile')}>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                      </svg>
+                      My Profile
+                    </button>
+                  )}
                   <button className="profile-menu-item" onClick={handleLogout}>
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>

@@ -34,7 +34,7 @@ const Students = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedGrade, setSelectedGrade] = useState('all');
   const [selectedGender, setSelectedGender] = useState('all');
-  const {user} = useSelector((state) => state.user);
+  const { user } = useSelector((state) => state.user);
   const [sortBy, setSortBy] = useState('name');
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editingStudent, setEditingStudent] = useState(null);
@@ -67,8 +67,9 @@ const Students = () => {
     grade: ''
   });
 
-  const {classes} = useSelector((state) => state.classes);
-  
+  const { classes } = useSelector((state) => state.classes);
+
+  const [deleteConfirmation, setDeleteConfirmation] = useState({ show: false, studentId: null });
 
   useEffect(() => {
     console.log(formData);
@@ -97,10 +98,10 @@ const Students = () => {
   // Filter students based on search term and selected filters
   const filteredStudents = students?.filter(student => {
     const matchesSearch = student.parentDetails.fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         student.schoolDetails.rollNumber.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesGrade = selectedGrade === 'all' || student.grade.toString() === selectedGrade;
+      student.schoolDetails.rollNumber.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesGrade = selectedGrade === 'all' || student.grade == selectedGrade;
     const matchesGender = selectedGender === 'all' || student.gender === selectedGender;
-    
+
     return matchesSearch && matchesGrade && matchesGender;
   });
 
@@ -227,6 +228,14 @@ const Students = () => {
     }
   };
 
+  const handleDeleteClick = (studentId) => {
+    setDeleteConfirmation({ show: true, studentId });
+  };
+
+  const handleCancelDelete = () => {
+    setDeleteConfirmation({ show: false, studentId: null });
+  };
+
   const handleDeleteStudent = async (studentId) => {
     try {
       setLoading(true);
@@ -235,12 +244,13 @@ const Students = () => {
       if (response.status === 200) {
         dispatch(deleteStudentSuccess(studentId));
         toast.success('Student deleted successfully');
-        setLoading(false);
+        setDeleteConfirmation({ show: false, studentId: null });
       }
     } catch (error) {
       console.error('Error deleting student:', error);
       dispatch(deleteStudentFailure(error));
       toast.error('Error deleting student');
+    } finally {
       setLoading(false);
     }
   };
@@ -256,7 +266,7 @@ const Students = () => {
             'Content-Type': 'multipart/form-data'
           }
         });
-        
+
         if (fieldName === 'profileImage') {
           setFormData(prev => ({ ...prev, profileImage: response.data.data }));
         } else if (fieldName === 'nicImage') {
@@ -332,7 +342,7 @@ const Students = () => {
       <div className={`layout-container ${sidebarOpen ? 'sidebar-open' : ''}`}>
         <Navbar toggleSidebar={toggleSidebar} isSidebarOpen={sidebarOpen} />
         <Sidebar isOpen={sidebarOpen} toggleSidebar={toggleSidebar} />
-        
+
         <div className={`students-container ${!sidebarOpen ? 'sidebar-closed' : ''}`}>
           <div className="students-header">
             <h1>All Students</h1>
@@ -366,8 +376,8 @@ const Students = () => {
                   value={selectedGrade}
                   onChange={(value) => setSelectedGrade(value)}
                   options={classes.map(cls => ({
-                    value: cls.className,
-                    label: cls.className,
+                    value: cls.grade,
+                    label: cls.className + ' ' + "(" + cls.grade + ")",
                     icon: <BusinessIcon />
                   }))}
                 />
@@ -379,498 +389,515 @@ const Students = () => {
                   onChange={(value) => setSelectedGender(value)}
                   options={genderOptions}
                 />
-          
+
               </div>
             </div>
           </div>
 
-          <div className="students-grid">
-            {sortedStudents?.map(student => (
-              <div key={student._id} className="student-card">
-                <div className="student-card-header">
-                  <img src={student.profileImage || 'https://via.placeholder.com/150'} alt={student.parentDetails.fullName} className="student-avatar" />
-                </div>
-                
-                <div className="student-card-body">
-                  <h3 className="student-name">{student?.fullName}</h3>
-                  <p className="student-class">Grade {student?.grade} • Roll No: {student?.schoolDetails?.rollNumber}</p>
-                  
-                  <div className="student-info">
-                    <div className="info-item">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
-                      </svg>
-                      <span>{student.phoneNumber}</span>
-                    </div>
-                    <div className="info-item">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                        <circle cx="12" cy="7" r="4"></circle>
-                      </svg>
-                      <span>{student.gender}</span>
-                    </div>
-                    <div className="info-item">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                        <circle cx="12" cy="7" r="4"></circle>
-                      </svg>
-                      <span>{student?.fullName}</span>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="student-card-footer">
-                  <button 
-                    className="view-student-btn"
-                    onClick={() => handleViewStudent(student._id)}
-                  >
-                    <VisibilityIcon /> View Profile
-                  </button>
-                  {
-                    (user.role === "admin" || user.role === "superAdmin") && (
-                      <div className="quick-actions">
-                        <button 
-                      className="action-btn edit"
-                      onClick={() => handleEditStudent(student)}
-                    >
-                      <EditIcon />
-                    </button>
-                    <button 
-                      className="action-btn delete"
-                      onClick={() => handleDeleteStudent(student._id)}
-                    >
-                      <DeleteIcon />
-                    </button>
-                    </div>
-                  )
-                }
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Edit Student Modal */}
-        {isEditModalOpen && editingStudent && (
-          <div className="modal-overlay">
-            <div className="modal-container">
-              <div className="modal-header">
-                <h2>Edit Student</h2>
-                <button className="close-btn" onClick={handleCloseModal}>
-                  <CloseIcon />
-                </button>
-              </div>
-              <div className="modal-body">
-                <form onSubmit={handleSubmit}>
-                  {/* Student Personal Information Section */}
-                  <div className="form-section">
-                    <h3 className="section-title">Personal Information</h3>
-                    <div className="form-row">
-                      <div className="form-group">
-                        <label htmlFor="fullName">Full Name</label>
-                        <input
-                          type="text"
-                          id="fullName"
-                          name="fullName"
-                          value={formData?.fullName}
-                          onChange={handleInputChange}
-                          required
-                          placeholder="Enter student's full name"
-                        />
-                      </div>
-                      <div className="form-group">
-                        <label htmlFor="gender">Gender</label>
-                        <select
-                          id="gender"
-                          name="gender"
-                          value={formData.gender}
-                          onChange={handleInputChange}
-                          required
-                        >
-                          <option value="">Select Gender</option>
-                          <option value="Male">Male</option>
-                          <option value="Female">Female</option>
-                          <option value="Other">Other</option>
-                        </select>
-                      </div>
-                    </div>
-
-                    <div className="form-row">
-                      <div className="form-group">
-                        <label htmlFor="dateOfBirth">Date of Birth</label>
-                        <input
-                          type="date"
-                          id="dateOfBirth"
-                          name="dateOfBirth"
-                          value={formData.dateOfBirth}
-                          onChange={handleInputChange}
-                          required
-                        />
-                      </div>
-                      <div className="form-group">
-                        <label htmlFor="phoneNumber">Phone Number</label>
-                        <input
-                          type="tel"
-                          id="phoneNumber"
-                          name="phoneNumber"
-                          value={formData.phoneNumber}
-                          onChange={handleInputChange}
-                          required
-                        />
-                      </div>
-                    </div>
-
-                    <div className="form-group">
-                      <label htmlFor="fullAddress">Full Address</label>
-                      <textarea
-                        id="fullAddress"
-                        name="fullAddress"
-                        value={formData.fullAddress}
-                        onChange={handleInputChange}
-                        rows="3"
-                        required
-                      />
-                    </div>
-                  </div>
-
-                  {/* Student Documents Section */}
-                  <div className="form-section">
-                    <h3 className="section-title">Documents</h3>
-                    <div className="form-row">
-                      <div className="form-group">
-                        <label htmlFor="profileImage">Profile Image</label>
-                        <div className="avatar-upload">
-                          <div className="image-preview-container">
-                            <img
-                              src={formData.profileImage || '/default-avatar.png'}
-                              alt="Profile"
-                              className="avatar-preview"
-                            />
-                            {formData.profileImage && (
+          {sortedStudents?.length > 0 ? (
+            <div className="students-table-container">
+              <table className="students-table">
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Roll Number</th>
+                    <th>Grade</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {sortedStudents?.map(student => (
+                    <tr key={student._id}>
+                      <td>{student.fullName}</td>
+                      <td>{student.schoolDetails?.rollNumber}</td>
+                      <td>{student.grade}</td>
+                      <td>
+                        <div className="table-actions">
+                          <button
+                            className="view-profile-btn"
+                            onClick={() => handleViewStudent(student._id)}
+                          >
+                            View Profile
+                          </button>
+                          {(user.role === "admin" || user.role === "superAdmin") && (
+                            <div className="table-actions-buttons">
                               <button
-                                type="button"
-                                className="remove-image-btn"
-                                onClick={() => handleRemoveImage('profileImage')}
+                                className="action-btn edit"
+                                onClick={() => handleEditStudent(student)}
                               >
-                                <FiX />
+                                <EditIcon />
                               </button>
-                            )}
-                          </div>
-                          <input
-                            type="file"
-                            accept="image/*"
-                            onChange={(e) => handleFileUpload(e, 'profileImage')}
-                            style={{ display: 'none' }}
-                            id="profileImage"
-                            name="profileImage"
-                          />
-                          <label htmlFor="profileImage" className="upload-btn">
-                            <FiUpload /> Change Image
-                          </label>
-                        </div>
-                      </div>
-                      <div className="form-group">
-                        <label htmlFor="nicImage">NIC Image</label>
-                        <div className="avatar-upload">
-                          <div className="image-preview-container">
-                            <img
-                              src={formData.nicImage || '/default-nic.png'}
-                              alt="NIC"
-                              className="avatar-preview"
-                            />
-                            {formData.nicImage && (
                               <button
-                                type="button"
-                                className="remove-image-btn"
-                                onClick={() => handleRemoveImage('nicImage')}
+                                className="action-btn delete"
+                                onClick={() => handleDeleteClick(student._id)}
                               >
-                                <FiX />
+                                <DeleteIcon />
                               </button>
-                            )}
-                          </div>
-                          <input
-                            type="file"
-                            accept="image/*"
-                            onChange={(e) => handleFileUpload(e, 'nicImage')}
-                            style={{ display: 'none' }}
-                            id="nicImage"
-                            name="nicImage"
-                          />
-                          <label htmlFor="nicImage" className="upload-btn">
-                            <FiUpload /> Change NIC Image
-                          </label>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Parent Information Section */}
-                  <div className="form-section">
-                    <h3 className="section-title">Parent Information</h3>
-                    <div className="form-row">
-                      <div className="form-group">
-                        <label htmlFor="parentDetails.fullName">Parent Full Name</label>
-                        <input
-                          type="text"
-                          id="parentDetails.fullName"
-                          name="parentDetails.fullName"
-                          value={formData.parentDetails.fullName}
-                          onChange={handleInputChange}
-                          required
-                        />
-                      </div>
-                      <div className="form-group">
-                        <label htmlFor="parentDetails.gender">Parent Gender</label>
-                        <select
-                          id="parentDetails.gender"
-                          name="parentDetails.gender"
-                          value={formData.parentDetails.gender}
-                          onChange={handleInputChange}
-                          required
-                        >
-                          <option value="">Select Gender</option>
-                          <option value="Male">Male</option>
-                          <option value="Female">Female</option>
-                          <option value="Other">Other</option>
-                        </select>
-                      </div>
-                    </div>
-
-                    <div className="form-row">
-                      <div className="form-group">
-                        <label htmlFor="parentDetails.dateOfBirth">Parent Date of Birth</label>
-                        <input
-                          type="date"
-                          id="parentDetails.dateOfBirth"
-                          name="parentDetails.dateOfBirth"
-                          value={formData.parentDetails.dateOfBirth}
-                          onChange={handleInputChange}
-                          required
-                        />
-                      </div>
-                      <div className="form-group">
-                        <label htmlFor="parentDetails.phoneNumber">Parent Phone Number</label>
-                        <input
-                          type="tel"
-                          id="parentDetails.phoneNumber"
-                          name="parentDetails.phoneNumber"
-                          value={formData.parentDetails.phoneNumber}
-                          onChange={handleInputChange}
-                          required
-                        />
-                      </div>
-                    </div>
-
-                    <div className="form-row">
-                      <div className="form-group">
-                        <label htmlFor="parentDetails.nic">Parent NIC</label>
-                        <input
-                          type="text"
-                          id="parentDetails.nic"
-                          name="parentDetails.nic"
-                          value={formData.parentDetails.nic}
-                          onChange={handleInputChange}
-                          required
-                        />
-                      </div>
-                      <div className="form-group">
-                        <label htmlFor="parentDetails.education">Parent Education</label>
-                        <input
-                          type="text"
-                          id="parentDetails.education"
-                          name="parentDetails.education"
-                          value={formData.parentDetails.education}
-                          onChange={handleInputChange}
-                          required
-                        />
-                      </div>
-                    </div>
-
-                    <div className="form-group">
-                      <label htmlFor="parentDetails.profession">Parent Profession</label>
-                      <input
-                        type="text"
-                        id="parentDetails.profession"
-                        name="parentDetails.profession"
-                        value={formData.parentDetails.profession}
-                        onChange={handleInputChange}
-                        required
-                      />
-                    </div>
-
-                    <div className="form-row">
-                      <div className="form-group">
-                        <label htmlFor="parentDetails.profileImage">Parent Profile Image</label>
-                        <div className="avatar-upload">
-                          <div className="image-preview-container">
-                            <img
-                              src={formData.parentDetails.profileImage || '/default-avatar.png'}
-                              alt="Parent Profile"
-                              className="avatar-preview"
-                            />
-                            {formData.parentDetails.profileImage && (
-                              <button
-                                type="button"
-                                className="remove-image-btn"
-                                onClick={() => handleRemoveImage('parentDetails.profileImage')}
-                              >
-                                <FiX />
-                              </button>
-                            )}
-                          </div>
-                          <input
-                            type="file"
-                            accept="image/*"
-                            onChange={(e) => handleFileUpload(e, 'parentDetails.profileImage')}
-                            style={{ display: 'none' }}
-                            id="parentDetails.profileImage"
-                            name="parentDetails.profileImage"
-                          />
-                          <label htmlFor="parentDetails.profileImage" className="upload-btn">
-                            <FiUpload /> Change Parent Image
-                          </label>
-                        </div>
-                      </div>
-                      <div className="form-group">
-                        <label htmlFor="parentDetails.nicImage">Parent NIC Image</label>
-                        <div className="avatar-upload">
-                          <div className="image-preview-container">
-                            <img
-                              src={formData.parentDetails.nicImage || '/default-nic.png'}
-                              alt="Parent NIC"
-                              className="avatar-preview"
-                            />
-                            {formData.parentDetails.nicImage && (
-                              <button
-                                type="button"
-                                className="remove-image-btn"
-                                onClick={() => handleRemoveImage('parentDetails.nicImage')}
-                              >
-                                <FiX />
-                              </button>
-                            )}
-                          </div>
-                          <input
-                            type="file"
-                            accept="image/*"
-                            onChange={(e) => handleFileUpload(e, 'parentDetails.nicImage')}
-                            style={{ display: 'none' }}
-                            id="parentDetails.nicImage"
-                            name="parentDetails.nicImage"
-                          />
-                          <label htmlFor="parentDetails.nicImage" className="upload-btn">
-                            <FiUpload /> Change Parent NIC Image
-                          </label>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* School Information Section */}
-                  <div className="form-section">
-                    <h3 className="section-title">School Information</h3>
-                    <div className="form-row">
-                      <div className="form-group">
-                        <label htmlFor="grade">Grade</label>
-                        <input
-                          type="text"
-                          id="grade"
-                          name="grade"
-                          value={formData.grade}
-                          onChange={handleInputChange}
-                          required
-                        />
-                      </div>
-                      <div className="form-group">
-                        <label htmlFor="schoolDetails.rollNumber">Roll Number</label>
-                        <input
-                          type="text"
-                          id="schoolDetails.rollNumber"
-                          name="schoolDetails.rollNumber"
-                          value={formData.schoolDetails.rollNumber}
-                          onChange={handleInputChange}
-                          required
-                        />
-                      </div>
-                    </div>
-
-                    <div className="form-row">
-                      <div className="form-group">
-                        <label htmlFor="schoolDetails.joiningDate">Joining Date</label>
-                        <input
-                          type="date"
-                          id="schoolDetails.joiningDate"
-                          name="schoolDetails.joiningDate"
-                          value={formData.schoolDetails.joiningDate}
-                          onChange={handleInputChange}
-                          required
-                        />
-                      </div>
-                      <div className="form-group">
-                        <label htmlFor="schoolDetails.previousInstitute">Previous Institute</label>
-                        <input
-                          type="text"
-                          id="schoolDetails.previousInstitute"
-                          name="schoolDetails.previousInstitute"
-                          value={formData.schoolDetails.previousInstitute}
-                          onChange={handleInputChange}
-                        />
-                      </div>
-                    </div>
-
-                    <div className="form-group">
-                      <label htmlFor="schoolDetails.previousDegreeWithImage">Previous Degree Image</label>
-                      <div className="avatar-upload">
-                        <div className="image-preview-container">
-                          <img
-                            src={formData.schoolDetails.previousDegreeWithImage || '/default-degree.png'}
-                            alt="Previous Degree"
-                            className="avatar-preview"
-                          />
-                          {formData.schoolDetails.previousDegreeWithImage && (
-                            <button
-                              type="button"
-                              className="remove-image-btn"
-                              onClick={() => handleRemoveImage('schoolDetails.previousDegreeWithImage')}
-                            >
-                              <FiX />
-                            </button>
+                            </div>
                           )}
                         </div>
-                        <input
-                          type="file"
-                          accept="image/*"
-                          onChange={(e) => handleFileUpload(e, 'schoolDetails.previousDegreeWithImage')}
-                          style={{ display: 'none' }}
-                          id="schoolDetails.previousDegreeWithImage"
-                          name="schoolDetails.previousDegreeWithImage"
-                        />
-                        <label htmlFor="schoolDetails.previousDegreeWithImage" className="upload-btn">
-                          <FiUpload /> Change Degree Image
-                        </label>
-                      </div>
-                    </div>
-                  </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            <div className="no-students">
+              <h1 className="no-students-text">There are no students</h1>
+            </div>
+          )}
 
-                  <div className="modal-footer">
-                    <button type="button" className="cancel-btn" onClick={handleCloseModal}>
-                      Cancel
-                    </button>
-                    <button type="submit" className="save-btn">
-                      {loading ? (
-                        <span className="loading-spinner"></span>
-                      ) : (
-                        <>
-                          <FiSave /> Save Changes
-                        </>
-                      )}
-                    </button>
-                  </div>
-                </form>
+          {/* Delete Confirmation Modal */}
+          {deleteConfirmation.show && (
+            <div className="modal-overlay">
+              <div className="delete-confirmation-modal">
+                <div className="modal-header">
+                  <h2>Confirm Delete</h2>
+                  <button className="modal-close-btn" onClick={handleCancelDelete}>
+                    <FiX />
+                  </button>
+                </div>
+                <div className="modal-body">
+                  <p>Are you sure you want to delete this student? This action cannot be undone.</p>
+                </div>
+                <div className="modal-footer">
+                  <button className="cancel-btn" onClick={handleCancelDelete}>
+                    Cancel
+                  </button>
+                  <button 
+                    className="delete-btn" 
+                    onClick={() => handleDeleteStudent(deleteConfirmation.studentId)}
+                  >
+                    Delete
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
-        )}
+          )}
+
+          {/* Edit Student Modal */}
+          {isEditModalOpen && editingStudent && (
+            <div className="modal-overlay">
+              <div className="modal-container">
+                <div className="modal-header">
+                  <h2>Edit Student</h2>
+                  <button className="close-btn" onClick={handleCloseModal}>
+                    <CloseIcon />
+                  </button>
+                </div>
+                <div className="modal-body">
+                  <form onSubmit={handleSubmit}>
+                    {/* Student Personal Information Section */}
+                    <div className="form-section">
+                      <h3 className="section-title">Personal Information</h3>
+                      <div className="form-row">
+                        <div className="form-group">
+                          <label htmlFor="fullName">Full Name</label>
+                          <input
+                            type="text"
+                            id="fullName"
+                            name="fullName"
+                            value={formData?.fullName}
+                            onChange={handleInputChange}
+                            required
+                            placeholder="Enter student's full name"
+                          />
+                        </div>
+                        <div className="form-group">
+                          <label htmlFor="gender">Gender</label>
+                          <select
+                            id="gender"
+                            name="gender"
+                            value={formData.gender}
+                            onChange={handleInputChange}
+                            required
+                          >
+                            <option value="">Select Gender</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Other">Other</option>
+                          </select>
+                        </div>
+                      </div>
+
+                      <div className="form-row">
+                        <div className="form-group">
+                          <label htmlFor="dateOfBirth">Date of Birth</label>
+                          <input
+                            type="date"
+                            id="dateOfBirth"
+                            name="dateOfBirth"
+                            value={formData.dateOfBirth}
+                            onChange={handleInputChange}
+                            required
+                          />
+                        </div>
+                        <div className="form-group">
+                          <label htmlFor="phoneNumber">Phone Number</label>
+                          <input
+                            type="tel"
+                            id="phoneNumber"
+                            name="phoneNumber"
+                            value={formData.phoneNumber}
+                            onChange={handleInputChange}
+                            required
+                          />
+                        </div>
+                      </div>
+
+                      <div className="form-group">
+                        <label htmlFor="fullAddress">Full Address</label>
+                        <textarea
+                          id="fullAddress"
+                          name="fullAddress"
+                          value={formData.fullAddress}
+                          onChange={handleInputChange}
+                          rows="3"
+                          required
+                        />
+                      </div>
+                    </div>
+
+                    {/* Student Documents Section */}
+                    <div className="form-section">
+                      <h3 className="section-title">Documents</h3>
+                      <div className="form-row">
+                        <div className="form-group">
+                          <label htmlFor="profileImage">Profile Image</label>
+                          <div className="avatar-upload">
+                            <div className="image-preview-container">
+                              <img
+                                src={formData.profileImage || '/default-avatar.png'}
+                                alt="Profile"
+                                className="avatar-preview"
+                              />
+                              {formData.profileImage && (
+                                <button
+                                  type="button"
+                                  className="remove-image-btn"
+                                  onClick={() => handleRemoveImage('profileImage')}
+                                >
+                                  <FiX />
+                                </button>
+                              )}
+                            </div>
+                            <input
+                              type="file"
+                              accept="image/*"
+                              onChange={(e) => handleFileUpload(e, 'profileImage')}
+                              style={{ display: 'none' }}
+                              id="profileImage"
+                              name="profileImage"
+                            />
+                            <label htmlFor="profileImage" className="upload-btn">
+                              <FiUpload /> Change Image
+                            </label>
+                          </div>
+                        </div>
+                        <div className="form-group">
+                          <label htmlFor="nicImage">NIC Image</label>
+                          <div className="avatar-upload">
+                            <div className="image-preview-container">
+                              <img
+                                src={formData.nicImage || '/default-nic.png'}
+                                alt="NIC"
+                                className="avatar-preview"
+                              />
+                              {formData.nicImage && (
+                                <button
+                                  type="button"
+                                  className="remove-image-btn"
+                                  onClick={() => handleRemoveImage('nicImage')}
+                                >
+                                  <FiX />
+                                </button>
+                              )}
+                            </div>
+                            <input
+                              type="file"
+                              accept="image/*"
+                              onChange={(e) => handleFileUpload(e, 'nicImage')}
+                              style={{ display: 'none' }}
+                              id="nicImage"
+                              name="nicImage"
+                            />
+                            <label htmlFor="nicImage" className="upload-btn">
+                              <FiUpload /> Change NIC Image
+                            </label>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Parent Information Section */}
+                    <div className="form-section">
+                      <h3 className="section-title">Parent Information</h3>
+                      <div className="form-row">
+                        <div className="form-group">
+                          <label htmlFor="parentDetails.fullName">Parent Full Name</label>
+                          <input
+                            type="text"
+                            id="parentDetails.fullName"
+                            name="parentDetails.fullName"
+                            value={formData.parentDetails.fullName}
+                            onChange={handleInputChange}
+                            required
+                          />
+                        </div>
+                        <div className="form-group">
+                          <label htmlFor="parentDetails.gender">Parent Gender</label>
+                          <select
+                            id="parentDetails.gender"
+                            name="parentDetails.gender"
+                            value={formData.parentDetails.gender}
+                            onChange={handleInputChange}
+                            required
+                          >
+                            <option value="">Select Gender</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Other">Other</option>
+                          </select>
+                        </div>
+                      </div>
+
+                      <div className="form-row">
+                        <div className="form-group">
+                          <label htmlFor="parentDetails.dateOfBirth">Parent Date of Birth</label>
+                          <input
+                            type="date"
+                            id="parentDetails.dateOfBirth"
+                            name="parentDetails.dateOfBirth"
+                            value={formData.parentDetails.dateOfBirth}
+                            onChange={handleInputChange}
+                            required
+                          />
+                        </div>
+                        <div className="form-group">
+                          <label htmlFor="parentDetails.phoneNumber">Parent Phone Number</label>
+                          <input
+                            type="tel"
+                            id="parentDetails.phoneNumber"
+                            name="parentDetails.phoneNumber"
+                            value={formData.parentDetails.phoneNumber}
+                            onChange={handleInputChange}
+                            required
+                          />
+                        </div>
+                      </div>
+
+                      <div className="form-row">
+                        <div className="form-group">
+                          <label htmlFor="parentDetails.nic">Parent NIC</label>
+                          <input
+                            type="text"
+                            id="parentDetails.nic"
+                            name="parentDetails.nic"
+                            value={formData.parentDetails.nic}
+                            onChange={handleInputChange}
+                            required
+                          />
+                        </div>
+                        <div className="form-group">
+                          <label htmlFor="parentDetails.education">Parent Education</label>
+                          <input
+                            type="text"
+                            id="parentDetails.education"
+                            name="parentDetails.education"
+                            value={formData.parentDetails.education}
+                            onChange={handleInputChange}
+                            required
+                          />
+                        </div>
+                      </div>
+
+                      <div className="form-group">
+                        <label htmlFor="parentDetails.profession">Parent Profession</label>
+                        <input
+                          type="text"
+                          id="parentDetails.profession"
+                          name="parentDetails.profession"
+                          value={formData.parentDetails.profession}
+                          onChange={handleInputChange}
+                          required
+                        />
+                      </div>
+
+                      <div className="form-row">
+                        <div className="form-group">
+                          <label htmlFor="parentDetails.profileImage">Parent Profile Image</label>
+                          <div className="avatar-upload">
+                            <div className="image-preview-container">
+                              <img
+                                src={formData.parentDetails.profileImage || '/default-avatar.png'}
+                                alt="Parent Profile"
+                                className="avatar-preview"
+                              />
+                              {formData.parentDetails.profileImage && (
+                                <button
+                                  type="button"
+                                  className="remove-image-btn"
+                                  onClick={() => handleRemoveImage('parentDetails.profileImage')}
+                                >
+                                  <FiX />
+                                </button>
+                              )}
+                            </div>
+                            <input
+                              type="file"
+                              accept="image/*"
+                              onChange={(e) => handleFileUpload(e, 'parentDetails.profileImage')}
+                              style={{ display: 'none' }}
+                              id="parentDetails.profileImage"
+                              name="parentDetails.profileImage"
+                            />
+                            <label htmlFor="parentDetails.profileImage" className="upload-btn">
+                              <FiUpload /> Change Parent Image
+                            </label>
+                          </div>
+                        </div>
+                        <div className="form-group">
+                          <label htmlFor="parentDetails.nicImage">Parent NIC Image</label>
+                          <div className="avatar-upload">
+                            <div className="image-preview-container">
+                              <img
+                                src={formData.parentDetails.nicImage || '/default-nic.png'}
+                                alt="Parent NIC"
+                                className="avatar-preview"
+                              />
+                              {formData.parentDetails.nicImage && (
+                                <button
+                                  type="button"
+                                  className="remove-image-btn"
+                                  onClick={() => handleRemoveImage('parentDetails.nicImage')}
+                                >
+                                  <FiX />
+                                </button>
+                              )}
+                            </div>
+                            <input
+                              type="file"
+                              accept="image/*"
+                              onChange={(e) => handleFileUpload(e, 'parentDetails.nicImage')}
+                              style={{ display: 'none' }}
+                              id="parentDetails.nicImage"
+                              name="parentDetails.nicImage"
+                            />
+                            <label htmlFor="parentDetails.nicImage" className="upload-btn">
+                              <FiUpload /> Change Parent NIC Image
+                            </label>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* School Information Section */}
+                    <div className="form-section">
+                      <h3 className="section-title">School Information</h3>
+                      <div className="form-row">
+                        <div className="form-group">
+                          <label htmlFor="grade">Grade</label>
+                          <input
+                            type="text"
+                            id="grade"
+                            name="grade"
+                            value={formData.grade}
+                            onChange={handleInputChange}
+                            required
+                          />
+                        </div>
+                        <div className="form-group">
+                          <label htmlFor="schoolDetails.rollNumber">Roll Number</label>
+                          <input
+                            type="text"
+                            id="schoolDetails.rollNumber"
+                            name="schoolDetails.rollNumber"
+                            value={formData.schoolDetails.rollNumber}
+                            onChange={handleInputChange}
+                            required
+                          />
+                        </div>
+                      </div>
+
+                      <div className="form-row">
+                        <div className="form-group">
+                          <label htmlFor="schoolDetails.joiningDate">Joining Date</label>
+                          <input
+                            type="date"
+                            id="schoolDetails.joiningDate"
+                            name="schoolDetails.joiningDate"
+                            value={formData.schoolDetails.joiningDate}
+                            onChange={handleInputChange}
+                            required
+                          />
+                        </div>
+                        <div className="form-group">
+                          <label htmlFor="schoolDetails.previousInstitute">Previous Institute</label>
+                          <input
+                            type="text"
+                            id="schoolDetails.previousInstitute"
+                            name="schoolDetails.previousInstitute"
+                            value={formData.schoolDetails.previousInstitute}
+                            onChange={handleInputChange}
+                          />
+                        </div>
+                      </div>
+
+                      <div className="form-group">
+                        <label htmlFor="schoolDetails.previousDegreeWithImage">Previous Degree Image</label>
+                        <div className="avatar-upload">
+                          <div className="image-preview-container">
+                            <img
+                              src={formData.schoolDetails.previousDegreeWithImage || '/default-degree.png'}
+                              alt="Previous Degree"
+                              className="avatar-preview"
+                            />
+                            {formData.schoolDetails.previousDegreeWithImage && (
+                              <button
+                                type="button"
+                                className="remove-image-btn"
+                                onClick={() => handleRemoveImage('schoolDetails.previousDegreeWithImage')}
+                              >
+                                <FiX />
+                              </button>
+                            )}
+                          </div>
+                          <input
+                            type="file"
+                            accept="image/*"
+                            onChange={(e) => handleFileUpload(e, 'schoolDetails.previousDegreeWithImage')}
+                            style={{ display: 'none' }}
+                            id="schoolDetails.previousDegreeWithImage"
+                            name="schoolDetails.previousDegreeWithImage"
+                          />
+                          <label htmlFor="schoolDetails.previousDegreeWithImage" className="upload-btn">
+                            <FiUpload /> Change Degree Image
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="modal-footer">
+                      <button type="button" className="cancel-btn" onClick={handleCloseModal}>
+                        Cancel
+                      </button>
+                      <button type="submit" className="save-btn">
+                        {loading ? (
+                          <span className="loading-spinner"></span>
+                        ) : (
+                          <>
+                            <FiSave /> Save Changes
+                          </>
+                        )}
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
     </>
   );

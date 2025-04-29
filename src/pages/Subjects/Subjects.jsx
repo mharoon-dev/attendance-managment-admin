@@ -52,6 +52,8 @@ const Subjects = () => {
     teacherName: "",
   });
   const [isLoading, setIsLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [deleteConfirmation, setDeleteConfirmation] = useState({ show: false, subjectId: null });
 
   useEffect(() => {
     console.log(editingSubject);
@@ -152,17 +154,30 @@ const Subjects = () => {
     }
   };
 
+  const handleDeleteClick = (subjectId) => {
+    setDeleteConfirmation({ show: true, subjectId });
+  };
+
+  const handleCancelDelete = () => {
+    setDeleteConfirmation({ show: false, subjectId: null });
+  };
+
   const handleDeleteSubject = async (subjectId) => {
-    dispatch(deleteSubjectStart());
     try {
+      setLoading(true);
+      dispatch(deleteSubjectStart());
       const response = await api.delete(`subjects/subjects/${subjectId}`);
       dispatch(deleteSubjectSuccess(subjectId));
-      toast.success("Subject deleted successfully");
-      setIsLoading(false);
+      if (response.status === 200) {
+        toast.success('Subject deleted successfully');
+        setDeleteConfirmation({ show: false, subjectId: null });
+      }
     } catch (error) {
-      dispatch(deleteSubjectFailure(error.response.data.message));
-      toast.error("Error deleting subject");
-      setIsLoading(false);
+      dispatch(deleteSubjectFailure(error));
+      console.error('Error deleting subject:', error);
+      toast.error('Error deleting subject');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -188,7 +203,7 @@ const Subjects = () => {
 
   return (
     <>
-      {isLoading && <Loader />}
+      {loading && <Loader />}
       <Toaster position="top-right" />
       <div className={`layout-container ${sidebarOpen ? "sidebar-open" : ""}`}>
         <Navbar toggleSidebar={toggleSidebar} isSidebarOpen={sidebarOpen} />
@@ -264,33 +279,64 @@ const Subjects = () => {
                   </div>
                 </div>
 
-                    {
-                      (user.role === "admin" || user.role === "superAdmin") && (
                 <div className="subject-card-footer">
-                  <div className="quick-actions">
-                        <>
-                    <button
-                      className="action-btn edit"
-                      onClick={() => handleEditSubject(subject)}
-                      >
-                      <EditIcon />
-                    </button>
-                        <button
-                          className="action-btn delete"
-                          onClick={() => handleDeleteSubject(subject._id)}
-                          >
-                      <DeleteIcon />
-                    </button>
-                      </>
+                  <button 
+                    className="view-subject-btn"
+                    onClick={() => handleViewSubject(subject._id)}
+                  >
+                    <VisibilityIcon /> View Details
+                  </button>
+                  {
+                    (user.role === "admin" || user.role === "superAdmin") && (
+                      <div className="quick-actions">
+                        <button 
+                          className="action-btn edit"
+                          onClick={() => handleEditSubject(subject)}
+                        >
+                          <EditIcon />
+                        </button>
+                        <button 
+                          className="action-btn delete" 
+                          onClick={() => handleDeleteClick(subject._id)}
+                        >
+                          <DeleteIcon />
+                        </button>
                       </div>
-                      </div>
-                      )
-                    }
-                
+                    )
+                  }
+                </div>
               </div>
             ))}
           </div>
         </div>
+
+        {/* Delete Confirmation Modal */}
+        {deleteConfirmation.show && (
+          <div className="modal-overlay">
+            <div className="delete-confirmation-modal">
+              <div className="modal-header">
+                <h2>Confirm Delete</h2>
+                <button className="modal-close-btn" onClick={handleCancelDelete}>
+                  <CloseIcon />
+                </button>
+              </div>
+              <div className="modal-body">
+                <p>Are you sure you want to delete this subject? This action cannot be undone.</p>
+              </div>
+              <div className="modal-footer">
+                <button className="cancel-btn" onClick={handleCancelDelete}>
+                  Cancel
+                </button>
+                <button 
+                  className="delete-btn" 
+                  onClick={() => handleDeleteSubject(deleteConfirmation.subjectId)}
+                >
+                  Delete
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Edit Subject Modal */}
         {isEditModalOpen && editingSubject && (

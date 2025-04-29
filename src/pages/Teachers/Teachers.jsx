@@ -23,6 +23,7 @@ import { api } from "../../utils/url.js";
 import { deleteTeacherFailure, deleteTeacherStart, deleteTeacherSuccess, updateTeacherFailure, updateTeacherStart, updateTeacherSuccess } from "../../redux/slices/teacherSlice";
 import Loader from "../../components/Loader/Loader.jsx";
 import { toast, Toaster } from "sonner";
+import ImageViewer from "../../components/ImageViewer/ImageViewer";
 
 const Teachers = () => {
   const navigate = useNavigate();
@@ -35,6 +36,7 @@ const Teachers = () => {
   const [selectedStatus, setSelectedStatus] = useState("all");
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editingTeacher, setEditingTeacher] = useState(null);
+  const [deleteConfirmation, setDeleteConfirmation] = useState({ show: false, teacherId: null, teacherJobId: null });
   const {user} = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const [formData, setFormData] = useState({
@@ -64,6 +66,9 @@ const Teachers = () => {
   });
 
   const { teachers: teachersData } = useSelector((state) => state.teachers);
+
+  const [showImageViewer, setShowImageViewer] = useState(false);
+  const [selectedImage, setSelectedImage] = useState("");
 
   const handleViewProfile = (teacherId) => {
     navigate(`/teachers/${teacherId}`);
@@ -196,6 +201,7 @@ try {
         const deleteUser = await api.delete(`users/${teacherJobId}`);
         dispatch(deleteTeacherSuccess(id));
         toast.success('Teacher deleted successfully');
+        setDeleteConfirmation({ show: false, teacherId: null, teacherJobId: null });
       } else {
         dispatch(deleteTeacherFailure(res.data.message));
         toast.error(res.data.message);
@@ -204,6 +210,19 @@ try {
       console.log(error);
       dispatch(deleteTeacherFailure(error.response.data.message));
     }
+  };
+
+  const handleDeleteClick = (id, teacherJobId) => {
+    setDeleteConfirmation({ show: true, teacherId: id, teacherJobId });
+  };
+
+  const handleCancelDelete = () => {
+    setDeleteConfirmation({ show: false, teacherId: null, teacherJobId: null });
+  };
+
+  const handleImageClick = (imageUrl) => {
+    setSelectedImage(imageUrl);
+    setShowImageViewer(true);
   };
 
   // Sample teachers data based on the provided structure
@@ -298,129 +317,62 @@ try {
           </div>
         </div>
 
-       {sortedTeachers?.length > 0 ?  <div className="teachers-grid">
-          {sortedTeachers?.map((teacher) => (
-            <div key={teacher.id} className="teacher-card">
-              <div className="teacher-card-header">
-                <img
-                  src={teacher.profileImage || "/assets/profile-avatar.jpg"}
-                  alt={teacher.fullName}
-                  className="teacher-avatar"
-                />
-                <div className="teacher-status" data-status={teacher.status}>
-                  {teacher.status}
-                </div>
-              </div>
+        {sortedTeachers?.length > 0 ? (
+          <div className="teachers-table-container">
+            <table className="teachers-table">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>ID</th>
+                  <th className="hide-on-mobile">Phone Number</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {sortedTeachers?.map((teacher) => (
+                  <tr key={teacher._id}>
+                    <td>{teacher.fullName}</td>
+                    <td>{teacher?.jobDetails?.teacherId}</td>
+                    <td className="hide-on-mobile">{teacher.phoneNumber}</td>
+                    <td>
+                      <div className="table-actions">
+                        <button
+                          className="view-profile-btn"
+                          onClick={() => handleViewProfile(teacher._id)}
+                        >
+                          View Profile
+                        </button>
+                        {(user.role === "admin" || user.role === "superAdmin") && (
+                          <>
+                          <div className="table-actions-buttons">
 
-              <div className="teacher-card-body">
-                <h3 className="teacher-name">{teacher.fullName}</h3>
-                <p className="teacher-subject">
-                  {teacher.jobDetails.designation}
-                </p>
-
-                <div className="teacher-info">
-                  <div className="info-item">
-                    <div
-                      style={{
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        gap: "10px",
-                      }}
-                    >
-                      <PhoneIcon />
-                      <span>{teacher.phoneNumber}</span>
-                    </div>
-                  </div>
-                  <div className="info-item">
-                    <div  
-                      style={{
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        gap: "10px",
-                      }}
-                    >
-                      <EmailIcon />
-                      <span>{teacher.emailAddress}</span>
-                    </div>
-                  </div>
-                  <div className="info-item">
-                    <div
-                      style={{
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        gap: "10px",
-                      }}
-                    >
-                      <SchoolIcon />
-                      <span>{teacher.degreeTitle}</span>
-                    </div>
-                  </div>
-                  <div className="info-item">
-                    <div
-                      style={{
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        gap: "10px",
-                      }}
-                    >
-                      <BadgeIcon />
-                      <span>{teacher?.jobDetails?.teacherId}</span>
-                    </div>
-                  </div>
-                </div>
-
-              {/*    <div className="teacher-classes">
-                  <h4>Classes</h4>
-                  <div className="class-tags">
-                   {teacher?.classes.map((className, index) => (
-                            <span key={index} className="class-tag">
-                              {className}
-                            </span>
-                          ))}
-                  </div>
-                </div>
-                          */}
-              </div>
-
-              <div className="teacher-card-footer">
-                <button
-                  className="view-profile-btn"
-                  onClick={() => handleViewProfile(teacher._id)}
-                >
-                  View Profile
-                </button>
-                <div className="quick-actions">
-                 {
-                  (user.role === "admin" || user.role === "superAdmin") && (
-                    <>
-                     <button
-                    className="action-btn edit"
-                    onClick={() => handleEditClick(teacher)}
-                  >
-                    <EditIcon />
-                  </button>
-                  <button className="action-btn delete" onClick={() => handleDelete(teacher._id, teacher.jobDetails.teacherId)}>
-                    <DeleteIcon />
-                  </button>
-                    </>
-                 )
-                }
-                </div>
-              </div>
-            </div>
-          )) }
-        </div> 
-          : 
+                            <button
+                              className="action-btn edit"
+                              onClick={() => handleEditClick(teacher)}
+                              >
+                              <EditIcon />
+                            </button>
+                            <button 
+                              className="action-btn delete" 
+                              onClick={() => handleDeleteClick(teacher._id, teacher.jobDetails.teacherId)}
+                              >
+                              <DeleteIcon />
+                            </button>
+                              </div>
+                          </>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        ) : (
           <div className="no-teachers">
-              <h1 className="no-teachers-text">There is no teacher</h1>
-            </div>
-          }
-
-
+            <h1 className="no-teachers-text">There is no teacher</h1>
+          </div>
+        )}
 
         {isEditModalOpen && (
           <div className="modal-overlay">
@@ -673,6 +625,8 @@ try {
                           src={formData.profileImage || '/default-avatar.png'}
                           alt={formData.fullName}
                           className="avatar-preview"
+                          onClick={() => handleImageClick(formData.profileImage || '/default-avatar.png')}
+                          style={{ cursor: 'pointer' }}
                         />
                         {formData.profileImage && (
                           <button
@@ -705,6 +659,8 @@ try {
                           src={formData.nicImage || '/default-nic.png'}
                           alt="NIC"
                           className="avatar-preview"
+                          onClick={() => handleImageClick(formData.nicImage || '/default-nic.png')}
+                          style={{ cursor: 'pointer' }}
                         />
                         {formData.nicImage && (
                           <button
@@ -750,9 +706,11 @@ try {
                                 objectFit: 'cover',
                                 width: '100%',
                                 height: '100%',
+                                cursor: 'pointer'
                               }}
                               src={url}
                               alt={`Marksheet ${index + 1}`}
+                              onClick={() => handleImageClick(url)}
                             />
                             <button
                               type="button"
@@ -780,6 +738,41 @@ try {
                     </button>
                   </div>
                 </form>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {showImageViewer && (
+          <ImageViewer
+            imageUrl={selectedImage}
+            onClose={() => setShowImageViewer(false)}
+          />
+        )}
+
+        {/* Delete Confirmation Modal */}
+        {deleteConfirmation.show && (
+          <div className="modal-overlay">
+            <div className="delete-confirmation-modal">
+              <div className="modal-header">
+                <h2>Confirm Delete</h2>
+                <button className="modal-close-btn" onClick={handleCancelDelete}>
+                  <FiX />
+                </button>
+              </div>
+              <div className="modal-body">
+                <p>Are you sure you want to delete this teacher? This action cannot be undone.</p>
+              </div>
+              <div className="modal-footer">
+                <button className="cancel-btn" onClick={handleCancelDelete}>
+                  Cancel
+                </button>
+                <button 
+                  className="delete-btn" 
+                  onClick={() => handleDelete(deleteConfirmation.teacherId, deleteConfirmation.teacherJobId)}
+                >
+                  Delete
+                </button>
               </div>
             </div>
           </div>
