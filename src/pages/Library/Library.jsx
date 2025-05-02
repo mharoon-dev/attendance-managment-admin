@@ -176,10 +176,10 @@ const Library = () => {
 
   const filteredBooks = books.filter((book) => {
     const matchesSearch =
-      book.bookName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      book.category.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      book.shelfNo.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      book.issuedTo.toLowerCase().includes(searchTerm.toLowerCase());
+      book.bookName?.toLowerCase()?.includes(searchTerm?.toLowerCase()) ||
+      book.category?.toLowerCase()?.includes(searchTerm?.toLowerCase()) ||
+      book.shelfNo?.toLowerCase()?.includes(searchTerm?.toLowerCase()) ||
+      book.issuedTo?.toLowerCase()?.includes(searchTerm?.toLowerCase());
 
     return matchesSearch;
   });
