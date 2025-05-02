@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, {  useState } from "react";
 import Navbar from "../../components/Navbar/Navbar";
 import Sidebar from "../../components/Sidebar/Sidebar";
 import Loader from "../../components/Loader/Loader";
@@ -8,44 +8,6 @@ import useSidebar from "../../hooks/useSidebar";
 import "./Dashboard.css";
 import { api } from "../../utils/url.js";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  getStudentsStart,
-  getStudentsSuccess,
-  getStudentsFailure,
-} from "../../redux/slices/studentsSlice.jsx";
-import {
-  getTeachersStart,
-  getTeachersSuccess,
-  getTeachersFailure,
-} from "../../redux/slices/teacherSlice.jsx";
-import {
-  getClassesFailure,
-  getClassesStart,
-  getClassesSuccess,
-} from "../../redux/slices/classesSlice.jsx";
-import {
-  getBooksFailure,
-  getBooksStart,
-  getBooksSuccess,
-} from "../../redux/slices/librarySlice.jsx";
-import {
-  getSubjectsFailure,
-  getSubjectsStart,
-  getSubjectsSuccess,
-} from "../../redux/slices/subjectSlice.jsx";
-import {
-  getDailyAttendanceStart,
-  getDailyAttendanceSuccess,
-  getDailyAttendanceFailure,
-} from "../../redux/slices/dailyAttendanceSlice.jsx";
-import {
-  getTodosStart,
-  getTodosSuccess,
-  getTodosFailure,
-  addTodoSuccess,
-  updateTodoSuccess,
-  deleteTodoSuccess,
-} from "../../redux/slices/todoSlice.jsx";
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip, Sector } from 'recharts';
 import { Plus, Edit2, Trash2, Check, X } from 'react-feather';
 
@@ -66,93 +28,7 @@ const Dashboard = () => {
   const [newTodo, setNewTodo] = useState({ title: '', description: '' });
   const [editingTodo, setEditingTodo] = useState(null);
 
-  useEffect(() => {
-    // Set current month and year
-    const now = new Date();
-    const month = String(now.getMonth() + 1).padStart(2, '0');
-    const year = now.getFullYear();
-    setCurrentMonth(month);
-    setCurrentYear(year);
 
-    const fetchStudents = async () => {
-      dispatch(getStudentsStart());
-      try {
-        const response = await api.get("students/get-all-students");
-        console.log(response);
-        dispatch(getStudentsSuccess(response.data.data));
-      } catch (error) {
-        dispatch(getStudentsFailure(error.response.data.message));
-      }
-    };
-
-    const fetchTeachers = async () => {
-      dispatch(getTeachersStart());
-      try {
-        const response = await api.get("teachers/get-all-teachers");
-        dispatch(getTeachersSuccess(response.data.data));
-      } catch (error) {
-        dispatch(getTeachersFailure(error.response.data.message));
-      }
-    };
-
-    const fetchClasses = async () => {
-      dispatch(getClassesStart());
-      try {
-        const response = await api.get("classes/get-all-classes");
-        dispatch(getClassesSuccess(response.data.data));
-      } catch (error) {
-        dispatch(getClassesFailure(error.response.data.message));
-      }
-    };
-
-    const fetchBooks = async () => {
-      dispatch(getBooksStart());
-      try {
-        const response = await api.get("library/books");
-        dispatch(getBooksSuccess(response.data.data));
-      } catch (error) {
-        dispatch(getBooksFailure(error.response.data.message));
-      }
-    };
-
-    const fetchSubjects = async () => {
-      dispatch(getSubjectsStart());
-      try {
-        const response = await api.get("subjects/subjects");
-        dispatch(getSubjectsSuccess(response.data.data));
-      } catch (error) {
-        dispatch(getSubjectsFailure(error.response.data.message));
-      }
-    };
-
-    const fetchMonthlyAttendance = async () => {
-      dispatch(getDailyAttendanceStart());
-      try {
-        const response = await api.get(`attendance/students/get/month?month=${month}&year=${year}`);
-        dispatch(getDailyAttendanceSuccess(response.data.data));
-      } catch (error) {
-        dispatch(getDailyAttendanceFailure(error.response.data.message));
-      }
-    };
-
-    const fetchTodos = async () => {
-      dispatch(getTodosStart());
-      try {
-        const response = await api.get("todos");
-        dispatch(getTodosSuccess(response.data.data));
-      } catch (error) {
-        dispatch(getTodosFailure(error.response.data.message));
-      }
-    };
-
-    fetchStudents();
-    fetchTeachers();
-    fetchClasses();
-    fetchBooks();
-    fetchSubjects();
-    fetchMonthlyAttendance();
-    fetchTodos();
-  }, []);
 
   // Calculate attendance statistics
   const attendanceStats = {

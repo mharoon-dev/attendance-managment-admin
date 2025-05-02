@@ -33,10 +33,39 @@ import { api } from "./utils/url.js";
 import Loader from "./components/Loader/Loader.jsx";
 import Finance from "./pages/Finance/Finance.jsx";
 import Profile from "./pages/Profile/Profile.jsx";
+import {
+  getStudentsStart,
+  getStudentsSuccess,
+  getStudentsFailure,
+} from "./redux/slices/studentsSlice.jsx";
+import {
+  getTeachersStart,
+  getTeachersSuccess,
+  getTeachersFailure,
+} from "./redux/slices/teacherSlice.jsx";
+import {
+  getClassesFailure,
+  getClassesStart,
+  getClassesSuccess,
+} from "./redux/slices/classesSlice.jsx";
+import {
+  getBooksFailure,
+  getBooksStart,
+  getBooksSuccess,
+} from "./redux/slices/librarySlice.jsx";
+import useSidebar from "./hooks/useSidebar";
+import {
+  getDailyAttendanceStart,
+  getDailyAttendanceSuccess,
+  getDailyAttendanceFailure,
+} from "./redux/slices/dailyAttendanceSlice.jsx";
+import { getTodosFailure, getTodosStart, getTodosSuccess } from "./redux/slices/todoSlice.jsx";
 function App() {
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.user);
   const [loading, setLoading] = useState(true);
+  const [currentMonth, setCurrentMonth] = useState('');
+  const [currentYear, setCurrentYear] = useState('');
   useEffect(() => {
     const token = JSON.parse(localStorage.getItem("token"));
 
@@ -61,6 +90,95 @@ function App() {
       }
     };
     isAuthenticated();
+  }, []);
+
+
+  useEffect(() => {
+    // Set current month and year
+    const now = new Date();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const year = now.getFullYear();
+    setCurrentMonth(month);
+    setCurrentYear(year);
+
+    const fetchStudents = async () => {
+      dispatch(getStudentsStart());
+      try {
+        const response = await api.get("students/get-all-students");
+        console.log(response);
+        dispatch(getStudentsSuccess(response.data.data));
+      } catch (error) {
+        dispatch(getStudentsFailure(error.response.data.message));
+      }
+    };
+
+    const fetchTeachers = async () => {
+      dispatch(getTeachersStart());
+      try {
+        const response = await api.get("teachers/get-all-teachers");
+        dispatch(getTeachersSuccess(response.data.data));
+      } catch (error) {
+        dispatch(getTeachersFailure(error.response.data.message));
+      }
+    };
+
+    const fetchClasses = async () => {
+      dispatch(getClassesStart());
+      try {
+        const response = await api.get("classes/get-all-classes");
+        dispatch(getClassesSuccess(response.data.data));
+      } catch (error) {
+        dispatch(getClassesFailure(error.response.data.message));
+      }
+    };
+
+    const fetchBooks = async () => {
+      dispatch(getBooksStart());
+      try {
+        const response = await api.get("library/books");
+        dispatch(getBooksSuccess(response.data.data));
+      } catch (error) {
+        dispatch(getBooksFailure(error.response.data.message));
+      }
+    };
+
+    const fetchSubjects = async () => {
+      dispatch(getSubjectsStart());
+      try {
+        const response = await api.get("subjects/subjects");
+        dispatch(getSubjectsSuccess(response.data.data));
+      } catch (error) {
+        dispatch(getSubjectsFailure(error.response.data.message));
+      }
+    };
+
+    const fetchMonthlyAttendance = async () => {
+      dispatch(getDailyAttendanceStart());
+      try {
+        const response = await api.get(`attendance/students/get/month?month=${month}&year=${year}`);
+        dispatch(getDailyAttendanceSuccess(response.data.data));
+      } catch (error) {
+        dispatch(getDailyAttendanceFailure(error.response.data.message));
+      }
+    };
+
+    const fetchTodos = async () => {
+      dispatch(getTodosStart());
+      try {
+        const response = await api.get("todos");
+        dispatch(getTodosSuccess(response.data.data));
+      } catch (error) {
+        dispatch(getTodosFailure(error.response.data.message));
+      }
+    };
+
+    fetchStudents();
+    fetchTeachers();
+    fetchClasses();
+    fetchBooks();
+    fetchSubjects();
+    fetchMonthlyAttendance();
+    fetchTodos();
   }, []);
   return (
     <>
