@@ -399,18 +399,26 @@ const Students = () => {
               <table className="students-table">
                 <thead>
                   <tr>
-                    <th>Name</th>
-                    <th>Roll Number</th>
+                    <th>S.No</th>
                     <th>Grade</th>
-                    <th>Actions</th>
+                    <th>Name</th>
+                    <th>Father's Name</th>
+                    <th>Roll No</th>
+                    <th>Contact Number</th>
+                    <th>CNIC</th>
+                    <th>Action</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {sortedStudents?.map(student => (
+                  {sortedStudents?.map((student, index) => (
                     <tr key={student._id}>
-                      <td>{student.fullName}</td>
-                      <td>{student.schoolDetails?.rollNumber}</td>
+                      <td>{index + 1}</td>
                       <td>{student.grade}</td>
+                      <td>{student.fullName}</td>
+                      <td>{student.parentDetails?.fullName}</td>
+                      <td>{student.schoolDetails?.rollNumber}</td>
+                      <td>{student.phoneNumber}</td>
+                      <td>{student.parentDetails?.nic}</td>
                       <td>
                         <div className="table-actions">
                           <button

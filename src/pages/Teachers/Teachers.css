@@ -827,10 +827,12 @@
     border-radius: 8px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     margin-top: 1rem;
+    -webkit-overflow-scrolling: touch;
   }
 
   .teachers-table {
     width: 100%;
+    min-width: 800px;
     border-collapse: collapse;
     font-size: 0.875rem;
   }
@@ -840,6 +842,7 @@
     padding: 1rem;
     text-align: left;
     border-bottom: 1px solid #e5e7eb;
+    white-space: nowrap;
   }
 
   .teachers-table th {
@@ -849,9 +852,23 @@
     text-transform: uppercase;
     font-size: 0.75rem;
     letter-spacing: 0.05em;
+    position: sticky;
+    top: 0;
   }
 
   .teachers-table tr:hover {
+    background-color: #f8f9fa;
+  }
+
+  .teachers-table td:first-child,
+  .teachers-table th:first-child {
+    position: sticky;
+    left: 0;
+    background-color: white;
+    z-index: 1;
+  }
+
+  .teachers-table tr:hover td:first-child {
     background-color: #f8f9fa;
   }
 
@@ -859,6 +876,14 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
+    position: sticky;
+    right: 0;
+    background-color: white;
+    z-index: 1;
+  }
+
+  .teachers-table tr:hover .table-actions {
+    background-color: #f8f9fa;
   }
 
   .table-actions .view-profile-btn {
@@ -909,6 +934,52 @@
   }
 }
 
+@media (max-width: 1024px) {
+  .teachers-table-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    scrollbar-color: #e5e7eb #f8f9fa;
+  }
+
+  .teachers-table-container::-webkit-scrollbar {
+    height: 8px;
+  }
+
+  .teachers-table-container::-webkit-scrollbar-track {
+    background: #f8f9fa;
+    border-radius: 4px;
+  }
+
+  .teachers-table-container::-webkit-scrollbar-thumb {
+    background-color: #e5e7eb;
+    border-radius: 4px;
+  }
+
+  .teachers-table {
+    min-width: 900px;
+  }
+
+  .teachers-table th,
+  .teachers-table td {
+    padding: 0.75rem;
+  }
+
+  .table-actions {
+    gap: 0.25rem;
+  }
+
+  .table-actions .view-profile-btn {
+    padding: 0.375rem 0.75rem;
+    font-size: 0.75rem;
+  }
+
+  .table-actions .action-btn {
+    width: 28px;
+    height: 28px;
+  }
+}
+
 /* Hide phone number on mobile */
 @media (max-width: 768px) {
   .hide-on-mobile {
@@ -916,7 +987,7 @@
   }
 }
 
-.table-actions-buttons  {
+.table-actions-buttons {
   display: flex;
   padding: 10px 0;
   gap: 10px;

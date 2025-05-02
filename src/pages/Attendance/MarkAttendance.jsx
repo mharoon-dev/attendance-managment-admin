@@ -14,15 +14,13 @@ import useSidebar from '../../hooks/useSidebar';
 import './MarkAttendance.css';
 import { useSelector } from 'react-redux';
 import Loader from '../../components/Loader/Loader.jsx';
-import {api} from '../../utils/url.js';
+import { api } from '../../utils/url.js';
 import { toast, Toaster } from 'sonner';
 
 const MarkAttendance = () => {
   const navigate = useNavigate();
   const { sidebarOpen, toggleSidebar } = useSidebar();
   const [isLoading, setIsLoading] = useState(false);
-  const [rollNumber, setRollNumber] = useState('');
-  const [status, setStatus] = useState('present');
   const [currentDate, setCurrentDate] = useState(() => {
     const date = new Date();
     const year = date.getFullYear();
@@ -30,80 +28,96 @@ const MarkAttendance = () => {
     const day = String(date.getDate()).padStart(2, '0');
     return `${year}-${month}-${day}`;
   });
-  const [currentTime, setCurrentTime] = useState('');
-  const [todayAttendance, setTodayAttendance] = useState([]);
-  const [message, setMessage] = useState('');
-  const [error, setError] = useState('');
-  const {user} = useSelector((state) => state.user);
+  const [students, setStudents] = useState([]);
+  const [attendanceData, setAttendanceData] = useState({});
+  const { user } = useSelector((state) => state.user);
   const [teacherId, setTeacherId] = useState('');
 
   useEffect(() => {
     setTeacherId(user?.teacher?.jobDetails?.teacherId);
+    if (user?.teacher?.jobDetails?.teacherId) {
+      fetchStudents();
+    }
   }, [user]);
 
-  const handleRollNumberChange = (e) => {
-    setRollNumber(e.target.value);
-    setMessage('');
-    setError('');
-  };
-
-  const handleTimeChange = (e) => {
-    setCurrentTime(e.target.value);
-  };
-
-  const handleStatusChange = (newStatus) => {
-    setStatus(newStatus);
-    if (newStatus === 'absent') {
-      setCurrentTime('');
-    }
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    
-    if (!rollNumber.trim()) {
-      setError('Please enter a roll number');
-      return;
-    }
-
-    if (status !== 'absent' && !currentTime) {
-      setError('Please enter a time');
-      return;
-    }
-    
-    setIsLoading(true);
-    setMessage('');
-    setError('');
-    
+  const fetchStudents = async () => {
     try {
-      const response = await api.post('attendance/student/mark', {
+      const response = await api.get(`teachers/get-teacher-students/${user.teacher.jobDetails.teacherId}`);
+      setStudents(response.data.data);
+      // Initialize attendance data for each student
+      const initialAttendanceData = {};
+      response.data.forEach(student => {
+        initialAttendanceData[student.rollNumber] = {
+          status: 'present',
+          time: ''
+        };
+      });
+      setAttendanceData(initialAttendanceData);
+    } catch (error) {
+      console.error('Error fetching students:', error);
+      toast.error(error.response.data.message);
+    }
+  };
+
+  const handleTimeChange = (rollNumber, time) => {
+    setAttendanceData(prev => ({
+      ...prev,
+      [rollNumber]: {
+        ...prev[rollNumber],
+        time
+      }
+    }));
+  };
+
+  const handleStatusChange = (rollNumber, status) => {
+    setAttendanceData(prev => ({
+      ...prev,
+      [rollNumber]: {
+        ...prev[rollNumber],
+        status,
+        time: status === 'absent' ? '' : prev[rollNumber]?.time
+      }
+    }));
+  };
+
+  const handleMarkAllAttendance = async () => {
+    setIsLoading(true);
+    let successCount = 0;
+    let errorCount = 0;
+
+    for (const [rollNumber, data] of Object.entries(attendanceData)) {
+      try {
+        if (data.status !== 'absent' && !data.time) {
+          toast.error(`Please enter time for student ${rollNumber}`);
+          continue;
+        }
+
+        const response = await api.post('attendance/student/mark', {
           id: rollNumber,
-          status,
+          status: data.status,
           date: currentDate,
-          time: status === 'absent' ? null : currentTime,
+          time: data.status === 'absent' ? null : data.time,
           teacherId,
         });
-      
-      
-      if (response.data.message === 'Attendance marked successfully') {
-        setMessage('Attendance marked successfully');
-        toast.success(response.data.message);
-        setRollNumber('');
-        setCurrentTime('');
-        setStatus('present');
-        setIsLoading(false);
-      } else {
-        setError(response.data.message);
-        setIsLoading(false);
-        toast.error(response.data.message);
-        return;
+
+        if (response.data.message === 'Attendance marked successfully' || 
+            response.data.message === 'Attendance updated successfully') {
+          successCount++;
+        } else {
+          errorCount++;
+        }
+      } catch (error) {
+        console.error(`Error marking attendance for ${rollNumber}:`, error);
+        errorCount++;
       }
-    } catch (error) {
-      console.error('Error marking attendance:', error);
-      setError(error.response.data.message || 'Failed to mark attendance');
-      toast.error(error.response.data.message || 'Failed to mark attendance');
-    } finally {
-      setIsLoading(false);
+    }
+
+    setIsLoading(false);
+    if (successCount > 0) {
+      toast.success(`Successfully marked attendance for ${successCount} students`);
+    }
+    if (errorCount > 0) {
+      toast.error(`Failed to mark attendance for ${errorCount} students`);
     }
   };
 
@@ -120,10 +134,6 @@ const MarkAttendance = () => {
     }
   };
 
-  const getStatusText = (status) => {
-    return status.charAt(0).toUpperCase() + status.slice(1);
-  };
-
   const formatDate = (date) => {
     return new Date(date).toLocaleDateString('en-US', {
       weekday: 'long',
@@ -135,106 +145,95 @@ const MarkAttendance = () => {
 
   return (
     <>
-    <Toaster position="top-right" />
-    {isLoading && <Loader/>}
-    <div className={`layout-container ${sidebarOpen ? 'sidebar-open' : ''}`}>
-      <Navbar toggleSidebar={toggleSidebar} isSidebarOpen={sidebarOpen} />
-      <Sidebar isOpen={sidebarOpen} toggleSidebar={toggleSidebar} />
-      
-      <div className={`mark-attendance-container ${!sidebarOpen ? 'sidebar-closed' : ''}`}>
-        <div className="mark-attendance-header">
-          <button className="back-button" onClick={() => navigate('/attendance')}>
-            <ArrowBackIcon /> Back to Attendance
-          </button>
-          <h1>Mark Attendance</h1>
-        </div>
+      <Toaster position="top-right" />
+      {isLoading && <Loader />}
+      <div className={`layout-container ${sidebarOpen ? 'sidebar-open' : ''}`}>
+        <Navbar toggleSidebar={toggleSidebar} isSidebarOpen={sidebarOpen} />
+        <Sidebar isOpen={sidebarOpen} toggleSidebar={toggleSidebar} />
 
-        <div className="mark-attendance-content">
-          <div className="current-date">
-            <CalendarMonthIcon className="date-icon" />
-            <span>{formatDate(currentDate)}</span>
+        <div className={`mark-attendance-container ${!sidebarOpen ? 'sidebar-closed' : ''}`}>
+          <div className="mark-attendance-header">
+            <button className="back-button" onClick={() => navigate('/attendance')}>
+              <ArrowBackIcon /> Back to Attendance
+            </button>
+            <h1>Mark Attendance</h1>
           </div>
 
-          <form onSubmit={handleSubmit} className="mark-attendance-form">
-            <div className="form-section">
-              <h2>Mark Student Attendance</h2>
-              
-              <div className="form-row">
-                <div className="form-group">
-                  <label htmlFor="rollNumber">
-                    <PersonIcon className="form-icon" /> Roll Number
-                  </label>
-                  <input
-                    type="text"
-                    id="rollNumber"
-                    value={rollNumber}
-                    onChange={handleRollNumberChange}
-                    placeholder="Enter student roll number"
-                    required
-                  />
-                </div>
-                <div className="form-group">
-                  <label htmlFor="time">
-                    <AccessTimeIcon className="form-icon" /> Time
-                  </label>
-                  <input
-                    type="time"
-                    id="time"
-                    value={currentTime}
-                    onChange={handleTimeChange}
-                    required={status !== 'absent'}
-                    disabled={status === 'absent'}
-                  />
-                </div>
-              </div>
-
-              <div className="status-selection">
-                <h3>Select Status</h3>
-                <div className="status-buttons">
-                  <button
-                    type="button"
-                    className={`status-btn present ${status === 'present' ? 'active' : ''}`}
-                    onClick={() => handleStatusChange('present')}
-                  >
-                    <CheckCircleIcon /> Present
-                  </button>
-                  <button
-                    type="button"
-                    className={`status-btn absent ${status === 'absent' ? 'active' : ''}`}
-                    onClick={() => handleStatusChange('absent')}
-                  >
-                    <CancelIcon /> Absent
-                  </button>
-                  <button
-                    type="button"
-                    className={`status-btn late ${status === 'late' ? 'active' : ''}`}
-                    onClick={() => handleStatusChange('late')}
-                  >
-                    <HelpOutlineIcon /> Late
-                  </button>
-                </div>
-              </div>
-
-              {message && <div className="success-message">{message}</div>}
-              {error && <div className="error-message">{error}</div>}
-
-              <div className="form-actions">
-                <button 
-                  type="submit" 
-                  className="save-btn"
-                  disabled={isLoading || !rollNumber.trim() || (status !== 'absent' && !currentTime)}
-                >
-                    <>
-                      <SaveIcon /> Mark Attendance
-                    </>
-                </button>
-              </div>
-                <br />
+          <div className="mark-attendance-content">
+            <div className="current-date">
+              <CalendarMonthIcon className="date-icon" />
+              <span>{formatDate(currentDate)}</span>
             </div>
-          </form>
+
+            <div className="attendance-table-container">
+              <table className="attendance-table">
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Roll Number</th>
+                    <th>Time</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {students?.map((student) => (
+                    <tr key={student?.schoolDetails?.rollNumber}>
+                      <td>{student?.fullName}</td>
+                      <td>{student?.schoolDetails?.rollNumber}</td>
+                      <td>
+                        <input
+                          type="time"
+                          value={attendanceData[student?.schoolDetails?.rollNumber]?.time || ''}
+                          onChange={(e) => handleTimeChange(student?.schoolDetails?.rollNumber, e.target.value)}
+                          disabled={attendanceData[student?.schoolDetails?.rollNumber]?.status === 'absent'}
+                          className="time-input"
+                        />
+                      </td>
+                      <td>
+                        <div className="status-buttons">
+                          <button
+                            type="button"
+                            className={`status-btn present ${attendanceData[student?.schoolDetails?.rollNumber]?.status === 'present' ? 'active' : ''}`}
+                            onClick={() => handleStatusChange(student?.schoolDetails?.rollNumber, 'present')}
+                          >
+                            <CheckCircleIcon /> Present
+                          </button>
+                          <button
+                            type="button"
+                            className={`status-btn absent ${attendanceData[student?.schoolDetails?.rollNumber]?.status === 'absent' ? 'active' : ''}`}
+                            onClick={() => handleStatusChange(student?.schoolDetails?.rollNumber, 'absent')}
+                          >
+                            <CancelIcon /> Absent
+                          </button>
+                          <button
+                            type="button"
+                            className={`status-btn late ${attendanceData[student?.schoolDetails?.rollNumber]?.status === 'late' ? 'active' : ''}`}
+                            onClick={() => handleStatusChange(student?.schoolDetails?.rollNumber, 'late')}
+                          >
+                            <HelpOutlineIcon /> Late
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            <div className="form-actions">
+              <button
+                type="button"
+                className="save-btn"
+                onClick={handleMarkAllAttendance}
+                disabled={isLoading || students.length === 0}
+              >
+                <SaveIcon /> Mark All Attendance
+              </button>
+            </div>
+          </div>
         </div>
       </div>
-    </div></>
+    </>
   );
 };
 

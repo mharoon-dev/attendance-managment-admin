@@ -222,65 +222,48 @@ const Library = () => {
         {isLoading ? (
          <Loader />
         ) : (
-          <div className="books-grid">
+          <div className="books-table-container">
             {filteredBooks.length > 0 ? (
-              filteredBooks.map((book) => (
-                <div key={book._id} className="book-card">
-                  <div className="book-info">
-                    <h3 className="book-title">{book.bookName}</h3>
-                    <div className="book-details">
-                      <div className="book-detail">
-                        <BookIcon className="detail-icon" />
-                        <span>{book.category}</span>
-                      </div>
-                      <div className="book-detail">
-                        <span>Shelf: {book.shelfNo}</span>
-                      </div>
-                      {book.issuedTo && (
-                        <div className="book-detail">
-                          <PersonIcon className="detail-icon" />
-                          <span>Issued to: {book.issuedTo}</span>
+              <table className="books-table">
+                <thead>
+                  <tr>
+                    <th>S.No</th>
+                    <th>Book Name</th>
+                    <th>Shelf No<br/><span style={{fontWeight:400}}>(شیلف)</span></th>
+                    <th>Issued To</th>
+                    <th>Issue Date<br/><span style={{fontWeight:400}}>(اجراء کی)</span></th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredBooks.map((book, index) => (
+                    <tr key={book._id}>
+                      <td>{index + 1}</td>
+                      <td>{book.bookName}</td>
+                      <td>{book.shelfNo}</td>
+                      <td>{book.issuedTo || '-'}</td>
+                      <td>{book.issuedDate ? new Date(book.issuedDate).toLocaleDateString() : '-'}</td>
+                      <td>
+                        <div className="table-actions">
+                          <button className="view-profile-btn" onClick={() => handleViewBook(book)}>
+                            <VisibilityIcon />
+                          </button>
+                          {(user.role === "admin" || user.role === "superAdmin") && (
+                            <div className="table-actions-buttons">
+                              <button className="action-btn edit" onClick={() => handleEditBook(book)}>
+                                <EditIcon />
+                              </button>
+                              <button className="action-btn delete" onClick={() => handleDeleteClick(book._id)}>
+                                <DeleteIcon />
+                              </button>
+                            </div>
+                          )}
                         </div>
-                      )}
-                      {book.issuedDate && (
-                        <div className="book-detail">
-                          <CalendarTodayIcon className="detail-icon" />
-                          <span>
-                            Issued on:{" "}
-                            {new Date(book.issuedDate).toLocaleDateString()}
-                          </span>
-                        </div>
-                      )}
-                    </div>
-                    <div className="book-card-footer">
-                      <button 
-                        className="view-book-btn"
-                        onClick={() => handleViewBook(book)}
-                      >
-                        <VisibilityIcon /> View Details
-                      </button>
-                      {
-                        (user.role === "admin" || user.role === "superAdmin") && (
-                          <div className="quick-actions">
-                            <button 
-                              className="action-btn edit"
-                              onClick={() => handleEditBook(book)}
-                            >
-                              <EditIcon />
-                            </button>
-                            <button 
-                              className="action-btn delete" 
-                              onClick={() => handleDeleteClick(book._id)}
-                            >
-                              <DeleteIcon />
-                            </button>
-                          </div>
-                        )
-                      }
-                    </div>
-                  </div>
-                </div>
-              ))
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             ) : (
               <div className="no-results">
                 <MenuBookIcon className="no-results-icon" />

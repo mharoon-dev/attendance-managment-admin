@@ -322,18 +322,24 @@ try {
             <table className="teachers-table">
               <thead>
                 <tr>
-                  <th>Name</th>
-                  <th>ID</th>
-                  <th className="hide-on-mobile">Phone Number</th>
+                  <th>S.No</th>
+                  <th>Full Name</th>
+                  <th>Father Name</th>
+                  <th>Phone Number</th>
+                  <th>Designation</th>
+                  <th>Teacher ID</th>
                   <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
-                {sortedTeachers?.map((teacher) => (
+                {sortedTeachers?.map((teacher, index) => (
                   <tr key={teacher._id}>
+                    <td>{index + 1}</td>
                     <td>{teacher.fullName}</td>
-                    <td>{teacher?.jobDetails?.teacherId}</td>
-                    <td className="hide-on-mobile">{teacher.phoneNumber}</td>
+                    <td>{teacher.fatherName}</td>
+                    <td>{teacher.phoneNumber}</td>
+                    <td>{teacher.jobDetails?.designation}</td>
+                    <td>{teacher.jobDetails?.teacherId}</td>
                     <td>
                       <div className="table-actions">
                         <button
@@ -344,21 +350,20 @@ try {
                         </button>
                         {(user.role === "admin" || user.role === "superAdmin") && (
                           <>
-                          <div className="table-actions-buttons">
-
-                            <button
-                              className="action-btn edit"
-                              onClick={() => handleEditClick(teacher)}
+                            <div className="table-actions-buttons">
+                              <button
+                                className="action-btn edit"
+                                onClick={() => handleEditClick(teacher)}
                               >
-                              <EditIcon />
-                            </button>
-                            <button 
-                              className="action-btn delete" 
-                              onClick={() => handleDeleteClick(teacher._id, teacher.jobDetails.teacherId)}
+                                <EditIcon />
+                              </button>
+                              <button 
+                                className="action-btn delete" 
+                                onClick={() => handleDeleteClick(teacher._id, teacher.jobDetails.teacherId)}
                               >
-                              <DeleteIcon />
-                            </button>
-                              </div>
+                                <DeleteIcon />
+                              </button>
+                            </div>
                           </>
                         )}
                       </div>

@@ -89,9 +89,9 @@ const MarkTeacherAttendance = () => {
         time: status === 'absent' ? null : currentTime
       };
 
-      await api.post("attendance/teacher/mark", attendanceData);
-      toast.success("Attendance marked successfully");
-      setMessage("Attendance marked successfully");
+      const res = await api.post("attendance/teacher/mark", attendanceData);
+      toast.success(res.data.message);
+      setMessage(res.data.message);
       setTeacherId('');
       setCurrentTime('');
       setStatus('present');

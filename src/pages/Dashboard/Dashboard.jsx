@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import Navbar from "../../components/Navbar/Navbar";
 import Sidebar from "../../components/Sidebar/Sidebar";
 import Loader from "../../components/Loader/Loader";
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
 import useSidebar from "../../hooks/useSidebar";
 import "./Dashboard.css";
 import { api } from "../../utils/url.js";
@@ -36,7 +38,16 @@ import {
   getDailyAttendanceSuccess,
   getDailyAttendanceFailure,
 } from "../../redux/slices/dailyAttendanceSlice.jsx";
+import {
+  getTodosStart,
+  getTodosSuccess,
+  getTodosFailure,
+  addTodoSuccess,
+  updateTodoSuccess,
+  deleteTodoSuccess,
+} from "../../redux/slices/todoSlice.jsx";
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip, Sector } from 'recharts';
+import { Plus, Edit2, Trash2, Check, X } from 'react-feather';
 
 const Dashboard = () => {
   const { sidebarOpen, toggleSidebar } = useSidebar();
@@ -47,10 +58,13 @@ const Dashboard = () => {
   const { classes } = useSelector((state) => state.classes);
   const { books } = useSelector((state) => state.library);
   const { dailyAttendance } = useSelector((state) => state.dailyAttendance);
+  const { todos } = useSelector((state) => state.todos);
   const { user } = useSelector((state) => state.user);
   const [currentMonth, setCurrentMonth] = useState('');
   const [currentYear, setCurrentYear] = useState('');
   const [activeIndex, setActiveIndex] = useState(0);
+  const [newTodo, setNewTodo] = useState({ title: '', description: '' });
+  const [editingTodo, setEditingTodo] = useState(null);
 
   useEffect(() => {
     // Set current month and year
@@ -121,12 +135,23 @@ const Dashboard = () => {
       }
     };
 
+    const fetchTodos = async () => {
+      dispatch(getTodosStart());
+      try {
+        const response = await api.get("todos");
+        dispatch(getTodosSuccess(response.data.data));
+      } catch (error) {
+        dispatch(getTodosFailure(error.response.data.message));
+      }
+    };
+
     fetchStudents();
     fetchTeachers();
     fetchClasses();
     fetchBooks();
     fetchSubjects();
     fetchMonthlyAttendance();
+    fetchTodos();
   }, []);
 
   // Calculate attendance statistics
@@ -421,300 +446,442 @@ const Dashboard = () => {
     return null;
   };
 
+  const handleAddTodo = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await api.post("todos/add", newTodo);
+      dispatch(addTodoSuccess(response.data.data));
+      setNewTodo({ title: '', description: '' });
+    } catch (error) {
+      console.error("Error adding todo:", error);
+    }
+  };
+
+  const handleUpdateTodo = async (id, updatedData) => {
+    try {
+      const response = await api.put(`todos/update/${id}`, updatedData);
+      dispatch(updateTodoSuccess(response.data.data));
+      setEditingTodo(null);
+    } catch (error) {
+      console.error("Error updating todo:", error);
+    }
+  };
+
+  const handleDeleteTodo = async (id) => {
+    try {
+      await api.delete(`todos/delete/${id}`);
+      dispatch(deleteTodoSuccess(id));
+    } catch (error) {
+      console.error("Error deleting todo:", error);
+    }
+  };
+
   return (
-    <div className="dashboard-container">
+    <div className="dashboard">
       <Navbar toggleSidebar={toggleSidebar} isSidebarOpen={sidebarOpen} />
-      <Sidebar isOpen={sidebarOpen} toggleSidebar={toggleSidebar} />
-
-      <main className={`main-content ${sidebarOpen ? "" : "sidebar-closed"}`}>
-        {loading ? (
-          <Loader variant="ripple" color="#3A86FF" text="Loading dashboard..." />
-        ) : (
-          <>
-            <div className="dashboard-header">
-              <h1>Dashboard</h1>
-              <div className="date-display">
-                <span className="month-year">
-                  {getMonthName(currentMonth)} {currentYear}
-                </span>
+      <div className="dashboard-container">
+        <Sidebar isOpen={sidebarOpen} toggleSidebar={toggleSidebar} />
+        <div className={`main-content ${!sidebarOpen ? 'sidebar-closed' : ''}`}>
+          {loading ? (
+            <Loader variant="ripple" color="#3A86FF" text="Loading dashboard..." />
+          ) : (
+            <>
+              <div className="dashboard-header">
+                <h1>Dashboard</h1>
+                <div className="date-display">
+                  <span className="month-year">
+                    {getMonthName(currentMonth)} {currentYear}
+                  </span>
+                </div>
               </div>
-            </div>
 
-            <div className="stats-grid">
-              {stats.map((stat) => (
-                <div key={stat.id} className="stat-card">
-                  <div
-                    className="stat-icon"
-                    style={{
-                      backgroundColor: `${stat.color}15`,
-                      color: stat.color,
-                    }}
-                  >
-                    {stat.icon}
+              <div className="stats-grid">
+                {stats.map((stat) => (
+                  <div key={stat.id} className="stat-card">
+                    <div
+                      className="stat-icon"
+                      style={{
+                        backgroundColor: `${stat.color}15`,
+                        color: stat.color,
+                      }}
+                    >
+                      {stat.icon}
+                    </div>
+                    <div className="stat-content">
+                      <h3 className="stat-title">{stat.title}</h3>
+                      <div className="stat-value-container">
+                        <p className="stat-value">{stat.value}</p>
+                        {/* <span className={`stat-change ${stat.trend}`}>
+                          {stat.change}
+                          {stat.trend === "up" ? (
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="16"
+                              height="16"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            >
+                              <line x1="12" y1="19" x2="12" y2="5"></line>
+                              <polyline points="5 12 12 5 19 12"></polyline>
+                            </svg>
+                          ) : (
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="16"
+                              height="16"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            >
+                              <line x1="12" y1="5" x2="12" y2="19"></line>
+                              <polyline points="19 12 12 19 5 12"></polyline>
+                            </svg>
+                          )}
+                        </span> */}
+                      </div>
+                    </div>
                   </div>
-                  <div className="stat-content">
-                    <h3 className="stat-title">{stat.title}</h3>
-                    <div className="stat-value-container">
-                      <p className="stat-value">{stat.value}</p>
-                      {/* <span className={`stat-change ${stat.trend}`}>
-                        {stat.change}
-                        {stat.trend === "up" ? (
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="16"
-                            height="16"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          >
-                            <line x1="12" y1="19" x2="12" y2="5"></line>
-                            <polyline points="5 12 12 5 19 12"></polyline>
-                          </svg>
-                        ) : (
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="16"
-                            height="16"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          >
-                            <line x1="12" y1="5" x2="12" y2="19"></line>
-                            <polyline points="19 12 12 19 5 12"></polyline>
-                          </svg>
-                        )}
-                      </span> */}
+                ))}
+              </div>
+
+              <div className="dashboard-grid">
+                <div className="dashboard-card chart-card">
+                  <div className="card-header">
+                    <h2 id="chart-title">Student Attendance - {getMonthName(currentMonth)} {currentYear}</h2>
+                    {/* <div className="card-actions">
+                      <button className="card-action-button">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="16"
+                          height="16"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <circle cx="12" cy="12" r="1"></circle>
+                          <circle cx="19" cy="12" r="1"></circle>
+                          <circle cx="5" cy="12" r="1"></circle>
+                        </svg>
+                      </button>
+                    </div> */}
+                  </div>
+                  <div className="chart-container">
+                    <div className="chart-placeholder">
+                      {Array.from({ length: daysInMonth }, (_, i) => i + 1).map(day => {
+                        const dayData = attendanceByDay.find(d => d.day === day) || { present: 0, absent: 0, late: 0, total: 0 };
+                        const maxHeight = Math.max(dayData.present, dayData.absent, dayData.late, 1);
+                        
+                        return (
+                          <div key={day} className="chart-day">
+                            <div className="chart-bars">
+                              {dayData.present > 0 && (
+                                <div 
+                                  className="chart-bar present" 
+                                  style={{ 
+                                    height: `${(dayData.present / maxHeight) * 200}px`
+                                  }}
+                                />
+                              )}
+                              {dayData.absent > 0 && (
+                                <div 
+                                  className="chart-bar absent" 
+                                  style={{ 
+                                    height: `${(dayData.absent / maxHeight) * 200}px`
+                                  }}
+                                />
+                              )}
+                              {dayData.late > 0 && (
+                                <div 
+                                  className="chart-bar late" 
+                                  style={{ 
+                                    height: `${(dayData.late / maxHeight) * 200}px`
+                                  }}
+                                />
+                              )}
+                            </div>
+                            <span className="chart-day-label">{day}</span>
+                          </div>
+                        );
+                      })}
+                    </div>
+                    <div className="chart-legend">
+                    
+                 
                     </div>
                   </div>
                 </div>
-              ))}
-            </div>
 
-            <div className="dashboard-grid">
-              <div className="dashboard-card chart-card">
-                <div className="card-header">
-                  <h2 id="chart-title">Student Attendance - {getMonthName(currentMonth)} {currentYear}</h2>
-                  <div className="card-actions">
-                    <button className="card-action-button">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="16"
-                        height="16"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      >
-                        <circle cx="12" cy="12" r="1"></circle>
-                        <circle cx="19" cy="12" r="1"></circle>
-                        <circle cx="5" cy="12" r="1"></circle>
-                      </svg>
-                    </button>
+                <div className="dashboard-card activity-card">
+                  <div className="card-header">
+                    <h2>Distribution Overview</h2>
                   </div>
-                </div>
-                <div className="chart-container">
-                  <div className="chart-placeholder">
-                    {Array.from({ length: daysInMonth }, (_, i) => i + 1).map(day => {
-                      const dayData = attendanceByDay.find(d => d.day === day) || { present: 0, absent: 0, late: 0, total: 0 };
-                      const maxHeight = Math.max(dayData.present, dayData.absent, dayData.late, 1);
-                      
-                      return (
-                        <div key={day} className="chart-day">
-                          <div className="chart-bars">
-                            {dayData.present > 0 && (
-                              <div 
-                                className="chart-bar present" 
-                                style={{ 
-                                  height: `${(dayData.present / maxHeight) * 200}px`
-                                }}
-                              />
-                            )}
-                            {dayData.absent > 0 && (
-                              <div 
-                                className="chart-bar absent" 
-                                style={{ 
-                                  height: `${(dayData.absent / maxHeight) * 200}px`
-                                }}
-                              />
-                            )}
-                            {dayData.late > 0 && (
-                              <div 
-                                className="chart-bar late" 
-                                style={{ 
-                                  height: `${(dayData.late / maxHeight) * 200}px`
-                                }}
-                              />
-                            )}
-                          </div>
-                          <span className="chart-day-label">{day}</span>
-                        </div>
-                      );
-                    })}
-                  </div>
-                  <div className="chart-legend">
-                  
-               
-                  </div>
-                </div>
-              </div>
-
-              <div className="dashboard-card activity-card">
-                <div className="card-header">
-                  <h2>Distribution Overview</h2>
-                </div>
-                <div className="pie-chart-container">
-                  <ResponsiveContainer width="100%" height={290}>
-                    <PieChart>
-                      <Pie
-                        activeIndex={activeIndex}
-                        activeShape={renderActiveShape}
-                        data={pieChartData}
-                        cx="50%"
-                        cy="50%"
-                        innerRadius={60}
-                        outerRadius={120}
-                        paddingAngle={5}
-                        dataKey="value"
-                        onMouseEnter={(_, index) => setActiveIndex(index)}
-                        animationBegin={0}
-                        animationDuration={1000}
-                        animationEasing="ease-out"
-                      >
-                        {pieChartData.map((entry, index) => (
-                          <Cell 
-                            key={`cell-${index}`} 
-                            fill={entry.color}
-                            stroke="#fff"
-                            strokeWidth={2}
+                  <div className="pie-chart-container">
+                    <ResponsiveContainer width="100%" height={290}>
+                      <PieChart>
+                        <Pie
+                          activeIndex={activeIndex}
+                          activeShape={renderActiveShape}
+                          data={pieChartData}
+                          cx="50%"
+                          cy="50%"
+                          innerRadius={60}
+                          outerRadius={120}
+                          paddingAngle={5}
+                          dataKey="value"
+                          onMouseEnter={(_, index) => setActiveIndex(index)}
+                          animationBegin={0}
+                          animationDuration={1000}
+                          animationEasing="ease-out"
+                        >
+                          {pieChartData.map((entry, index) => (
+                            <Cell 
+                              key={`cell-${index}`} 
+                              fill={entry.color}
+                              stroke="#fff"
+                              strokeWidth={2}
+                            />
+                          ))}
+                        </Pie>
+                        <Tooltip content={<CustomTooltip />} />
+                        {window.innerWidth > 768 && (
+                          <Legend
+                            layout="vertical"
+                            align="right"
+                            verticalAlign="middle"
+                          wrapperStyle={{
+                            paddingLeft: '20px'
+                          }}
                           />
-                        ))}
-                      </Pie>
-                      <Tooltip content={<CustomTooltip />} />
-                      {window.innerWidth > 768 && (
-                        <Legend
-                          layout="vertical"
-                          align="right"
-                          verticalAlign="middle"
-                        wrapperStyle={{
-                          paddingLeft: '20px'
-                        }}
-                        />
-                      )}
-                    </PieChart>
-                  </ResponsiveContainer>
-                </div>
-              </div>
-
-              {/* <div className="dashboard-card events-card">
-                <div className="card-header">
-                  <h2>Upcoming Events</h2>
-                  <button className="view-all-button">View All</button>
-                </div>
-                <div className="events-list">
-                  {upcomingEvents.map((event) => (
-                    <div key={event.id} className="event-item">
-                      <div
-                        className="event-icon"
-                        style={{
-                          backgroundColor:
-                            event.type === "event"
-                              ? "#3A86FF15"
-                              : event.type === "meeting"
-                              ? "#FF006E15"
-                              : event.type === "exam"
-                              ? "#8338EC15"
-                              : "#38B00015",
-                          color:
-                            event.type === "event"
-                              ? "#3A86FF"
-                              : event.type === "meeting"
-                              ? "#FF006E"
-                              : event.type === "exam"
-                              ? "#8338EC"
-                              : "#38B000",
-                        }}
-                      >
-                        {event.type === "event" ? (
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="16"
-                            height="16"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          >
-                            <rect
-                              x="3"
-                              y="4"
-                              width="18"
-                              height="18"
-                              rx="2"
-                              ry="2"
-                            ></rect>
-                            <line x1="16" y1="2" x2="16" y2="6"></line>
-                            <line x1="8" y1="2" x2="8" y2="6"></line>
-                            <line x1="3" y1="10" x2="21" y2="10"></line>
-                          </svg>
-                        ) : event.type === "meeting" ? (
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="16"
-                            height="16"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          >
-                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                            <circle cx="9" cy="7" r="4"></circle>
-                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-                            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-                          </svg>
-                        ) : (
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="16"
-                            height="16"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          >
-                            <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
-                            <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
-                          </svg>
                         )}
-                      </div>
-                      <div className="event-content">
-                        <h3 className="event-title">{event.title}</h3>
-                        <div className="event-details">
-                          <span className="event-date">{event.date}</span>
-                          <span className="event-time">{event.time}</span>
+                      </PieChart>
+                    </ResponsiveContainer>
+                  </div>
+                </div>
+
+                {/* <div className="dashboard-card events-card">
+                  <div className="card-header">
+                    <h2>Upcoming Events</h2>
+                    <button className="view-all-button">View All</button>
+                  </div>
+                  <div className="events-list">
+                    {upcomingEvents.map((event) => (
+                      <div key={event.id} className="event-item">
+                        <div
+                          className="event-icon"
+                          style={{
+                            backgroundColor:
+                              event.type === "event"
+                                ? "#3A86FF15"
+                                : event.type === "meeting"
+                                ? "#FF006E15"
+                                : event.type === "exam"
+                                ? "#8338EC15"
+                                : "#38B00015",
+                            color:
+                              event.type === "event"
+                                ? "#3A86FF"
+                                : event.type === "meeting"
+                                ? "#FF006E"
+                                : event.type === "exam"
+                                ? "#8338EC"
+                                : "#38B000",
+                          }}
+                        >
+                          {event.type === "event" ? (
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="16"
+                              height="16"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            >
+                              <rect
+                                x="3"
+                                y="4"
+                                width="18"
+                                height="18"
+                                rx="2"
+                                ry="2"
+                              ></rect>
+                              <line x1="16" y1="2" x2="16" y2="6"></line>
+                              <line x1="8" y1="2" x2="8" y2="6"></line>
+                              <line x1="3" y1="10" x2="21" y2="10"></line>
+                            </svg>
+                          ) : event.type === "meeting" ? (
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="16"
+                              height="16"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            >
+                              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                              <circle cx="9" cy="7" r="4"></circle>
+                              <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                              <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                            </svg>
+                          ) : (
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="16"
+                              height="16"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            >
+                              <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+                              <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+                            </svg>
+                          )}
+                        </div>
+                        <div className="event-content">
+                          <h3 className="event-title">{event.title}</h3>
+                          <div className="event-details">
+                            <span className="event-date">{event.date}</span>
+                            <span className="event-time">{event.time}</span>
+                          </div>
                         </div>
                       </div>
+                    ))}
+                  </div>
+                </div> */}
+              </div>
+
+              {/* Todo Section */}
+              <div className="todo-section">
+                <div className="todo-header">
+                  <h2>Todo List</h2>
+                  <div className="todo-stats">
+                    <span className="total-todos">Total: {todos?.length || 0}</span>
+                    <span className="completed-todos">
+                      Completed: {todos?.filter(todo => todo.completed).length || 0}
+                    </span>
+                    <span className="pending-todos">
+                      Pending: {todos?.filter(todo => !todo.completed).length || 0}
+                    </span>
+                  </div>
+                </div>
+
+                <form onSubmit={handleAddTodo} className="todo-form">
+                  <div className="form-group">
+                    <input
+                      type="text"
+                      placeholder="Enter todo title"
+                      value={newTodo.title}
+                      onChange={(e) => setNewTodo({ ...newTodo, title: e.target.value })}
+                      required
+                    />
+                    <input
+                      type="text"
+                      placeholder="Enter todo description"
+                      value={newTodo.description}
+                      onChange={(e) => setNewTodo({ ...newTodo, description: e.target.value })}
+                      required
+                    />
+                  </div>
+                  <button type="submit" className="add-todo-button">
+                    <Plus size={16} />
+                    Add Todo
+                  </button>
+                </form>
+
+                <div className="todo-list">
+                  {todos?.map((todo) => (
+                    <div key={todo._id} className={`todo-item ${todo.completed ? 'completed' : ''}`}>
+                      {editingTodo?._id === todo._id ? (
+                        <div className="edit-todo">
+                          <div className="form-group">
+                            <input
+                              type="text"
+                              value={editingTodo.title}
+                              onChange={(e) => setEditingTodo({ ...editingTodo, title: e.target.value })}
+                              placeholder="Edit title"
+                            />
+                            <input
+                              type="text"
+                              value={editingTodo.description}
+                              onChange={(e) => setEditingTodo({ ...editingTodo, description: e.target.value })}
+                              placeholder="Edit description"
+                            />
+                          </div>
+                          <div className="button-group">
+                            <button onClick={() => handleUpdateTodo(todo._id, editingTodo)} className="save-button">
+                              <Check size={14} />
+                              Save
+                            </button>
+                            <button onClick={() => setEditingTodo(null)} className="cancel-button">
+                              <X size={14} />
+                              Cancel
+                            </button>
+                          </div>
+                        </div>
+                      ) : (
+                        <>
+                          <div className="todo-content">
+                            <div className="todo-info">
+                              <h3>{todo.title}</h3>
+                              <p>{todo.description}</p>
+                            </div>
+                            <div className="todo-actions">
+                              <button 
+                                onClick={() => setEditingTodo(todo)}
+                                className="edit-button"
+                                title="Edit"
+                              >
+                                <EditIcon  />
+                              </button>
+                              <button 
+                                onClick={() => handleDeleteTodo(todo._id)}
+                                className="delete-button"
+                                title="Delete"
+                              >
+                                <DeleteIcon />
+                              </button>
+                              <button
+                                onClick={() => handleUpdateTodo(todo._id, { ...todo, completed: !todo.completed })}
+                                className={`complete-button ${todo.completed ? 'completed' : ''}`}
+                                title={todo.completed ? 'Mark Incomplete' : 'Mark Complete'}
+                              >
+                                <Check size={14} />
+                              </button>
+                            </div>
+                          </div>
+                          <div className="todo-status">
+                            <span className={`status-badge ${todo.completed ? 'completed' : 'pending'}`}>
+                              {todo.completed ? 'Completed' : 'Pending'}
+                            </span>
+                          </div>
+                        </>
+                      )}
                     </div>
                   ))}
                 </div>
-              </div> */}
-            </div>
-          </>
-        )}
-      </main>
+              </div>
+            </>
+          )}
+        </div>
+      </div>
     </div>
   );
 };

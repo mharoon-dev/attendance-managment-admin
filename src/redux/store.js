@@ -8,6 +8,8 @@ import subjectReducer from "./slices/subjectSlice.jsx";
 import dailyAttendanceReducer from "./slices/dailyAttendanceSlice.jsx";
 import incomesReducer from "./slices/incomesSlice.jsx";
 import expensesReducer from "./slices/expensesSlice.jsx";
+import todoReducer from "./slices/todoSlice.jsx";
+
 const store = configureStore({
   reducer: {
     user: userReducer,
@@ -19,6 +21,7 @@ const store = configureStore({
     dailyAttendance: dailyAttendanceReducer,
     incomes: incomesReducer,
     expenses: expensesReducer,
+    todos: todoReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

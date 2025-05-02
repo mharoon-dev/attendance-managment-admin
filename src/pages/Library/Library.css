@@ -713,4 +713,177 @@
 .view-book-btn .MuiSvgIcon-root {
   font-size: 20px;
   margin-right: 4px;
+}
+
+/* --- UPGRADED TABLE UI (NO GRADIENT) --- */
+.books-table-container {
+  width: 100%;
+  overflow-x: auto;
+  background: #f5f7fa;
+  border-radius: 16px;
+  box-shadow: 0 4px 24px rgba(74, 144, 226, 0.08), 0 1.5px 6px rgba(0,0,0,0.04);
+  margin-top: 2rem;
+  padding: 1rem 0.5rem;
+  -webkit-overflow-scrolling: touch;
+}
+
+.books-table {
+  width: 100%;
+  min-width: 900px;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 1rem;
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(74, 144, 226, 0.06);
+}
+
+.books-table th,
+.books-table td {
+  padding: 1.1rem 1.2rem;
+  text-align: left;
+  border-bottom: 1px solid #e3e8ee;
+  white-space: nowrap;
+  transition: background 0.2s;
+}
+
+.books-table th {
+  background: #e3f0ff;
+  font-weight: 700;
+  color: #2563eb;
+  text-transform: uppercase;
+  font-size: 0.95rem;
+  letter-spacing: 0.07em;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  border-bottom: 2px solid #b6d0f7;
+}
+
+.books-table tr {
+  transition: box-shadow 0.2s, background 0.2s;
+}
+
+.books-table tbody tr:nth-child(even) {
+  background: #f6fafd;
+}
+
+.books-table tbody tr:nth-child(odd) {
+  background: #fff;
+}
+
+.books-table tr:hover {
+  background: #e3f0ff !important;
+  box-shadow: 0 2px 12px rgba(74, 144, 226, 0.08);
+}
+
+.books-table td:last-child,
+.books-table th:last-child {
+  text-align: center;
+}
+
+.table-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  justify-content: center;
+}
+
+.table-actions .view-profile-btn {
+  padding: 0.45rem 0.9rem;
+  background: #e3f2fd;
+  color: #1976d2;
+  border: none;
+  border-radius: 0.5rem;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  box-shadow: 0 1px 4px rgba(25, 118, 210, 0.08);
+}
+
+.table-actions .view-profile-btn:hover {
+  background: #1976d2;
+  color: #fff;
+}
+
+.table-actions-buttons {
+  display: flex;
+  gap: 0.3rem;
+}
+
+.table-actions .action-btn {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+  font-size: 1.1rem;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+}
+
+.table-actions .action-btn.edit {
+  background: #e0f7fa;
+  color: #00838f;
+}
+
+.table-actions .action-btn.edit:hover {
+  background: #00838f;
+  color: #fff;
+}
+
+.table-actions .action-btn.delete {
+  background: #ffebee;
+  color: #c62828;
+}
+
+.table-actions .action-btn.delete:hover {
+  background: #c62828;
+  color: #fff;
+}
+
+@media (max-width: 1024px) {
+  .books-table-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    scrollbar-color: #e5e7eb #f8f9fa;
+    padding: 0.5rem 0.1rem;
+  }
+  .books-table {
+    min-width: 900px;
+  }
+  .books-table th,
+  .books-table td {
+    padding: 0.85rem 0.7rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .books-table th,
+  .books-table td {
+    padding: 0.5rem 0.4rem;
+    font-size: 0.9rem;
+  }
+  .books-table {
+    min-width: 700px;
+  }
+}
+
+@media (max-width: 480px) {
+  .books-table th,
+  .books-table td {
+    padding: 0.3rem 0.2rem;
+    font-size: 0.8rem;
+  }
+  .books-table {
+    min-width: 500px;
+  }
 } 

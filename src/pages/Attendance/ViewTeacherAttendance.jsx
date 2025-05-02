@@ -322,7 +322,7 @@ const ViewTeacherAttendance = () => {
                         </div>
                       </td>
                       <td>{record.date}</td>
-                      <td>{record.time || "N/A"}</td>
+                      <td>{record.status != "absent" ? record.time : "N/A"}</td>
                     </tr>
                   ))}
                 </tbody>
