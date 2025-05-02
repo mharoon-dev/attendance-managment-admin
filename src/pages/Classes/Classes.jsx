@@ -39,7 +39,6 @@ const Classes = () => {
   const [newTeacherYear, setNewTeacherYear] = useState(new Date().getFullYear());
   const [teachersList, setTeachersList] = useState([]);
   const [deleteConfirmation, setDeleteConfirmation] = useState({ show: false, classId: null });
-
   const [formData, setFormData] = useState({
     className: '',
     grade: '',
@@ -304,7 +303,8 @@ const Classes = () => {
                   {cls.classTeachers.map((teacher, index) => (
                     <div key={index} className="classes-info-item">
                       <BadgeIcon className="classes-info-icon" />
-                      <span>{teacher.teacherId} ({teacher.year})</span>
+                      {teachers.find(t => t.jobDetails.teacherId === teacher?.teacherId)?.fullName  }
+                      <span>{teacher?.teacherId} ({teacher?.year})</span>
                     </div>
                   ))}
                 </div>

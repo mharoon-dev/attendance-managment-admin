@@ -280,12 +280,7 @@ const Subjects = () => {
                 </div>
 
                 <div className="subject-card-footer">
-                  <button 
-                    className="view-subject-btn"
-                    onClick={() => handleViewSubject(subject._id)}
-                  >
-                    <VisibilityIcon /> View Details
-                  </button>
+                 
                   {
                     (user.role === "admin" || user.role === "superAdmin") && (
                       <div className="quick-actions">

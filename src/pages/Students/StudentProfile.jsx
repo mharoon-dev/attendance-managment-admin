@@ -461,6 +461,20 @@ const StudentProfile = () => {
                           <span className="info-value">{student.grade}</span>
                         </div>
                       </div>
+                      <div className="info-item">
+                        <MenuBookIcon className="info-icon" />
+                        <div className="info-details">
+                          <span className="info-label">Previous Degree</span>
+                          <div className="image-container">
+                            <img 
+                              src={student.schoolDetails.previousDegreeWithImage || 'https://via.placeholder.com/150'} 
+                              alt="Previous Degree"
+                              onClick={() => handleImageClick(student.schoolDetails.previousDegreeWithImage)}
+                              style={{ cursor: 'pointer',}}
+                            />
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>

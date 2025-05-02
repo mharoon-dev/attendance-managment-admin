@@ -155,10 +155,6 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
         user?.role === "admin" || user?.role === "superAdmin"
           ? [
               { label: "All Books", path: "/library" },
-              {
-                label: "Add Book",
-                path: "/library/add",
-              },
             ]
           : [{ label: "All Books", path: "/library" }],
     },
