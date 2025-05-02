@@ -86,11 +86,11 @@ const ClassProfile = () => {
             <div className="class-profile-title">
                 <h1>{classData.className}</h1>
                 <div className="class-status" data-status="active">
-                  Active
+                  فعال
                 </div>
               </div>
               <div className="back-button" onClick={() => navigate("/classes")}>
-                <ArrowBackIcon /> Back to Classes
+                <ArrowBackIcon /> کلاسز کی فہرست پر واپس جائیں
               </div>
               
              
@@ -99,33 +99,33 @@ const ClassProfile = () => {
             <div className="">
               <div className="overview-section">
                 <div className="class-info-card">
-                  <h2>Class Information</h2>
+                  <h2>کلاس کی معلومات</h2>
                   <div className="class-info">
                     <div className="info-item">
                       <BusinessIcon className="info-icon" />
-                      <span>Grade: {classData.grade}</span>
+                      <span>گریڈ: {classData.grade}</span>
                     </div>
                     <div className="info-item">
                       <CalendarMonthIcon className="info-icon" />
-                      <span>Start Date: {formatDate(classData.startDate)}</span>
+                      <span>شروع کی تاریخ: {formatDate(classData.startDate)}</span>
                     </div>
                     <div className="info-item">
                       <CalendarMonthIcon className="info-icon" />
-                      <span>End Date: {formatDate(classData.endDate)}</span>
+                      <span>اختتام کی تاریخ: {formatDate(classData.endDate)}</span>
                     </div>
                     <div className="info-item">
                       <DescriptionIcon className="info-icon" />
-                      <span>Created: {formatDate(classData.createdAt)}</span>
+                      <span>تخلیق کی تاریخ: {formatDate(classData.createdAt)}</span>
                     </div>
                     <div className="info-item">
                       <DescriptionIcon className="info-icon" />
-                      <span>Last Updated: {formatDate(classData.updatedAt)}</span>
+                      <span>آخری اپ ڈیٹ: {formatDate(classData.updatedAt)}</span>
                     </div>
                   </div>
                 </div>
 
                 <div className="class-description-card">
-                  <h2>Class Teachers</h2>
+                  <h2>کلاس کے اساتذہ</h2>
                   <div className="description">
                     {classData.classTeachers && classData.classTeachers.length > 0 ? (
                       <div className="teachers-list">
@@ -133,14 +133,14 @@ const ClassProfile = () => {
                           <div key={index} className="teacher-item">
                             <PersonIcon className="teacher-icon" />
                             <div className="teacher-details">
-                              <span className="teacher-id">Teacher ID: {teacher.teacherId}</span>
-                              <span className="teacher-year">Year: {teacher.year}</span>
+                              <span className="teacher-id">استاد کا آئی ڈی: {teacher.teacherId}</span>
+                              <span className="teacher-year">سال: {teacher.year}</span>
                             </div>
                           </div>
                         ))}
                       </div>
                     ) : (
-                      <p>No teachers assigned to this class.</p>
+                      <p>اس کلاس میں کوئی استاد مقرر نہیں ہے۔</p>
                     )}
                   </div>
                 </div>

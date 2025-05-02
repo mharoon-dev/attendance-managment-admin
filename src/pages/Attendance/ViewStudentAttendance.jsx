@@ -219,15 +219,14 @@ const ViewStudentAttendance = () => {
       
       <div className={`view-student-attendance ${!sidebarOpen ? 'sidebar-closed' : ''}`}>
         <div className="attendance-header">
-        
-          <h1>Student Attendance</h1>
+          <h1>طلباء کی حاضری دیکھیں</h1>
         </div>
 
         <div className="attendance-content">
           <div className="filters-container">
             <div className="filter-group">
               <label htmlFor="year">
-                <CalendarMonthIcon className="filter-icon" /> Select Year
+                <CalendarMonthIcon className="filter-icon" /> سال منتخب کریں
               </label>
               <select
                 id="year"
@@ -248,7 +247,7 @@ const ViewStudentAttendance = () => {
 
             <div className="filter-group">
               <label htmlFor="month">
-                <CalendarMonthIcon className="filter-icon" /> Select Month
+                <CalendarMonthIcon className="filter-icon" /> مہینہ منتخب کریں
               </label>
               <select
                 id="month"
@@ -256,24 +255,24 @@ const ViewStudentAttendance = () => {
                 onChange={handleMonthChange}
                 className="filter-input"
               >
-                <option value="01">January</option>
-                <option value="02">February</option>
-                <option value="03">March</option>
-                <option value="04">April</option>
-                <option value="05">May</option>
-                <option value="06">June</option>
-                <option value="07">July</option>
-                <option value="08">August</option>
-                <option value="09">September</option>
-                <option value="10">October</option>
-                <option value="11">November</option>
-                <option value="12">December</option>
+                <option value="01">جنوری</option>
+                <option value="02">فروری</option>
+                <option value="03">مارچ</option>
+                <option value="04">اپریل</option>
+                <option value="05">مئی</option>
+                <option value="06">جون</option>
+                <option value="07">جولائی</option>
+                <option value="08">اگست</option>
+                <option value="09">ستمبر</option>
+                <option value="10">اکتوبر</option>
+                <option value="11">نومبر</option>
+                <option value="12">دسمبر</option>
               </select>
             </div>
 
             <div className="filter-group">
               <label htmlFor="date">
-                <CalendarMonthIcon className="filter-icon" /> Select Date
+                <CalendarMonthIcon className="filter-icon" /> تاریخ منتخب کریں
               </label>
               <select
                 id="date"
@@ -282,7 +281,7 @@ const ViewStudentAttendance = () => {
                 className="filter-input"
                 disabled={isDateDisabled}
               >
-                <option value="">Select a date</option>
+                <option value="">تاریخ منتخب کریں</option>
                 {availableDates.map(date => (
                   <option key={date} value={date}>
                     {new Date(date).toLocaleDateString('en-US', {
@@ -297,7 +296,7 @@ const ViewStudentAttendance = () => {
 
             <div className="filter-group">
               <label htmlFor="studentId">
-                <PersonIcon className="filter-icon" /> Student ID
+                <PersonIcon className="filter-icon" /> طالب علم کا آئی ڈی
               </label>
               <input
                 type="text"
@@ -305,13 +304,13 @@ const ViewStudentAttendance = () => {
                 value={studentId}
                 onChange={handleStudentIdChange}
                 className="filter-input"
-                placeholder="Enter student ID"
+                placeholder="طالب علم کا آئی ڈی درج کریں"
                 disabled={isStudentIdDisabled}
               />
             </div>
 
             <button className="export-btn" onClick={handleExport}>
-              <DownloadIcon /> Export to Excel
+              <DownloadIcon /> ایکسل میں ایکسپورٹ کریں
             </button>
           </div>
 
@@ -320,11 +319,11 @@ const ViewStudentAttendance = () => {
               <table className="attendance-table">
                 <thead>
                   <tr>
-                    <th>Student ID</th>
-                    <th>Status</th>
-                    <th>Date</th>
-                    <th>Time</th>
-                    <th>Teacher ID</th>
+                    <th>طالب علم کا آئی ڈی</th>
+                    <th>حالت</th>
+                    <th>تاریخ</th>
+                    <th>وقت</th>
+                    <th>استاد کا آئی ڈی</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -335,7 +334,9 @@ const ViewStudentAttendance = () => {
                         <div className="status-cell">
                           {getStatusIcon(record.status)}
                           <span className={`status-text ${record.status}`}>
-                            {record.status.charAt(0).toUpperCase() + record.status.slice(1)}
+                            {record.status === 'present' ? 'حاضر' : 
+                             record.status === 'absent' ? 'غیر حاضر' : 
+                             'لیٹ'}
                           </span>
                         </div>
                       </td>
@@ -348,7 +349,7 @@ const ViewStudentAttendance = () => {
               </table>
             ) : (
               <div className="no-data-message">
-                No attendance records found
+                کوئی حاضری کا ریکارڈ نہیں ملا
               </div>
             )}
           </div>

@@ -195,11 +195,11 @@ const Library = () => {
         className={`library-container ${!sidebarOpen ? "sidebar-closed" : ""}`}
       >
         <div className="library-header">
-          <h1>Library</h1>
+          <h1>لائبریری</h1>
           {
             (user.role === "admin" || user.role === "superAdmin") && (
               <button className="add-book-btn" onClick={handleAddBook}>
-                <AddIcon /> Add New Book
+                <AddIcon /> نئی کتاب شامل کریں
               </button>
             )
           }
@@ -212,7 +212,7 @@ const Library = () => {
             </div>
             <input
               type="text"
-              placeholder="Search by book name, category, shelf number, or issued to..."
+              placeholder="کتاب کا نام، زمرہ، شیلف نمبر، یا جاری کردہ کی تلاش کریں..."
               value={searchTerm}
               onChange={handleSearch}
             />
@@ -227,22 +227,17 @@ const Library = () => {
               <table className="books-table">
                 <thead>
                   <tr>
-                    <th>S.No</th>
-                    <th>Book Name</th>
-                    <th>Shelf No<br/><span style={{fontWeight:400}}>(شیلف)</span></th>
-                    <th>Issued To</th>
-                    <th>Issue Date<br/><span style={{fontWeight:400}}>(اجراء کی)</span></th>
-                    <th>Action</th>
+                    <th>عمل</th>
+                    <th>تاریخ اجراء</th>
+                    <th>جاری کردہ</th>
+                    <th>شیلف نمبر</th>
+                    <th>کتاب کا نام</th>
+                    <th>نمبر</th>
                   </tr>
                 </thead>
                 <tbody>
                   {filteredBooks.map((book, index) => (
                     <tr key={book._id}>
-                      <td>{index + 1}</td>
-                      <td>{book.bookName}</td>
-                      <td>{book.shelfNo}</td>
-                      <td>{book.issuedTo || '-'}</td>
-                      <td>{book.issuedDate ? new Date(book.issuedDate).toLocaleDateString() : '-'}</td>
                       <td>
                         <div className="table-actions">
                           <button className="view-profile-btn" onClick={() => handleViewBook(book)}>
@@ -260,6 +255,11 @@ const Library = () => {
                           )}
                         </div>
                       </td>
+                      <td>{book.issuedDate ? new Date(book.issuedDate).toLocaleDateString() : '-'}</td>
+                      <td>{book.issuedTo || '-'}</td>
+                      <td>{book.shelfNo}</td>
+                      <td>{book.bookName}</td>
+                      <td>{index + 1}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -267,8 +267,8 @@ const Library = () => {
             ) : (
               <div className="no-results">
                 <MenuBookIcon className="no-results-icon" />
-                <h3>No books found</h3>
-                <p>Try adjusting your search</p>
+                <h3>کوئی کتاب نہیں ملی</h3>
+                <p>اپنی تلاش کو ایڈجسٹ کریں</p>
               </div>
             )}
           </div>
@@ -280,7 +280,7 @@ const Library = () => {
         <div className="modal-overlay">
           <div className="modal-content">
             <div className="modal-header">
-              <h2>Add New Book</h2>
+              <h2>نئی کتاب شامل کریں</h2>
               <button
                 className="close-btn"
                 onClick={() => setShowAddModal(false)}
@@ -292,7 +292,7 @@ const Library = () => {
               <div className="modal-body">
                 <div className="form-grid">
                   <div className="form-group">
-                    <label htmlFor="bookName">Book Name</label>
+                    <label htmlFor="bookName">کتاب کا نام</label>
                     <input
                       type="text"
                       id="bookName"
@@ -304,7 +304,7 @@ const Library = () => {
                   </div>
 
                   <div className="form-group">
-                   <label htmlFor="category">Category</label>
+                   <label htmlFor="category">زمرہ</label>
                    <input
                       type="text"
                       id="category"
@@ -315,7 +315,7 @@ const Library = () => {
                   </div>
 
                   <div className="form-group">
-                    <label htmlFor="shelfNo">Shelf Number</label>
+                    <label htmlFor="shelfNo">شیلف نمبر</label>
                     <input
                       type="text"
                       id="shelfNo"
@@ -327,7 +327,7 @@ const Library = () => {
                   </div>
 
                   <div className="form-group">
-                    <label htmlFor="issuedTo">Issued To</label>
+                    <label htmlFor="issuedTo">جاری کردہ</label>
                     <input
                       type="text"
                       id="issuedTo"
@@ -338,7 +338,7 @@ const Library = () => {
                   </div>
 
                   <div className="form-group">
-                    <label htmlFor="issuedDate">Issue Date</label>
+                    <label htmlFor="issuedDate">تاریخ اجراء</label>
                     <input
                       type="date"
                       id="issuedDate"
@@ -355,10 +355,10 @@ const Library = () => {
                   className="cancel-btn"
                   onClick={() => setShowAddModal(false)}
                 >
-                  Cancel
+                  منسوخ کریں
                 </button>
                 <button type="submit" className="save-btn">
-                  Add Book
+                  کتاب شامل کریں
                 </button>
               </div>
             </form>
@@ -371,7 +371,7 @@ const Library = () => {
         <div className="modal-overlay">
           <div className="modal-content">
             <div className="modal-header">
-              <h2>Edit Book</h2>
+              <h2>کتاب میں ترمیم کریں</h2>
               <button
                 className="close-btn"
                 onClick={() => setShowEditModal(false)}
@@ -383,7 +383,7 @@ const Library = () => {
               <div className="modal-body">
                 <div className="form-grid">
                   <div className="form-group">
-                    <label htmlFor="bookName">Book Name</label>
+                    <label htmlFor="bookName">کتاب کا نام</label>
                     <input
                       type="text"
                       id="bookName"
@@ -395,7 +395,7 @@ const Library = () => {
                   </div>
 
                   <div className="form-group">
-                    <label htmlFor="category">Category</label>
+                    <label htmlFor="category">زمرہ</label>
                     <input
                       type="text"
                       id="category"
@@ -405,7 +405,7 @@ const Library = () => {
                     />
                   </div>
                   <div className="form-group">
-                    <label htmlFor="shelfNo">Shelf Number</label>
+                    <label htmlFor="shelfNo">شیلف نمبر</label>
                     <input
                       type="text"
                       id="shelfNo"
@@ -417,7 +417,7 @@ const Library = () => {
                   </div>
 
                   <div className="form-group">
-                    <label htmlFor="issuedTo">Issued To</label>
+                    <label htmlFor="issuedTo">جاری کردہ</label>
                     <input
                       type="text"
                       id="issuedTo"
@@ -428,7 +428,7 @@ const Library = () => {
                   </div>
 
                   <div className="form-group">
-                    <label htmlFor="issuedDate">Issue Date</label>
+                    <label htmlFor="issuedDate">تاریخ اجراء</label>
                     <input
                       type="date"
                       id="issuedDate"
@@ -445,10 +445,10 @@ const Library = () => {
                   className="cancel-btn"
                   onClick={() => setShowEditModal(false)}
                 >
-                  Cancel
+                  منسوخ کریں
                 </button>
                 <button type="submit" className="save-btn">
-                  Save Changes
+                  تبدیلیاں محفوظ کریں
                 </button>
               </div>
             </form>
@@ -461,7 +461,7 @@ const Library = () => {
         <div className="modal-overlay">
           <div className="modal-content book-details-modal">
             <div className="modal-header">
-              <h2>Book Details</h2>
+              <h2>کتاب کی تفصیلات</h2>
               <button
                 className="close-btn"
                 onClick={() => setShowDetailsModal(false)}
@@ -478,20 +478,20 @@ const Library = () => {
 
                   <div className="book-details-grid">
                     <div className="book-details-item">
-                      <span className="details-label">Category:</span>
+                      <span className="details-label">زمرہ:</span>
                       <span className="details-value">
                         {selectedBook.category}
                       </span>
                     </div>
                     <div className="book-details-item">
-                      <span className="details-label">Shelf Number:</span>
+                      <span className="details-label">شیلف نمبر:</span>
                       <span className="details-value">
                         {selectedBook.shelfNo}
                       </span>
                     </div>
                     {selectedBook.issuedTo && (
                       <div className="book-details-item">
-                        <span className="details-label">Issued To:</span>
+                        <span className="details-label">جاری کردہ:</span>
                         <span className="details-value">
                           {selectedBook.issuedTo}
                         </span>
@@ -499,7 +499,7 @@ const Library = () => {
                     )}
                     {selectedBook.issuedDate && (
                       <div className="book-details-item">
-                        <span className="details-label">Issue Date:</span>
+                        <span className="details-label">تاریخ اجراء:</span>
                         <span className="details-value">
                           {new Date(
                             selectedBook.issuedDate
@@ -516,7 +516,7 @@ const Library = () => {
                 className="cancel-btn"
                 onClick={() => setShowDetailsModal(false)}
               >
-                Close
+                بند کریں
               </button>
               {
                 user.role === "admin" || user.role === "superAdmin" && (
@@ -527,7 +527,7 @@ const Library = () => {
                   handleEditBook(selectedBook);
                 }}
               >
-                <EditIcon /> Edit Book
+                <EditIcon /> کتاب میں ترمیم کریں
               </button>
                 )
               }
@@ -541,23 +541,23 @@ const Library = () => {
         <div className="modal-overlay">
           <div className="delete-confirmation-modal">
             <div className="modal-header">
-              <h2>Confirm Delete</h2>
+              <h2>حذف کرنے کی تصدیق</h2>
               <button className="modal-close-btn" onClick={handleCancelDelete}>
                 <CloseIcon />
               </button>
             </div>
             <div className="modal-body">
-              <p>Are you sure you want to delete this book? This action cannot be undone.</p>
+              <p>کیا آپ واقعی اس کتاب کو حذف کرنا چاہتے ہیں؟ یہ عمل واپس نہیں کیا جا سکتا۔</p>
             </div>
             <div className="modal-footer">
               <button className="cancel-btn" onClick={handleCancelDelete}>
-                Cancel
+                منسوخ کریں
               </button>
               <button 
                 className="delete-btn" 
                 onClick={() => handleDeleteBook(deleteConfirmation.bookId)}
               >
-                Delete
+                حذف کریں
               </button>
             </div>
           </div>

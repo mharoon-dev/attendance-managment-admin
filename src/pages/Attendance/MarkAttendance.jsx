@@ -154,9 +154,9 @@ const MarkAttendance = () => {
         <div className={`mark-attendance-container ${!sidebarOpen ? 'sidebar-closed' : ''}`}>
           <div className="mark-attendance-header">
             <button className="back-button" onClick={() => navigate('/attendance')}>
-              <ArrowBackIcon /> Back to Attendance
+              <ArrowBackIcon /> حاضری پر واپس جائیں
             </button>
-            <h1>Mark Attendance</h1>
+            <h1>حاضری درج کریں</h1>
           </div>
 
           <div className="mark-attendance-content">
@@ -169,10 +169,10 @@ const MarkAttendance = () => {
               <table className="attendance-table">
                 <thead>
                   <tr>
-                    <th>Name</th>
-                    <th>Roll Number</th>
-                    <th>Time</th>
-                    <th>Status</th>
+                    <th>نام</th>
+                    <th>رول نمبر</th>
+                    <th>وقت</th>
+                    <th>حالت</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -196,21 +196,21 @@ const MarkAttendance = () => {
                             className={`status-btn present ${attendanceData[student?.schoolDetails?.rollNumber]?.status === 'present' ? 'active' : ''}`}
                             onClick={() => handleStatusChange(student?.schoolDetails?.rollNumber, 'present')}
                           >
-                            <CheckCircleIcon /> Present
+                            <CheckCircleIcon /> حاضر
                           </button>
                           <button
                             type="button"
                             className={`status-btn absent ${attendanceData[student?.schoolDetails?.rollNumber]?.status === 'absent' ? 'active' : ''}`}
                             onClick={() => handleStatusChange(student?.schoolDetails?.rollNumber, 'absent')}
                           >
-                            <CancelIcon /> Absent
+                            <CancelIcon /> غیر حاضر
                           </button>
                           <button
                             type="button"
                             className={`status-btn late ${attendanceData[student?.schoolDetails?.rollNumber]?.status === 'late' ? 'active' : ''}`}
                             onClick={() => handleStatusChange(student?.schoolDetails?.rollNumber, 'late')}
                           >
-                            <HelpOutlineIcon /> Late
+                            <HelpOutlineIcon /> لیٹ
                           </button>
                         </div>
                       </td>
@@ -227,7 +227,7 @@ const MarkAttendance = () => {
                 onClick={handleMarkAllAttendance}
                 disabled={isLoading || students.length === 0}
               >
-                <SaveIcon /> Mark All Attendance
+                <SaveIcon /> تمام حاضری درج کریں
               </button>
             </div>
           </div>

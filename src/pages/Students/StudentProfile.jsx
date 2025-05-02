@@ -252,16 +252,16 @@ const StudentProfile = () => {
           <>
             <div className="student-profile-header">
               <div className="back-button" onClick={() => navigate('/students')}>
-                <ArrowBackIcon /> Back to Students
+                <ArrowBackIcon /> طلباء کی فہرست پر واپس جائیں
               </div>
               <div className="student-profile-title">
                 <div className="student-status">
                   <BadgeIcon className="status-icon" />
-                  <span>Grade {student.grade}</span>
+                  <span>گریڈ {student.grade}</span>
                 </div>
               </div>
               <button className="download-pdf-btn" onClick={generatePDF}>
-                <DownloadIcon /> Download PDF
+                <DownloadIcon /> پی ڈی ایف ڈاؤن لوڈ کریں
               </button>
             </div>
 
@@ -273,12 +273,12 @@ const StudentProfile = () => {
                     <div className="card-header-icon">
                       <PersonIcon />
                     </div>
-                    <h2>Student Information</h2>
+                    <h2>طالب علم کی معلومات</h2>
                   </div>
                   <div className="card-content">
                     <div className="student-images-container">
                       <div className="student-profile-section">
-                        <div className="image-label">Profile Photo</div>
+                        <div className="image-label">پروفائل تصویر</div>
                         <div className="image-container">
                           <img 
                             src={student.profileImage} 
@@ -289,11 +289,11 @@ const StudentProfile = () => {
                         </div>
                       </div>
                       <div className="student-nic-section">
-                        <div className="image-label">NIC Document</div>
+                        <div className="image-label">شناختی کارڈ کی دستاویز</div>
                         <div className="image-container">
                           <img 
                             src={student.nicImage || 'https://via.placeholder.com/150'} 
-                            alt="Student NIC"
+                            alt="طالب علم کا شناختی کارڈ"
                             onClick={() => handleImageClick(student.nicImage)}
                             style={{ cursor: 'pointer' }}
                           />
@@ -305,35 +305,35 @@ const StudentProfile = () => {
                       <div className="info-item">
                         <PersonIcon className="info-icon" />
                         <div className="info-details">
-                          <span className="info-label">Full Name</span>
+                          <span className="info-label">پورا نام</span>
                           <span className="info-value">{student.fullName}</span>
                         </div>
                       </div>
                       <div className="info-item">
                         <CalendarMonthIcon className="info-icon" />
                         <div className="info-details">
-                          <span className="info-label">Date of Birth</span>
+                          <span className="info-label">تاریخ پیدائش</span>
                           <span className="info-value">{new Date(student.dateOfBirth).toLocaleDateString()}</span>
                         </div>
                       </div>
                       <div className="info-item">
                         <PersonIcon className="info-icon" />
                         <div className="info-details">
-                          <span className="info-label">Gender</span>
+                          <span className="info-label">جنس</span>
                           <span className="info-value">{student.gender}</span>
                         </div>
                       </div>
                       <div className="info-item">
                         <PhoneIcon className="info-icon" />
                         <div className="info-details">
-                          <span className="info-label">Phone Number</span>
+                          <span className="info-label">فون نمبر</span>
                           <span className="info-value">{student.phoneNumber}</span>
                         </div>
                       </div>
                       <div className="info-item">
                         <LocationOnIcon className="info-icon" />
                         <div className="info-details">
-                          <span className="info-label">Address</span>
+                          <span className="info-label">پتہ</span>
                           <span className="info-value">{student.fullAddress}</span>
                         </div>
                       </div>
@@ -347,12 +347,12 @@ const StudentProfile = () => {
                     <div className="card-header-icon">
                       <GroupIcon />
                     </div>
-                    <h2>Parent Information</h2>
+                    <h2>والدین کی معلومات</h2>
                   </div>
                   <div className="card-content">
                     <div className="parent-images-container">
                       <div className="parent-profile-section">
-                        <div className="image-label">Profile Photo</div>
+                        <div className="image-label">پروفائل تصویر</div>
                         <div className="image-container">
                           <img 
                             src={student.parentDetails.profileImage || 'https://via.placeholder.com/150'} 
@@ -363,11 +363,11 @@ const StudentProfile = () => {
                         </div>
                       </div>
                       <div className="parent-nic-section">
-                        <div className="image-label">NIC Document</div>
+                        <div className="image-label">شناختی کارڈ کی دستاویز</div>
                         <div className="image-container">
                           <img 
                             src={student.parentDetails.nicImage || 'https://via.placeholder.com/150'} 
-                            alt="Parent NIC"
+                            alt="والدین کا شناختی کارڈ"
                             onClick={() => handleImageClick(student.parentDetails.nicImage)}
                             style={{ cursor: 'pointer' }}
                           />
@@ -379,42 +379,42 @@ const StudentProfile = () => {
                       <div className="info-item">
                         <PersonIcon className="info-icon" />
                         <div className="info-details">
-                          <span className="info-label">Full Name</span>
+                          <span className="info-label">پورا نام</span>
                           <span className="info-value">{student.parentDetails.fullName}</span>
                         </div>
                       </div>
                       <div className="info-item">
                         <CalendarMonthIcon className="info-icon" />
                         <div className="info-details">
-                          <span className="info-label">Date of Birth</span>
+                          <span className="info-label">تاریخ پیدائش</span>
                           <span className="info-value">{new Date(student.parentDetails.dateOfBirth).toLocaleDateString()}</span>
                         </div>
                       </div>
                       <div className="info-item">
                         <PersonIcon className="info-icon" />
                         <div className="info-details">
-                          <span className="info-label">Gender</span>
+                          <span className="info-label">جنس</span>
                           <span className="info-value">{student.parentDetails.gender}</span>
                         </div>
                       </div>
                       <div className="info-item">
                         <PhoneIcon className="info-icon" />
                         <div className="info-details">
-                          <span className="info-label">Phone Number</span>
+                          <span className="info-label">فون نمبر</span>
                           <span className="info-value">{student.parentDetails.phoneNumber}</span>
                         </div>
                       </div>
                       <div className="info-item">
                         <MenuBookIcon className="info-icon" />
                         <div className="info-details">
-                          <span className="info-label">Education</span>
+                          <span className="info-label">تعلیم</span>
                           <span className="info-value">{student.parentDetails.education}</span>
                         </div>
                       </div>
                       <div className="info-item">
                         <WorkIcon className="info-icon" />
                         <div className="info-details">
-                          <span className="info-label">Profession</span>
+                          <span className="info-label">پیشہ</span>
                           <span className="info-value">{student.parentDetails.profession}</span>
                         </div>
                       </div>
@@ -428,47 +428,46 @@ const StudentProfile = () => {
                     <div className="card-header-icon">
                       <SchoolIcon />
                     </div>
-                    <h2>School Information</h2>
+                    <h2>اسکول کی معلومات</h2>
                   </div>
                   <div className="card-content">
-                  
                     <div className="info-grid">
                       <div className="info-item">
                         <BadgeIcon className="info-icon" />
                         <div className="info-details">
-                          <span className="info-label">Roll Number</span>
+                          <span className="info-label">رول نمبر</span>
                           <span className="info-value">{student.schoolDetails.rollNumber}</span>
                         </div>
                       </div>
                       <div className="info-item">
                         <CalendarMonthIcon className="info-icon" />
                         <div className="info-details">
-                          <span className="info-label">Joining Date</span>
+                          <span className="info-label">تاریخ داخلہ</span>
                           <span className="info-value">{new Date(student.schoolDetails.joiningDate).toLocaleDateString()}</span>
                         </div>
                       </div>
                       <div className="info-item">
                         <MenuBookIcon className="info-icon" />
                         <div className="info-details">
-                          <span className="info-label">Previous Institute</span>
+                          <span className="info-label">سابقہ ادارہ</span>
                           <span className="info-value">{student.schoolDetails.previousInstitute}</span>
                         </div>
                       </div>
                       <div className="info-item">
                         <BadgeIcon className="info-icon" />
                         <div className="info-details">
-                          <span className="info-label">Grade</span>
+                          <span className="info-label">گریڈ</span>
                           <span className="info-value">{student.grade}</span>
                         </div>
                       </div>
                       <div className="info-item">
                         <MenuBookIcon className="info-icon" />
                         <div className="info-details">
-                          <span className="info-label">Previous Degree</span>
+                          <span className="info-label">سابقہ ڈگری</span>
                           <div className="image-container">
                             <img 
                               src={student.schoolDetails.previousDegreeWithImage || 'https://via.placeholder.com/150'} 
-                              alt="Previous Degree"
+                              alt="سابقہ ڈگری"
                               onClick={() => handleImageClick(student.schoolDetails.previousDegreeWithImage)}
                               style={{ cursor: 'pointer',}}
                             />

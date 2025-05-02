@@ -159,12 +159,12 @@ const SubjectProfile = () => {
           <>
             <div className="subject-profile-header">
               <div className="back-button" onClick={() => navigate('/subjects')}>
-                <ArrowBackIcon /> Back to Subjects
+                <ArrowBackIcon /> مضامین پر واپس جائیں
               </div>
               <div className="subject-profile-title">
                 <h1>{subjectData.name}</h1>
                 <div className="subject-status" data-status={subjectData.status}>
-                  {subjectData.status}
+                  {subjectData.status === 'active' ? 'فعال' : 'غیر فعال'}
                 </div>
               </div>
             </div>
@@ -174,25 +174,25 @@ const SubjectProfile = () => {
                 className={`tab-btn ${activeTab === 'overview' ? 'active' : ''}`}
                 onClick={() => setActiveTab('overview')}
               >
-                Overview
+                جائزہ
               </button>
               <button 
                 className={`tab-btn ${activeTab === 'syllabus' ? 'active' : ''}`}
                 onClick={() => setActiveTab('syllabus')}
               >
-                Syllabus
+                نصاب
               </button>
               <button 
                 className={`tab-btn ${activeTab === 'assignments' ? 'active' : ''}`}
                 onClick={() => setActiveTab('assignments')}
               >
-                Assignments
+                اسائنمنٹس
               </button>
               <button 
                 className={`tab-btn ${activeTab === 'students' ? 'active' : ''}`}
                 onClick={() => setActiveTab('students')}
               >
-                Students
+                طلباء
               </button>
             </div>
 
@@ -204,61 +204,61 @@ const SubjectProfile = () => {
                       <MenuBookIcon />
                     </div>
                     <div className="subject-details">
-                      <h2>Subject Information</h2>
+                      <h2>مضمون کی معلومات</h2>
                       <div className="info-grid">
                         <div className="info-item">
                           <MenuBookIcon className="info-icon" />
                           <div className="info-details">
-                            <span className="info-label">Subject Name</span>
+                            <span className="info-label">مضمون کا نام</span>
                             <span className="info-value">{subjectData.name}</span>
                           </div>
                         </div>
                         <div className="info-item">
                           <BadgeIcon className="info-icon" />
                           <div className="info-details">
-                            <span className="info-label">Subject Code</span>
+                            <span className="info-label">مضمون کا کوڈ</span>
                             <span className="info-value">{subjectData.code}</span>
                           </div>
                         </div>
                         <div className="info-item">
                           <BusinessIcon className="info-icon" />
                           <div className="info-details">
-                            <span className="info-label">Grade</span>
+                            <span className="info-label">گریڈ</span>
                             <span className="info-value">{subjectData.grade}</span>
                           </div>
                         </div>
                         <div className="info-item">
                           <PersonIcon className="info-icon" />
                           <div className="info-details">
-                            <span className="info-label">Teacher</span>
+                            <span className="info-label">استاد</span>
                             <span className="info-value">{subjectData.teacher}</span>
                           </div>
                         </div>
                         <div className="info-item">
                           <EmailIcon className="info-icon" />
                           <div className="info-details">
-                            <span className="info-label">Teacher Email</span>
+                            <span className="info-label">استاد کا ای میل</span>
                             <span className="info-value">{subjectData.teacherEmail}</span>
                           </div>
                         </div>
                         <div className="info-item">
                           <PhoneIcon className="info-icon" />
                           <div className="info-details">
-                            <span className="info-label">Teacher Phone</span>
+                            <span className="info-label">استاد کا فون</span>
                             <span className="info-value">{subjectData.teacherPhone}</span>
                           </div>
                         </div>
                         <div className="info-item">
                           <LocationOnIcon className="info-icon" />
                           <div className="info-details">
-                            <span className="info-label">Room</span>
+                            <span className="info-label">روم</span>
                             <span className="info-value">{subjectData.room}</span>
                           </div>
                         </div>
                         <div className="info-item">
                           <CalendarMonthIcon className="info-icon" />
                           <div className="info-details">
-                            <span className="info-label">Schedule</span>
+                            <span className="info-label">شیڈول</span>
                             <span className="info-value">{subjectData.schedule}</span>
                           </div>
                         </div>
@@ -267,32 +267,32 @@ const SubjectProfile = () => {
                   </div>
 
                   <div className="subject-description-card">
-                    <h2>Description</h2>
+                    <h2>تفصیل</h2>
                     <p>{subjectData.description}</p>
                   </div>
 
                   <div className="subject-stats-card">
-                    <h2>Subject Statistics</h2>
+                    <h2>مضمون کی شماریات</h2>
                     <div className="stats-grid">
                       <div className="stat-card">
                         <GroupIcon className="stat-icon" />
                         <div className="stat-info">
                           <span className="stat-value">{subjectData.students}</span>
-                          <span className="stat-label">Enrolled Students</span>
+                          <span className="stat-label">رجسٹرڈ طلباء</span>
                         </div>
                       </div>
                       <div className="stat-card">
                         <CalendarMonthIcon className="stat-icon" />
                         <div className="stat-info">
                           <span className="stat-value">{subjectData.attendance}%</span>
-                          <span className="stat-label">Average Attendance</span>
+                          <span className="stat-label">اوسط حاضری</span>
                         </div>
                       </div>
                       <div className="stat-card">
                         <EmojiEventsIcon className="stat-icon" />
                         <div className="stat-info">
                           <span className="stat-value">{subjectData.performance}%</span>
-                          <span className="stat-label">Average Performance</span>
+                          <span className="stat-label">اوسط کارکردگی</span>
                         </div>
                       </div>
                     </div>
@@ -303,11 +303,11 @@ const SubjectProfile = () => {
               {activeTab === 'syllabus' && (
                 <div className="syllabus-section">
                   <div className="syllabus-card">
-                    <h2>Course Syllabus</h2>
+                    <h2>کورس کا نصاب</h2>
                     <div className="syllabus-timeline">
                       {subjectData.syllabus.map((week, index) => (
                         <div key={index} className="syllabus-item">
-                          <div className="syllabus-week">Week {week.week}</div>
+                          <div className="syllabus-week">ہفتہ {week.week}</div>
                           <div className="syllabus-content">
                             <h3>{week.topic}</h3>
                             <p>{week.description}</p>
@@ -322,14 +322,14 @@ const SubjectProfile = () => {
               {activeTab === 'assignments' && (
                 <div className="assignments-section">
                   <div className="assignments-card">
-                    <h2>Assignments</h2>
+                    <h2>اسائنمنٹس</h2>
                     <div className="assignments-table-container">
                       <table className="assignments-table">
                         <thead>
                           <tr>
-                            <th>Title</th>
-                            <th>Due Date</th>
-                            <th>Status</th>
+                            <th>عنوان</th>
+                            <th>آخری تاریخ</th>
+                            <th>حالت</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -339,7 +339,7 @@ const SubjectProfile = () => {
                               <td>{assignment.dueDate}</td>
                               <td>
                                 <span className={`status-badge ${assignment.status}`}>
-                                  {assignment.status}
+                                  {assignment.status === 'completed' ? 'مکمل' : 'زیر التواء'}
                                 </span>
                               </td>
                             </tr>
@@ -354,15 +354,15 @@ const SubjectProfile = () => {
               {activeTab === 'students' && (
                 <div className="students-section">
                   <div className="students-card">
-                    <h2>Enrolled Students</h2>
+                    <h2>رجسٹرڈ طلباء</h2>
                     <div className="students-table-container">
                       <table className="students-table">
                         <thead>
                           <tr>
-                            <th>Name</th>
-                            <th>Grade</th>
-                            <th>Attendance</th>
-                            <th>Performance</th>
+                            <th>نام</th>
+                            <th>گریڈ</th>
+                            <th>حاضری</th>
+                            <th>کارکردگی</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -390,7 +390,7 @@ const SubjectProfile = () => {
         <div className="modal-overlay">
           <div className="modal-container">
             <div className="modal-header">
-              <h2>Edit Subject</h2>
+              <h2>مضمون میں ترمیم کریں</h2>
               <button className="close-btn" onClick={handleCloseModal}>
                 <CloseIcon />
               </button>
@@ -399,122 +399,122 @@ const SubjectProfile = () => {
               <form onSubmit={handleSubmit}>
                 <div className="form-row">
                   <div className="form-group">
-                    <label htmlFor="name">Subject Name</label>
+                    <label htmlFor="name">مضمون کا نام</label>
                     <input
                       type="text"
                       id="name"
                       name="name"
                       value={formData.name}
                       onChange={handleInputChange}
-                      placeholder="Enter subject name"
+                      placeholder="مضمون کا نام درج کریں"
                     />
                   </div>
                   <div className="form-group">
-                    <label htmlFor="code">Subject Code</label>
+                    <label htmlFor="code">مضمون کا کوڈ</label>
                     <input
                       type="text"
                       id="code"
                       name="code"
                       value={formData.code}
                       onChange={handleInputChange}
-                      placeholder="Enter subject code"
+                      placeholder="مضمون کا کوڈ درج کریں"
                     />
                   </div>
                 </div>
 
                 <div className="form-row">
                   <div className="form-group">
-                    <label htmlFor="grade">Grade</label>
+                    <label htmlFor="grade">گریڈ</label>
                     <input
                       type="text"
                       id="grade"
                       name="grade"
                       value={formData.grade}
                       onChange={handleInputChange}
-                      placeholder="Enter grade"
+                      placeholder="گریڈ درج کریں"
                     />
                   </div>
                   <div className="form-group">
-                    <label htmlFor="teacher">Teacher</label>
+                    <label htmlFor="teacher">استاد</label>
                     <input
                       type="text"
                       id="teacher"
                       name="teacher"
                       value={formData.teacher}
                       onChange={handleInputChange}
-                      placeholder="Enter teacher name"
+                      placeholder="استاد کا نام درج کریں"
                     />
                   </div>
                 </div>
 
                 <div className="form-row">
                   <div className="form-group">
-                    <label htmlFor="credits">Credits</label>
+                    <label htmlFor="credits">کریڈٹس</label>
                     <input
                       type="text"
                       id="credits"
                       name="credits"
                       value={formData.credits}
                       onChange={handleInputChange}
-                      placeholder="Enter credits"
+                      placeholder="کریڈٹس درج کریں"
                     />
                   </div>
                   <div className="form-group">
-                    <label htmlFor="room">Room</label>
+                    <label htmlFor="room">روم</label>
                     <input
                       type="text"
                       id="room"
                       name="room"
                       value={formData.room}
                       onChange={handleInputChange}
-                      placeholder="Enter room number"
+                      placeholder="روم نمبر درج کریں"
                     />
                   </div>
                 </div>
 
                 <div className="form-group">
-                  <label htmlFor="schedule">Schedule</label>
+                  <label htmlFor="schedule">شیڈول</label>
                   <input
                     type="text"
                     id="schedule"
                     name="schedule"
                     value={formData.schedule}
                     onChange={handleInputChange}
-                    placeholder="Enter schedule"
+                    placeholder="شیڈول درج کریں"
                   />
                 </div>
 
                 <div className="form-group">
-                  <label htmlFor="description">Description</label>
+                  <label htmlFor="description">تفصیل</label>
                   <textarea
                     id="description"
                     name="description"
                     value={formData.description}
                     onChange={handleInputChange}
-                    placeholder="Enter description"
+                    placeholder="تفصیل درج کریں"
                     rows="3"
                   />
                 </div>
 
                 <div className="form-group">
-                  <label htmlFor="status">Status</label>
+                  <label htmlFor="status">حالت</label>
                   <select
                     id="status"
                     name="status"
                     value={formData.status}
                     onChange={handleInputChange}
                   >
-                    <option value="active">Active</option>
-                    <option value="inactive">Inactive</option>
+                    <option value="active">فعال</option>
+                    <option value="inactive">غیر فعال</option>
                   </select>
                 </div>
 
                 <div className="modal-footer">
                   <button type="button" className="cancel-btn" onClick={handleCloseModal}>
-                    Cancel
+                    منسوخ کریں
                   </button>
                   <button type="submit" className="save-btn">
-                    <SaveIcon /> Save Changes
+                    <SaveIcon /> تبدیلیاں محفوظ کریں
                   </button>
                 </div>
               </form>

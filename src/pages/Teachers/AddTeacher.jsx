@@ -211,7 +211,7 @@ const AddTeacher = () => {
               <h2>Basic Information</h2>
               
               <div className="form-group">
-                <label>Profile Image</label>
+                <label>پروفائل تصویر</label>
                 <div className="avatar-upload">
                   <div className="image-preview-container">
                     {imageLoading.profileImage ? (
@@ -246,14 +246,14 @@ const AddTeacher = () => {
                     id="profileImage"
                   />
                   <label htmlFor="profileImage" className="upload-btn">
-                    <UploadIcon /> Upload Profile Photo
+                    <UploadIcon /> پروفائل تصویر اپ لوڈ کریں
                   </label>
                 </div>
               </div>
 
               <div className="form-row">
                 <div className="form-group">
-                  <label htmlFor="fullName">Full Name</label>
+                  <label htmlFor="fullName">پورا نام</label>
                   <div className="input-with-icon">
                     <PersonIcon className="input-icon" />
                     <input
@@ -268,7 +268,7 @@ const AddTeacher = () => {
                   </div>
                 </div>
                 <div className="form-group">
-                  <label htmlFor="dateOfBirth">Date of Birth</label>
+                  <label htmlFor="dateOfBirth">تاریخ پیدائش</label>
                   <div className="input-with-icon">
                     <CalendarTodayIcon className="input-icon" />
                     <input
@@ -285,7 +285,7 @@ const AddTeacher = () => {
 
               <div className="form-row">
                 <div className="form-group">
-                  <label htmlFor="gender">Gender</label>
+                  <label htmlFor="gender">جنس</label>
                   <CustomDropdown
                     options={genderOptions}
                     value={formData.gender}
@@ -294,7 +294,7 @@ const AddTeacher = () => {
                   />
                 </div>
                 <div className="form-group">
-                  <label htmlFor="maritalStatus">Marital Status</label>
+                  <label htmlFor="maritalStatus">شادی شدہ حیثیت</label>
                   <CustomDropdown
                     options={maritalStatusOptions}
                     value={formData.maritalStatus}
@@ -306,7 +306,7 @@ const AddTeacher = () => {
 
               <div className="form-row">
                 <div className="form-group">
-                  <label htmlFor="nic">NIC Number</label>
+                  <label htmlFor="nic">شناختی کارڈ نمبر</label>
                   <div className="input-with-icon">
                     <BadgeIcon className="input-icon" />
                     <input
@@ -321,7 +321,7 @@ const AddTeacher = () => {
                   </div>
                 </div>
                 <div className="form-group">
-                  <label htmlFor="phoneNumber">Phone Number</label>
+                  <label htmlFor="phoneNumber">فون نمبر</label>
                   <div className="input-with-icon">
                     <PhoneIcon className="input-icon" />
                     <input
@@ -339,7 +339,7 @@ const AddTeacher = () => {
 
               <div className="form-row">
                 <div className="form-group">
-                  <label htmlFor="nextOfKinPhoneNumber">Next of Kin Phone</label>
+                  <label htmlFor="nextOfKinPhoneNumber">قریبی رشتہ دار کا فون نمبر</label>
                   <div className="input-with-icon">
                     <PhoneIcon className="input-icon" />
                     <input
@@ -354,7 +354,7 @@ const AddTeacher = () => {
                   </div>
                 </div>
                 <div className="form-group">
-                  <label htmlFor="emailAddress">Email Address</label>
+                  <label htmlFor="emailAddress">ای میل ایڈریس</label>
                   <div className="input-with-icon">
                     <EmailIcon className="input-icon" />
                     <input
@@ -371,7 +371,7 @@ const AddTeacher = () => {
               </div>
 
               <div className="form-group">
-                <label htmlFor="fullAddress">Full Address</label>
+                <label htmlFor="fullAddress">مکمل پتہ</label>
                 <textarea
                   id="fullAddress"
                   name="fullAddress"
@@ -383,7 +383,7 @@ const AddTeacher = () => {
                 />
               </div>
               <div className="form-group">
-                <label htmlFor="password">Password</label>
+                <label htmlFor="password">پاس ورڈ</label>
                 <input
                   type="password"
                   id="password"
@@ -403,7 +403,7 @@ const AddTeacher = () => {
               <div className="form-row">
             
                 <div className="form-group">
-                  <label htmlFor="jobDetails.designation">Designation</label>
+                  <label htmlFor="jobDetails.designation">عہدہ</label>
                   <div className="input-with-icon">
                     <BusinessIcon className="input-icon" />
                     <input
@@ -421,7 +421,7 @@ const AddTeacher = () => {
 
               <div className="form-row">
                 <div className="form-group">
-                  <label htmlFor="jobDetails.joiningDate">Joining Date</label>
+                  <label htmlFor="jobDetails.joiningDate">تاریخ تقرری</label>
                   <div className="input-with-icon">
                     <CalendarTodayIcon className="input-icon" />
                     <input
@@ -435,7 +435,7 @@ const AddTeacher = () => {
                   </div>
                 </div>
                 <div className="form-group">
-                  <label htmlFor="jobDetails.workingHours">Working Hours</label>
+                  <label htmlFor="jobDetails.workingHours">کام کے اوقات</label>
                   <div className="input-with-icon">
                     <BusinessIcon className="input-icon" />
                     <input
@@ -452,7 +452,7 @@ const AddTeacher = () => {
               </div>
 
               <div className="form-group">
-                <label htmlFor="jobDetails.salary">Salary</label>
+                <label htmlFor="jobDetails.salary">تنخواہ</label>
                 <div className="input-with-icon">
                   <BusinessIcon className="input-icon" />
                   <input
@@ -473,7 +473,7 @@ const AddTeacher = () => {
               
               <div className="form-row">
                 <div className="form-group">
-                  <label htmlFor="degreeTitle">Degree Title</label>
+                  <label htmlFor="degreeTitle">ڈگری کا عنوان</label>
                   <div className="input-with-icon">
                     <BookIcon className="input-icon" />
                     <input
@@ -488,7 +488,7 @@ const AddTeacher = () => {
                   </div>
                 </div>
                 <div className="form-group">
-                  <label htmlFor="board">Board</label>
+                  <label htmlFor="board">بورڈ</label>
                   <div className="input-with-icon">
                     <BusinessIcon className="input-icon" />
                     <input
@@ -506,7 +506,7 @@ const AddTeacher = () => {
 
               <div className="form-row">
                 <div className="form-group">
-                  <label htmlFor="grade">Grade</label>
+                  <label htmlFor="grade">گریڈ</label>
                   <div className="input-with-icon">
                     <BookIcon className="input-icon" />
                     <input
@@ -521,7 +521,7 @@ const AddTeacher = () => {
                   </div>
                 </div>
                 <div className="form-group">
-                  <label htmlFor="fatherName">Father's Name</label>
+                  <label htmlFor="fatherName">والد کا نام</label>
                   <div className="input-with-icon">
                     <PersonIcon className="input-icon" />
                     <input
@@ -538,7 +538,7 @@ const AddTeacher = () => {
               </div>
 
               <div className="form-group">
-                <label>NIC Image</label>
+                <label>شناختی کارڈ کی تصویر</label>
                 <div className="avatar-upload">
                   <div className="image-preview-container">
                     {imageLoading.nicImage ? (
@@ -573,13 +573,13 @@ const AddTeacher = () => {
                     id="nicImage"
                   />
                   <label htmlFor="nicImage" className="upload-btn">
-                    <UploadIcon /> Upload NIC Image
+                    <UploadIcon /> شناختی کارڈ کی تصویر اپ لوڈ کریں
                   </label>
                 </div>
               </div>
 
               <div className="form-group">
-                <label>Marksheet Images</label>
+                <label>مارک شیٹ کی تصاویر</label>
                 <div className="marksheet-upload">
                   <input
                     type="file"
@@ -589,7 +589,7 @@ const AddTeacher = () => {
                     id="marksheetImages"
                   />
                   <label htmlFor="marksheetImages" className="upload-btn">
-                    <UploadIcon /> Add Marksheet
+                    <UploadIcon /> مارک شیٹ شامل کریں
                   </label>
                   <div className="marksheet-preview">
                     {formData.marksheetImages.map((url, index) => (
@@ -624,14 +624,14 @@ const AddTeacher = () => {
 
             <div className="form-actions">
               <button type="button" className="cancel-btn" onClick={() => navigate('/teachers')}>
-                <CloseIcon /> Cancel
+                <CloseIcon /> منسوخ کریں
               </button>
               <button type="submit" className="save-btn" disabled={loading}>
                 {loading ? (
                   <div className="loading-spinner-small"></div>
                 ) : (
                   <>
-                    <SaveIcon /> Save Teacher
+                    <SaveIcon /> استاد محفوظ کریں
                   </>
                 )}
               </button>

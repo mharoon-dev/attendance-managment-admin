@@ -194,25 +194,25 @@ xmlns:html="http://www.w3.org/TR/REC-html40">
       
       <div className={`view-attendance-container ${!sidebarOpen ? 'sidebar-closed' : ''}`}>
         <div className="view-attendance-header">
-          <h1>View Attendance</h1>
+          <h1>حاضری دیکھیں</h1>
           <button className="refresh-button" onClick={fetchAttendanceData}>
-            <RefreshIcon /> Refresh Data
+            <RefreshIcon /> ڈیٹا ریفریش کریں
           </button>
         </div>
 
         <div className="view-attendance-content">
           <div className="attendance-filters">
             <div className="filter-header">
-              <h2>Filters</h2>
+              <h2>فلٹرز</h2>
               <button className="filter-toggle-btn" onClick={toggleFilters}>
-                <FilterListIcon /> {showFilters ? 'Hide Filters' : 'Show Filters'}
+                <FilterListIcon /> {showFilters ? 'فلٹرز چھپائیں' : 'فلٹرز دکھائیں'}
               </button>
             </div>
             
             {showFilters && (
               <div className="filter-row">
                 <div className="filter-group">
-                  <label>Date</label>
+                  <label>تاریخ</label>
                   <input
                     type="date"
                     value={filters.date}
@@ -220,53 +220,50 @@ xmlns:html="http://www.w3.org/TR/REC-html40">
                   />
                 </div>
                 
-                
                 <CustomDropdown
-                  label="Status"
+                  label="حالت"
                   options={statuses}
                   value={filters.status}
                   onChange={(value) => handleFilterChange('status', value)}
-                  placeholder="Select Status"
+                  placeholder="حالت منتخب کریں"
                 />
-                
-            
               </div>
             )}
             
             <div className="filter-actions">
               <button className="reset-button" onClick={resetFilters}>
-                Reset Filters
+                فلٹرز ری سیٹ کریں
               </button>
               <button className="export-button" onClick={exportToCSV}>
                 <DownloadIcon />
-                Export to CSV
+                CSV میں ایکسپورٹ کریں
               </button>
             </div>
           </div>
           
           <div className="attendance-stats">
             <div className="stat-card total">
-              <h3>Total</h3>
+              <h3>کل</h3>
               <p>{stats.total}</p>
             </div>
             <div className="stat-card present">
               <CheckCircleIcon />
               <div>
-                <h3>Present</h3>
+                <h3>حاضر</h3>
                 <p>{stats.present}</p>
               </div>
             </div>
             <div className="stat-card absent">
               <CancelIcon />
               <div>
-                <h3>Absent</h3>
+                <h3>غیر حاضر</h3>
                 <p>{stats.absent}</p>
               </div>
             </div>
             <div className="stat-card late">
               <HelpOutlineIcon />
               <div>
-                <h3>Late</h3>
+                <h3>لیٹ</h3>
                 <p>{stats.late}</p>
               </div>
             </div>
@@ -279,10 +276,10 @@ xmlns:html="http://www.w3.org/TR/REC-html40">
               <table className="attendance-table">
                 <thead>
                   <tr>
-                    <th>Roll No</th>
-                    <th>Status</th>
-                    <th>Date</th>
-                    <th>Time</th>
+                    <th>رول نمبر</th>
+                    <th>حالت</th>
+                    <th>تاریخ</th>
+                    <th>وقت</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -291,7 +288,9 @@ xmlns:html="http://www.w3.org/TR/REC-html40">
                       <td>{record?.id}</td>
                       <td>
                         <span className={`status-badge ${record?.status}`}>
-                          {record?.status?.charAt(0).toUpperCase() + record?.status?.slice(1)}
+                          {record?.status === 'present' ? 'حاضر' : 
+                           record?.status === 'absent' ? 'غیر حاضر' : 
+                           'لیٹ'}
                         </span>
                       </td>
                       <td>{record?.date}</td>
@@ -302,7 +301,7 @@ xmlns:html="http://www.w3.org/TR/REC-html40">
               </table>
             ) : (
               <div className="no-records">
-                <p>No attendance records found</p>
+                <p>کوئی حاضری کا ریکارڈ نہیں ملا</p>
               </div>
             )}
           </div>

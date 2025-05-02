@@ -60,6 +60,7 @@ import {
   getDailyAttendanceFailure,
 } from "./redux/slices/dailyAttendanceSlice.jsx";
 import { getTodosFailure, getTodosStart, getTodosSuccess } from "./redux/slices/todoSlice.jsx";
+import { getSubjectsFailure, getSubjectsStart, getSubjectsSuccess } from "./redux/slices/subjectSlice.jsx";
 function App() {
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.user);
@@ -156,9 +157,24 @@ function App() {
       dispatch(getDailyAttendanceStart());
       try {
         const response = await api.get(`attendance/students/get/month?month=${month}&year=${year}`);
-        dispatch(getDailyAttendanceSuccess(response.data.data));
+        console.log('Attendance API Response:', response.data);
+        
+        if (response.data && response.data.data) {
+          // Ensure the data is in the correct format
+          const formattedData = response.data.data.map(record => ({
+            ...record,
+            date: record.date || new Date().toISOString().split('T')[0],
+            status: record.status || 'absent'
+          }));
+          
+          dispatch(getDailyAttendanceSuccess(formattedData));
+        } else {
+          console.error('Invalid attendance data format:', response.data);
+          dispatch(getDailyAttendanceFailure('Invalid attendance data format'));
+        }
       } catch (error) {
-        dispatch(getDailyAttendanceFailure(error.response.data.message));
+        console.error('Error fetching attendance:', error);
+        dispatch(getDailyAttendanceFailure(error.response?.data?.message || 'Failed to fetch attendance data'));
       }
     };
 

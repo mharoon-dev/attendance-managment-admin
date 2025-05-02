@@ -322,25 +322,19 @@ try {
             <table className="teachers-table">
               <thead>
                 <tr>
-                  <th>S.No</th>
-                  <th>Full Name</th>
-                  <th>Father Name</th>
-                  <th>Phone Number</th>
-                  <th>Designation</th>
-                  <th>Teacher ID</th>
-                  <th>Actions</th>
+                  <th>کارروائیاں</th>
+                  <th>استاد کی شناخت</th>
+                  <th>عہدہ</th>
+                  <th>فون نمبر</th>
+                  <th>والد کا نام</th>
+                  <th>پورا نام</th>
+                  <th>سیریل نمبر</th>
                 </tr>
               </thead>
               <tbody>
                 {sortedTeachers?.map((teacher, index) => (
                   <tr key={teacher._id}>
-                    <td>{index + 1}</td>
-                    <td>{teacher.fullName}</td>
-                    <td>{teacher.fatherName}</td>
-                    <td>{teacher.phoneNumber}</td>
-                    <td>{teacher.jobDetails?.designation}</td>
-                    <td>{teacher.jobDetails?.teacherId}</td>
-                    <td>
+                       <td>
                       <div className="table-actions">
                         <button
                           className="view-profile-btn"
@@ -368,6 +362,13 @@ try {
                         )}
                       </div>
                     </td>
+                    <td>{teacher.jobDetails?.teacherId}</td>
+                    <td>{teacher.jobDetails?.designation}</td>
+                    <td>{teacher.phoneNumber}</td>
+                    <td>{teacher.fatherName}</td>
+                    <td>{teacher.fullName}</td>
+                    <td>{index + 1}</td>
+                 
                   </tr>
                 ))}
               </tbody>
@@ -383,7 +384,7 @@ try {
           <div className="modal-overlay">
             <div className="modal-container">
               <div className="modal-header">
-                <h2>Edit Teacher</h2>
+                <h2>استاد کی معلومات میں ترمیم کریں</h2>
                 <button className="modal-close-btn" onClick={handleCloseModal}>
                   <FiX />
                 </button>
@@ -392,7 +393,7 @@ try {
                 <form onSubmit={handleSubmit}>
                   <div className="form-row">
                     <div className="form-group">
-                      <label htmlFor="fullName">Full Name</label>
+                      <label htmlFor="fullName">پورا نام</label>
                       <input
                         type="text"
                         id="fullName"
@@ -403,7 +404,7 @@ try {
                       />
                     </div>
                     <div className="form-group">
-                      <label htmlFor="jobDetails.designation">Designation</label>
+                      <label htmlFor="jobDetails.designation">عہدہ</label>
                       <input
                         type="text"
                         id="jobDetails.designation"
@@ -417,7 +418,7 @@ try {
 
                   <div className="form-row">
                     <div className="form-group">
-                      <label htmlFor="emailAddress">Email</label>
+                      <label htmlFor="emailAddress">ای میل</label>
                       <input
                         type="email"
                         id="emailAddress"
@@ -428,7 +429,7 @@ try {
                       />
                     </div>
                     <div className="form-group">
-                      <label htmlFor="phoneNumber">Phone</label>
+                      <label htmlFor="phoneNumber">فون نمبر</label>
                       <input
                         type="tel"
                         id="phoneNumber"
@@ -442,7 +443,7 @@ try {
 
                   <div className="form-row">
                     <div className="form-group">
-                      <label htmlFor="nextOfKinPhoneNumber">Next of Kin Phone</label>
+                      <label htmlFor="nextOfKinPhoneNumber">قریبی رشتہ دار کا فون نمبر</label>
                       <input
                         type="tel"
                         id="nextOfKinPhoneNumber"
@@ -452,22 +453,11 @@ try {
                         required
                       />
                     </div>
-                    {/* <div className="form-group">
-                      <label htmlFor="jobDetails.teacherId">Teacher ID</label>
-                      <input
-                        type="text"
-                        id="jobDetails.teacherId"
-                        name="jobDetails.teacherId"
-                        value={formData.jobDetails.teacherId}
-                        onChange={handleInputChange}
-                        required
-                      />
-                    </div> */}
                   </div>
 
                   <div className="form-row">
                     <div className="form-group">
-                      <label htmlFor="degreeTitle">Education</label>
+                      <label htmlFor="degreeTitle">تعلیم</label>
                       <input
                         type="text"
                         id="degreeTitle"
@@ -478,7 +468,7 @@ try {
                       />
                     </div>
                     <div className="form-group">
-                      <label htmlFor="board">Board</label>
+                      <label htmlFor="board">بورڈ</label>
                       <input
                         type="text"
                         id="board"
@@ -492,7 +482,7 @@ try {
 
                   <div className="form-row">
                     <div className="form-group">
-                      <label htmlFor="grade">Grade</label>
+                      <label htmlFor="grade">گریڈ</label>
                       <input
                         type="text"
                         id="grade"
@@ -503,7 +493,7 @@ try {
                       />
                     </div>
                     <div className="form-group">
-                      <label htmlFor="gender">Gender</label>
+                      <label htmlFor="gender">جنس</label>
                       <select
                         id="gender"
                         name="gender"
@@ -511,17 +501,17 @@ try {
                         onChange={handleInputChange}
                         required
                       >
-                        <option value="">Select Gender</option>
-                        <option value="Male">Male</option>
-                        <option value="Female">Female</option>
-                        <option value="Other">Other</option>
+                        <option value="">جنس منتخب کریں</option>
+                        <option value="Male">مرد</option>
+                        <option value="Female">عورت</option>
+                        <option value="Other">دیگر</option>
                       </select>
                     </div>
                   </div>
 
                   <div className="form-row">
                     <div className="form-group">
-                      <label htmlFor="dateOfBirth">Date of Birth</label>
+                      <label htmlFor="dateOfBirth">تاریخ پیدائش</label>
                       <input
                         type="date"
                         id="dateOfBirth"
@@ -532,7 +522,7 @@ try {
                       />
                     </div>
                     <div className="form-group">
-                      <label htmlFor="jobDetails.joiningDate">Joining Date</label>
+                      <label htmlFor="jobDetails.joiningDate">تاریخ تقرری</label>
                       <input
                         type="date"
                         id="jobDetails.joiningDate"
@@ -546,7 +536,7 @@ try {
 
                   <div className="form-row">
                     <div className="form-group">
-                      <label htmlFor="maritalStatus">Marital Status</label>
+                      <label htmlFor="maritalStatus">شادی شدہ حیثیت</label>
                       <select
                         id="maritalStatus"
                         name="maritalStatus"
@@ -554,15 +544,15 @@ try {
                         onChange={handleInputChange}
                         required
                       >
-                        <option value="">Select Status</option>
-                        <option value="Single">Single</option>
-                        <option value="Married">Married</option>
-                        <option value="Divorced">Divorced</option>
-                        <option value="Widowed">Widowed</option>
+                        <option value="">حیثیت منتخب کریں</option>
+                        <option value="Single">غیر شادی شدہ</option>
+                        <option value="Married">شادی شدہ</option>
+                        <option value="Divorced">طلاق یافتہ</option>
+                        <option value="Widowed">بیوہ</option>
                       </select>
                     </div>
                     <div className="form-group">
-                      <label htmlFor="jobDetails.workingHours">Working Hours</label>
+                      <label htmlFor="jobDetails.workingHours">کام کے اوقات</label>
                       <input
                         type="number"
                         id="jobDetails.workingHours"
@@ -576,7 +566,7 @@ try {
 
                   <div className="form-row">
                     <div className="form-group">
-                      <label htmlFor="nic">NIC Number</label>
+                      <label htmlFor="nic">شناختی کارڈ نمبر</label>
                       <input
                         type="text"
                         id="nic"
@@ -587,7 +577,7 @@ try {
                       />
                     </div>
                     <div className="form-group">
-                      <label htmlFor="jobDetails.salary">Salary</label>
+                      <label htmlFor="jobDetails.salary">تنخواہ</label>
                       <input
                         type="number"
                         id="jobDetails.salary"
@@ -600,7 +590,7 @@ try {
                   </div>
 
                   <div className="form-group">
-                    <label htmlFor="fatherName">Father's Name</label>
+                    <label htmlFor="fatherName">والد کا نام</label>
                     <input
                       type="text"
                       id="fatherName"
@@ -612,7 +602,7 @@ try {
                   </div>
 
                   <div className="form-group">
-                    <label htmlFor="fullAddress">Full Address</label>
+                    <label htmlFor="fullAddress">مکمل پتہ</label>
                     <textarea
                       id="fullAddress"
                       name="fullAddress"
@@ -623,7 +613,7 @@ try {
                   </div>
 
                   <div className="form-group">
-                    <label>Profile Image</label>
+                    <label>پروفائل تصویر</label>
                     <div className="avatar-upload">
                       <div className="image-preview-container">
                         <img
@@ -651,13 +641,13 @@ try {
                         id="profileImage"
                       />
                       <label htmlFor="profileImage" className="upload-btn">
-                        <FiUpload /> Change Image
+                        <FiUpload /> تصویر تبدیل کریں
                       </label>
                     </div>
                   </div>
 
                   <div className="form-group">
-                    <label>NIC Image</label>
+                    <label>شناختی کارڈ کی تصویر</label>
                     <div className="avatar-upload">
                       <div className="image-preview-container">
                         <img
@@ -685,13 +675,13 @@ try {
                         id="nicImage"
                       />
                       <label htmlFor="nicImage" className="upload-btn">
-                        <FiUpload /> Change NIC Image
+                        <FiUpload /> شناختی کارڈ کی تصویر تبدیل کریں
                       </label>
                     </div>
                   </div>
 
                   <div className="form-group">
-                    <label>Marksheet Images</label>
+                    <label>مارک شیٹ کی تصاویر</label>
                     <div className="marksheet-upload">
                       <input
                         type="file"
@@ -701,7 +691,7 @@ try {
                         id="marksheetImages"
                       />
                       <label htmlFor="marksheetImages" className="upload-btn">
-                        <FiUpload /> Add Marksheet
+                        <FiUpload /> مارک شیٹ شامل کریں
                       </label>
                       <div className="marksheet-preview">
                         {formData.marksheetImages.map((url, index) => (
@@ -736,10 +726,10 @@ try {
                       className="cancel-btn"
                       onClick={handleCloseModal}
                     >
-                      Cancel
+                      منسوخ کریں
                     </button>
                     <button type="submit" className="save-btn">
-                      <FiSave /> Save Changes
+                      <FiSave /> تبدیلیاں محفوظ کریں
                     </button>
                   </div>
                 </form>
@@ -760,23 +750,23 @@ try {
           <div className="modal-overlay">
             <div className="delete-confirmation-modal">
               <div className="modal-header">
-                <h2>Confirm Delete</h2>
+                <h2>حذف کرنے کی تصدیق</h2>
                 <button className="modal-close-btn" onClick={handleCancelDelete}>
                   <FiX />
                 </button>
               </div>
               <div className="modal-body">
-                <p>Are you sure you want to delete this teacher? This action cannot be undone.</p>
+                <p>کیا آپ واقعی اس استاد کو حذف کرنا چاہتے ہیں؟ یہ عمل واپس نہیں کیا جا سکتا۔</p>
               </div>
               <div className="modal-footer">
                 <button className="cancel-btn" onClick={handleCancelDelete}>
-                  Cancel
+                  منسوخ کریں
                 </button>
                 <button 
                   className="delete-btn" 
                   onClick={() => handleDelete(deleteConfirmation.teacherId, deleteConfirmation.teacherJobId)}
                 >
-                  Delete
+                  حذف کریں
                 </button>
               </div>
             </div>

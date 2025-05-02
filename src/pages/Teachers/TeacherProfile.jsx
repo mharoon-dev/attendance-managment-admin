@@ -72,80 +72,80 @@ const TeacherProfile = () => {
 
         <div className="profile-details">
           <div className="detail-section">
-            <h3><PersonIcon /> Personal Information</h3>
+            <h3><PersonIcon /> ذاتی معلومات</h3>
             <div className="detail-grid">
               <div className="detail-item">
-                <label>Date of Birth</label>
+                <label>تاریخ پیدائش</label>
                 <p><CalendarTodayIcon /> {new Date(teacher?.dateOfBirth).toLocaleDateString()}</p>
               </div>
               <div className="detail-item">
-                <label>Gender</label>
+                <label>جنس</label>
                 <p><PersonIcon /> {teacher?.gender}</p>
               </div>
               <div className="detail-item">
-                <label>NIC</label>
+                <label>شناختی کارڈ نمبر</label>
                 <p><BadgeIcon /> {teacher?.nic}</p>
               </div>
               <div className="detail-item">
-                <label>Father's Name</label>
+                <label>والد کا نام</label>
                 <p><FamilyRestroomIcon /> {teacher?.fatherName}</p>
               </div>
               <div className="detail-item">
-                <label>Marital Status</label>
+                <label>شادی شدہ حیثیت</label>
                 <p><FamilyRestroomIcon /> {teacher?.maritalStatus}</p>
               </div>
               <div className="detail-item">
-                <label>Address</label>
+                <label>پتہ</label>
                 <p><LocationOnIcon /> {teacher?.fullAddress}</p>
               </div>
               <div className="detail-item">
-                <label>Next of Kin Contact</label>
+                <label>قریبی رشتہ دار کا رابطہ</label>
                 <p><PhoneIcon /> {teacher?.nextOfKinPhoneNumber}</p>
               </div>
             </div>
           </div>
 
           <div className="detail-section">
-            <h3><SchoolIcon /> Educational Information</h3>
+            <h3><SchoolIcon /> تعلیمی معلومات</h3>
             <div className="detail-grid">
               <div className="detail-item">
-                <label>Degree Title</label>
+                <label>ڈگری کا عنوان</label>
                 <p><BookIcon /> {teacher?.degreeTitle}</p>
               </div>
               <div className="detail-item">
-                <label>Board</label>
+                <label>بورڈ</label>
                 <p><AccountBalanceIcon /> {teacher?.board}</p>
               </div>
               <div className="detail-item">
-                <label>Grade</label>
+                <label>گریڈ</label>
                 <p><SchoolIcon /> {teacher?.grade}</p>
               </div>
             </div>
           </div>
 
           <div className="detail-section">
-            <h3><WorkIcon /> Job Details</h3>
+            <h3><WorkIcon /> ملازمت کی تفصیلات</h3>
             <div className="detail-grid">
               <div className="detail-item">
-                <label>Designation</label>
+                <label>عہدہ</label>
                 <p><WorkIcon /> {teacher?.jobDetails?.designation}</p>
               </div>
               <div className="detail-item">
-                <label>Joining Date</label>
+                <label>تاریخ تقرری</label>
                 <p><CalendarTodayIcon /> {new Date(teacher?.jobDetails?.joiningDate).toLocaleDateString()}</p>
               </div>
               <div className="detail-item">
-                <label>Working Hours</label>
+                <label>کام کے اوقات</label>
                 <p><WorkIcon /> {teacher?.jobDetails?.workingHours}</p>
               </div>
               <div className="detail-item">
-                <label>Teacher ID</label>
+                <label>استاد کی شناخت</label>
                 <p><BadgeIcon /> {teacher?.jobDetails?.teacherId}</p>
               </div>
               {(user.role === "admin" || user.role === "superAdmin") && (
                 <div className="detail-item">
-                  <label>Salary</label>
-                  <p><WorkIcon /> Rs. {teacher?.jobDetails?.salary?.toLocaleString()}</p>
+                  <label>تنخواہ</label>
+                  <p><WorkIcon /> روپے {teacher?.jobDetails?.salary?.toLocaleString()}</p>
                 </div>
               )}
             </div>
@@ -153,7 +153,7 @@ const TeacherProfile = () => {
 
           {teacher?.nicImage && (
             <div className="detail-section">
-              <h3><DescriptionIcon /> NIC Document</h3>
+              <h3><DescriptionIcon /> شناختی کارڈ کا دستاویز</h3>
               <div className="document-container">
                 <img 
                   src={teacher.nicImage} 
@@ -168,7 +168,7 @@ const TeacherProfile = () => {
 
           {teacher?.marksheetImages?.length > 0 && (
             <div className="detail-section">
-              <h3><BookIcon /> Marksheets</h3>
+              <h3><BookIcon /> مارک شیٹس</h3>
               <div className="marksheet-grid">
                 {teacher.marksheetImages.map((image, index) => (
                   <div 
@@ -199,17 +199,17 @@ const TeacherProfile = () => {
             className="back-button"
             onClick={() => navigate('/teachers')}
           >
-            <ArrowBackIcon /> Back to Teachers
+            <ArrowBackIcon /> اساتذہ کی طرف واپس جائیں
           </button>
         </div>
 
         <div className="profile-content">
           {loading ? (
-            <div className="loading-spinner">Loading...</div>
+            <div className="loading-spinner">لوڈ ہو رہا ہے...</div>
           ) : teacher ? (
             getTabContent()
           ) : (
-            <div className="not-found">Teacher not found</div>
+            <div className="not-found">استاد نہیں ملا</div>
           )}
         </div>
 

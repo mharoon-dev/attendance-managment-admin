@@ -239,19 +239,19 @@ const AddStudent = () => {
       
       <div className={`add-student-container ${!sidebarOpen ? 'sidebar-closed' : ''}`}>
         <div className="add-student-header">
-          <h1>Add New Student</h1>
+          <h1>نیا طالب علم شامل کریں</h1>
           <button className="cancel-btn" onClick={() => navigate('/students')}>
-            <CloseIcon /> Cancel
+            <CloseIcon /> منسوخ کریں
           </button>
         </div>
 
         <div className="add-student-content">
           <form onSubmit={handleSubmit}>
             <div className="form-section">
-              <h2>Basic Information</h2>
+              <h2>بنیادی معلومات</h2>
               
               <div className="form-group">
-                <label>Profile Image</label>
+                <label>پروفائل تصویر</label>
                 <div className="avatar-upload">
                   <div className="image-preview-container">
                     {imageLoading.profileImage ? (
@@ -286,14 +286,14 @@ const AddStudent = () => {
                     id="profileImage"
                   />
                   <label htmlFor="profileImage" className="upload-btn">
-                    <UploadIcon /> Upload Profile Photo
+                    <UploadIcon /> پروفائل تصویر اپ لوڈ کریں
                   </label>
                 </div>
               </div>
 
               <div className="form-row">
                 <div className="form-group">
-                  <label htmlFor="fullName">Full Name</label>
+                  <label htmlFor="fullName">پورا نام</label>
                   <div className="input-with-icon">
                     <PersonIcon className="input-icon" />
                     <input
@@ -302,13 +302,13 @@ const AddStudent = () => {
                       name="fullName"
                       value={formData.fullName}
                       onChange={handleInputChange}
-                      placeholder="Enter full name"
+                      placeholder="پورا نام درج کریں"
                       required
                     />
                   </div>
                 </div>
                 <div className="form-group">
-                  <label htmlFor="dateOfBirth">Date of Birth</label>
+                  <label htmlFor="dateOfBirth">تاریخ پیدائش</label>
                   <div className="input-with-icon">
                     <CalendarTodayIcon className="input-icon" />
                     <input
@@ -325,16 +325,16 @@ const AddStudent = () => {
 
               <div className="form-row">
                 <div className="form-group">
-                  <label htmlFor="gender">Gender</label>
+                  <label htmlFor="gender">جنس</label>
                   <CustomDropdown
                     options={genderOptions}
                     value={formData.gender}
                     onChange={(value) => handleInputChange({ target: { name: 'gender', value } })}
-                    placeholder="Select gender"
+                    placeholder="جنس منتخب کریں"
                   />
                 </div>
                 <div className="form-group">
-                  <label htmlFor="phoneNumber">Phone Number</label>
+                  <label htmlFor="phoneNumber">فون نمبر</label>
                   <div className="input-with-icon">
                     <PhoneIcon className="input-icon" />
                     <input
@@ -343,7 +343,7 @@ const AddStudent = () => {
                       name="phoneNumber"
                       value={formData.phoneNumber}
                       onChange={handleInputChange}
-                      placeholder="Enter phone number"
+                      placeholder="فون نمبر درج کریں"
                       required
                     />
                   </div>
@@ -351,20 +351,20 @@ const AddStudent = () => {
               </div>
 
               <div className="form-group">
-                <label htmlFor="fullAddress">Full Address</label>
+                <label htmlFor="fullAddress">مکمل پتہ</label>
                 <textarea
                   id="fullAddress"
                   name="fullAddress"
                   value={formData.fullAddress}
                   onChange={handleInputChange}
-                  placeholder="Enter full address"
+                  placeholder="مکمل پتہ درج کریں"
                   rows="3"
                   required
                 />
               </div>
 
               <div className="form-group">
-                <label>NIC Image</label>
+                <label>شناختی کارڈ کی تصویر</label>
                 <div className="avatar-upload">
                   <div className="image-preview-container">
                     {imageLoading.nicImage ? (
@@ -399,17 +399,17 @@ const AddStudent = () => {
                     id="nicImage"
                   />
                   <label htmlFor="nicImage" className="upload-btn">
-                    <UploadIcon /> Upload NIC Image
+                    <UploadIcon /> شناختی کارڈ کی تصویر اپ لوڈ کریں
                   </label>
                 </div>
               </div>
             </div>
 
             <div className="form-section">
-              <h2>Parent Information</h2>
+              <h2>والدین کی معلومات</h2>
               
               <div className="form-group">
-                <label>Parent Profile Image</label>
+                <label>والدین کی پروفائل تصویر</label>
                 <div className="avatar-upload">
                   <div className="image-preview-container">
                     {imageLoading.parentDetails.profileImage ? (
@@ -444,14 +444,14 @@ const AddStudent = () => {
                     id="parentProfileImage"
                   />
                   <label htmlFor="parentProfileImage" className="upload-btn">
-                    <UploadIcon /> Upload Parent Photo
+                    <UploadIcon /> والدین کی تصویر اپ لوڈ کریں
                   </label>
                 </div>
               </div>
 
               <div className="form-row">
                 <div className="form-group">
-                  <label htmlFor="parentDetails.fullName">Parent Name</label>
+                  <label htmlFor="parentDetails.fullName">والدین کا نام</label>
                   <div className="input-with-icon">
                     <PersonIcon className="input-icon" />
                     <input
@@ -460,13 +460,13 @@ const AddStudent = () => {
                       name="parentDetails.fullName"
                       value={formData.parentDetails.fullName}
                       onChange={handleInputChange}
-                      placeholder="Enter parent's name"
+                      placeholder="والدین کا نام درج کریں"
                       required
                     />
                   </div>
                 </div>
                 <div className="form-group">
-                  <label htmlFor="parentDetails.dateOfBirth">Parent Date of Birth</label>
+                  <label htmlFor="parentDetails.dateOfBirth">والدین کی تاریخ پیدائش</label>
                   <div className="input-with-icon">
                     <CalendarTodayIcon className="input-icon" />
                     <input
@@ -483,16 +483,16 @@ const AddStudent = () => {
 
               <div className="form-row">
                 <div className="form-group">
-                  <label htmlFor="parentDetails.gender">Parent Gender</label>
+                  <label htmlFor="parentDetails.gender">والدین کی جنس</label>
                   <CustomDropdown
                     options={genderOptions}
                     value={formData.parentDetails.gender}
                     onChange={(value) => handleInputChange({ target: { name: 'parentDetails.gender', value } })}
-                    placeholder="Select parent gender"
+                    placeholder="والدین کی جنس منتخب کریں"
                   />
                 </div>
                 <div className="form-group">
-                  <label htmlFor="parentDetails.phoneNumber">Parent Phone Number</label>
+                  <label htmlFor="parentDetails.phoneNumber">والدین کا فون نمبر</label>
                   <div className="input-with-icon">
                     <PhoneIcon className="input-icon" />
                     <input
@@ -501,7 +501,7 @@ const AddStudent = () => {
                       name="parentDetails.phoneNumber"
                       value={formData.parentDetails.phoneNumber}
                       onChange={handleInputChange}
-                      placeholder="Enter parent's phone number"
+                      placeholder="والدین کا فون نمبر درج کریں"
                       required
                     />
                   </div>
@@ -510,7 +510,7 @@ const AddStudent = () => {
 
               <div className="form-row">
                 <div className="form-group">
-                  <label htmlFor="parentDetails.nic">Parent NIC</label>
+                  <label htmlFor="parentDetails.nic">والدین کا شناختی کارڈ نمبر</label>
                   <div className="input-with-icon">
                     <BadgeIcon className="input-icon" />
                     <input
@@ -519,13 +519,13 @@ const AddStudent = () => {
                       name="parentDetails.nic"
                       value={formData.parentDetails.nic}
                       onChange={handleInputChange}
-                      placeholder="Enter parent's NIC"
+                      placeholder="والدین کا شناختی کارڈ نمبر درج کریں"
                       required
                     />
                   </div>
                 </div>
                 <div className="form-group">
-                  <label htmlFor="parentDetails.education">Parent Education</label>
+                  <label htmlFor="parentDetails.education">والدین کی تعلیم</label>
                   <div className="input-with-icon">
                     <BookIcon className="input-icon" />
                     <input
@@ -534,7 +534,7 @@ const AddStudent = () => {
                       name="parentDetails.education"
                       value={formData.parentDetails.education}
                       onChange={handleInputChange}
-                      placeholder="Enter parent's education"
+                      placeholder="والدین کی تعلیم درج کریں"
                       required
                     />
                   </div>
@@ -542,7 +542,7 @@ const AddStudent = () => {
               </div>
 
               <div className="form-group">
-                <label htmlFor="parentDetails.profession">Parent Profession</label>
+                <label htmlFor="parentDetails.profession">والدین کا پیشہ</label>
                 <div className="input-with-icon">
                   <BusinessIcon className="input-icon" />
                   <input
@@ -551,14 +551,14 @@ const AddStudent = () => {
                     name="parentDetails.profession"
                     value={formData.parentDetails.profession}
                     onChange={handleInputChange}
-                    placeholder="Enter parent's profession"
+                    placeholder="والدین کا پیشہ درج کریں"
                     required
                   />
                 </div>
               </div>
 
               <div className="form-group">
-                <label>Parent NIC Image</label>
+                <label>والدین کا شناختی کارڈ کی تصویر</label>
                 <div className="avatar-upload">
                   <div className="image-preview-container">
                     {imageLoading.parentDetails.nicImage ? (
@@ -593,28 +593,28 @@ const AddStudent = () => {
                     id="parentNicImage"
                   />
                   <label htmlFor="parentNicImage" className="upload-btn">
-                    <UploadIcon /> Upload Parent NIC Image
+                    <UploadIcon /> والدین کا شناختی کارڈ کی تصویر اپ لوڈ کریں
                   </label>
                 </div>
               </div>
             </div>
 
             <div className="form-section">
-              <h2>School Details</h2>
+              <h2>اسکول کی تفصیلات</h2>
               
               <div className="form-row">
                 <div className="form-group">
-                  <label htmlFor="grade">Grade</label>
+                  <label htmlFor="grade">گریڈ</label>
                   <CustomDropdown
                     options={gradeOptions}
                     value={formData.grade}
                     onChange={(value) => handleInputChange({ target: { name: 'grade', value } })}
-                    placeholder="Select grade"
+                    placeholder="گریڈ منتخب کریں"
                     icon={<BookIcon />}
                   />
                 </div>
                 <div className="form-group">
-                  <label htmlFor="schoolDetails.rollNumber">Roll Number</label>
+                  <label htmlFor="schoolDetails.rollNumber">رول نمبر</label>
                   <div className="input-with-icon">
                     <BadgeIcon className="input-icon" />
                     <input
@@ -623,7 +623,7 @@ const AddStudent = () => {
                       name="schoolDetails.rollNumber"
                       value={formData.schoolDetails.rollNumber}
                       onChange={handleInputChange}
-                      placeholder="Enter roll number"
+                      placeholder="رول نمبر درج کریں"
                       required
                     />
                   </div>
@@ -632,7 +632,7 @@ const AddStudent = () => {
 
               <div className="form-row">
                 <div className="form-group">
-                  <label htmlFor="schoolDetails.joiningDate">Joining Date</label>
+                  <label htmlFor="schoolDetails.joiningDate">تاریخ داخلہ</label>
                   <div className="input-with-icon">
                     <CalendarTodayIcon className="input-icon" />
                     <input
@@ -646,7 +646,7 @@ const AddStudent = () => {
                   </div>
                 </div>
                 <div className="form-group">
-                  <label htmlFor="schoolDetails.previousInstitute">Previous Institute</label>
+                  <label htmlFor="schoolDetails.previousInstitute">سابقہ ادارہ</label>
                   <div className="input-with-icon">
                     <BusinessIcon className="input-icon" />
                     <input
@@ -655,14 +655,14 @@ const AddStudent = () => {
                       name="schoolDetails.previousInstitute"
                       value={formData.schoolDetails.previousInstitute}
                       onChange={handleInputChange}
-                      placeholder="Enter previous institute"
+                      placeholder="سابقہ ادارہ درج کریں"
                     />
                   </div>
                 </div>
               </div>
 
               <div className="form-group">
-                <label>Previous Degree Image</label>
+                <label>سابقہ ڈگری کی تصویر</label>
                 <div className="avatar-upload">
                   <div className="image-preview-container">
                     {imageLoading.schoolDetails.previousDegreeWithImage ? (
@@ -697,7 +697,7 @@ const AddStudent = () => {
                     id="previousDegreeImage"
                   />
                   <label htmlFor="previousDegreeImage" className="upload-btn">
-                    <UploadIcon /> Upload Previous Degree
+                    <UploadIcon /> سابقہ ڈگری کی تصویر اپ لوڈ کریں
                   </label>
                 </div>
               </div>
@@ -705,14 +705,14 @@ const AddStudent = () => {
 
             <div className="form-actions">
               <button type="button" className="cancel-btn" onClick={() => navigate('/students')}>
-                <CloseIcon /> Cancel
+                <CloseIcon /> منسوخ کریں
               </button>
               <button type="submit" className="save-btn" disabled={loading}>
                 {loading ? (
                   <Loader />
                 ) : (
                   <>
-                    <SaveIcon /> Save Student
+                    <SaveIcon /> طالب علم محفوظ کریں
                   </>
                 )}
               </button>

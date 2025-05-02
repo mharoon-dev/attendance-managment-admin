@@ -88,19 +88,19 @@ const AddSubject = () => {
         <div className={`add-subject-container ${!sidebarOpen ? 'sidebar-closed' : ''}`}>
           <div className="add-subject-header">
             <button className="back-button" onClick={() => navigate('/subjects')}>
-              <ArrowBackIcon /> Back to Subjects
+              <ArrowBackIcon /> مضامین پر واپس جائیں
             </button>
-            <h1>Add New Subject</h1>
+            <h1>نیا مضمون شامل کریں</h1>
           </div>
 
           <div className="add-subject-content">
             <form onSubmit={handleSubmit}>
               <div className="form-section">
-                <h2>Subject Information</h2>
+                <h2>مضمون کی معلومات</h2>
                 <div className="form-row">
                   <div className="form-group">
                     <label htmlFor="subjectName">
-                      <MenuBookIcon className="form-icon" /> Subject Name
+                      <MenuBookIcon className="form-icon" /> مضمون کا نام
                     </label>
                     <input
                       type="text"
@@ -108,7 +108,7 @@ const AddSubject = () => {
                       name="subjectName"
                       value={formData.subjectName}
                       onChange={handleInputChange}
-                      placeholder="Enter subject name"
+                      placeholder="مضمون کا نام درج کریں"
                       required
                     />
                   </div>
@@ -117,25 +117,25 @@ const AddSubject = () => {
                 <div className="form-row">
                   <div className="form-group">
                     <label htmlFor="className">
-                      <BusinessIcon className="form-icon" /> Class
+                      <BusinessIcon className="form-icon" /> کلاس
                     </label>
                     <CustomDropdown
                       options={classOptions}
                       value={formData.className}
                       onChange={(value) => setFormData({...formData, className: value})}
-                      placeholder="Select class"
+                      placeholder="کلاس منتخب کریں"
                       icon={<BusinessIcon />}
                     />
                   </div>
                   <div className="form-group">
                     <label htmlFor="teacherName">
-                      <PersonIcon className="form-icon" /> Teacher
+                      <PersonIcon className="form-icon" /> استاد
                     </label>
                     <CustomDropdown
                       options={teacherOptions}
                       value={formData.teacherName}
                       onChange={(value) => setFormData({...formData, teacherName: value})}
-                      placeholder="Select teacher"
+                      placeholder="استاد منتخب کریں"
                       icon={<PersonIcon />}
                     />
                   </div>
@@ -148,7 +148,7 @@ const AddSubject = () => {
                   className="cancel-btn"
                   onClick={() => navigate('/subjects')}
                 >
-                  Cancel
+                  منسوخ کریں
                 </button>
                 <button 
                   type="submit" 
@@ -159,7 +159,7 @@ const AddSubject = () => {
                     <div className="loading-spinner" />
                   ) : (
                     <>
-                      <SaveIcon /> Save Subject
+                      <SaveIcon /> مضمون محفوظ کریں
                     </>
                   )}
                 </button>

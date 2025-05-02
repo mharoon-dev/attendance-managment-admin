@@ -148,20 +148,20 @@ const AddClass = () => {
       
       <div className={`add-class-container ${!sidebarOpen ? 'sidebar-closed' : ''}`}>
         <div className="add-class-header">
-          <h1>Add New Class</h1>
+          <h1>نیا کلاس شامل کریں</h1>
           <button className="cancel-btn" onClick={() => navigate('/classes')}>
-            <FiX /> Cancel
+            <FiX /> منسوخ کریں
           </button>
         </div>
 
         <div className="add-class-content">
           <form onSubmit={handleSubmit}>
             <div className="form-section">
-              <h2>Basic Information</h2>
+              <h2>بنیادی معلومات</h2>
               
               <div className="form-row">
                 <div className="form-group">
-                  <label htmlFor="className">Class Name</label>
+                  <label htmlFor="className">کلاس کا نام</label>
                   <div className="input-with-icon">
                     <BsBuilding className="input-icon" />
                     <input
@@ -170,13 +170,13 @@ const AddClass = () => {
                       name="className"
                       value={formData.className}
                       onChange={handleInputChange}
-                      placeholder="Enter class name"
+                      placeholder="کلاس کا نام درج کریں"
                       required
                     />
                   </div>
                 </div>
                 <div className="form-group">
-                  <label htmlFor="grade">Grade</label>
+                  <label htmlFor="grade">گریڈ</label>
                   <div className="input-with-icon">
                     <BsBuilding className="input-icon" />
                     <input
@@ -185,7 +185,7 @@ const AddClass = () => {
                       name="grade"
                       value={formData.grade}
                       onChange={handleInputChange}
-                      placeholder="Enter grade"
+                      placeholder="گریڈ درج کریں"
                       min="1"
                       max="12"
                       required
@@ -196,7 +196,7 @@ const AddClass = () => {
 
               <div className="form-row">
                 <div className="form-group">
-                  <label htmlFor="startDate">Start Date</label>
+                  <label htmlFor="startDate">شروع کی تاریخ</label>
                   <div className="input-with-icon">
                     <BsCalendar className="input-icon" />
                     <input
@@ -210,7 +210,7 @@ const AddClass = () => {
                   </div>
                 </div>
                 <div className="form-group">
-                  <label htmlFor="endDate">End Date</label>
+                  <label htmlFor="endDate">اختتام کی تاریخ</label>
                   <div className="input-with-icon">
                     <BsCalendar className="input-icon" />
                     <input
@@ -227,29 +227,29 @@ const AddClass = () => {
             </div>
 
             <div className="form-section">
-              <h2>Class Teachers</h2>
+              <h2>کلاس ٹیچرز</h2>
               <div className="teachers-container">
                 <div className="teacher-input-group">
                   <div className="form-row">
                     <div className="form-group">
-                      <label>Teacher</label>
+                      <label>ٹیچر</label>
                       <CustomDropdown
                         value={newTeacherId}
                         onChange={(value) => setNewTeacherId(value)}
                         options={teacherOptions}
-                        placeholder="Select Teacher"
+                        placeholder="ٹیچر منتخب کریں"
                         icon={<BsPersonBadge />}
                       />
                     </div>
                     <div className="form-group">
-                      <label>Year</label>
+                      <label>سال</label>
                       <div className="input-with-icon">
                         <BsCalendar className="input-icon" />
                         <input
                           type="number"
                           value={newTeacherYear}
                           onChange={(e) => setNewTeacherYear(e.target.value)}
-                          placeholder="Enter year"
+                          placeholder="سال درج کریں"
                           min="2000"
                           max="2100"
                         />
@@ -261,7 +261,7 @@ const AddClass = () => {
                     className="add-teacher-btn"
                     onClick={handleAddTeacher}
                   >
-                    <FiPlus /> Add Teacher
+                    <FiPlus /> ٹیچر شامل کریں
                   </button>
                 </div>
 
@@ -312,14 +312,14 @@ const AddClass = () => {
 
             <div className="form-actions">
               <button type="button" className="cancel-btn" onClick={() => navigate('/classes')}>
-                <FiX /> Cancel
+                <FiX /> منسوخ کریں
               </button>
               <button type="submit" className="save-btn" disabled={loading}>
                 {loading ? (
                   <span className="loading-spinner"></span>
                 ) : (
                   <>
-                    <FiSave /> Save Class
+                    <FiSave /> کلاس محفوظ کریں
                   </>
                 )}
               </button>

@@ -215,17 +215,17 @@ const Subjects = () => {
           }`}
         >
           <div className="subjects-header">
-            <h1>All Subjects</h1>
+            <h1>تمام مضامین</h1>
             {
               (user.role === "admin" || user.role === "superAdmin") && (
                 <button
                   className="add-subject-btn"
                   onClick={() => navigate("/subjects/add")}
                 >
-                  <AddIcon /> Add New Subject
-            </button>
-            )
-          }
+                  <AddIcon /> نیا مضمون شامل کریں
+                </button>
+              )
+            }
           </div>
 
           <div className="toolbar">
@@ -235,7 +235,7 @@ const Subjects = () => {
                   <SearchIcon className="search-icon" />
                   <input
                     type="text"
-                    placeholder="Search subjects..."
+                    placeholder="مضامین تلاش کریں..."
                     value={searchTerm}
                     onChange={handleSearch}
                   />
@@ -246,11 +246,9 @@ const Subjects = () => {
                   options={classOptions}
                   value={selectedGrade}
                   onChange={handleGradeChange}
-                  placeholder="Class"
+                  placeholder="کلاس"
                   icon={<BadgeIcon />}
                 />
-
-               
               </div>
             </div>
           </div>
@@ -310,23 +308,23 @@ const Subjects = () => {
           <div className="modal-overlay">
             <div className="delete-confirmation-modal">
               <div className="modal-header">
-                <h2>Confirm Delete</h2>
+                <h2>حذف کرنے کی تصدیق</h2>
                 <button className="modal-close-btn" onClick={handleCancelDelete}>
                   <CloseIcon />
                 </button>
               </div>
               <div className="modal-body">
-                <p>Are you sure you want to delete this subject? This action cannot be undone.</p>
+                <p>کیا آپ واقعی اس مضمون کو حذف کرنا چاہتے ہیں؟ یہ عمل واپس نہیں کیا جا سکتا۔</p>
               </div>
               <div className="modal-footer">
                 <button className="cancel-btn" onClick={handleCancelDelete}>
-                  Cancel
+                  منسوخ کریں
                 </button>
                 <button 
                   className="delete-btn" 
                   onClick={() => handleDeleteSubject(deleteConfirmation.subjectId)}
                 >
-                  Delete
+                  حذف کریں
                 </button>
               </div>
             </div>
@@ -338,7 +336,7 @@ const Subjects = () => {
           <div className="modal-overlay">
             <div className="modal-container">
               <div className="modal-header">
-                <h2>Edit Subject</h2>
+                <h2>مضمون میں ترمیم کریں</h2>
                 <button className="close-btn" onClick={handleCloseModal}>
                   <CloseIcon />
                 </button>
@@ -347,33 +345,33 @@ const Subjects = () => {
                 <form onSubmit={handleSubmit}>
                   <div className="form-row">
                     <div className="form-group">
-                      <label htmlFor="subjectName">Subject Name</label>
+                      <label htmlFor="subjectName">مضمون کا نام</label>
                       <input
                         type="text"
                         id="subjectName"
                         name="subjectName"
                         value={formData.subjectName}
                         onChange={handleInputChange}
-                        placeholder="Enter subject name"
+                        placeholder="مضمون کا نام درج کریں"
                       />
                     </div>
                   </div>
 
                   <div className="form-row">
                     <div className="form-group">
-                      <label htmlFor="className">Class</label>
+                      <label htmlFor="className">کلاس</label>
                       <CustomDropdown
                         options={classOptions.filter((c) => c.value !== "all")}
                         value={formData.className}
                         onChange={(value) =>
                           setFormData({ ...formData, className: value })
                         }
-                        placeholder="Select class"
+                        placeholder="کلاس منتخب کریں"
                         icon={<BadgeIcon />}
                       />
                     </div>
                     <div className="form-group">
-                      <label htmlFor="teacherName">Teacher</label>
+                      <label htmlFor="teacherName">استاد</label>
                       <CustomDropdown
                         options={teacherOptions.filter(
                           (t) => t.value !== "all"
@@ -382,7 +380,7 @@ const Subjects = () => {
                         onChange={(value) =>
                           setFormData({ ...formData, teacherName: value })
                         }
-                        placeholder="Select teacher"
+                        placeholder="استاد منتخب کریں"
                         icon={<PersonIcon />}
                       />
                     </div>
@@ -394,14 +392,14 @@ const Subjects = () => {
                       className="cancel-btn"
                       onClick={handleCloseModal}
                     >
-                      Cancel
+                      منسوخ کریں
                     </button>
                     <button
                       type="submit"
                       className="save-btn"
                       disabled={isLoading}
                     >
-                      <SaveIcon /> Save Changes
+                      <SaveIcon /> تبدیلیاں محفوظ کریں
                     </button>
                   </div>
                 </form>

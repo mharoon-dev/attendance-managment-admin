@@ -66,7 +66,6 @@ const Students = () => {
     },
     grade: ''
   });
-
   const { classes } = useSelector((state) => state.classes);
 
   const [deleteConfirmation, setDeleteConfirmation] = useState({ show: false, studentId: null });
@@ -345,11 +344,11 @@ const Students = () => {
 
         <div className={`students-container ${!sidebarOpen ? 'sidebar-closed' : ''}`}>
           <div className="students-header">
-            <h1>All Students</h1>
+            <h1>تمام طلباء</h1>
             {
               (user.role === "admin" || user.role === "superAdmin") && (
                 <button className="add-student-btn" onClick={() => navigate('/students/add')}>
-                  <AddIcon /> Add New Student
+                  <AddIcon /> نیا طالب علم شامل کریں
                 </button>
               )
             }
@@ -362,7 +361,7 @@ const Students = () => {
                   <SearchIcon className="search-icon" />
                   <input
                     type="text"
-                    placeholder="Search students..."
+                    placeholder="طلباء تلاش کریں..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                   />
@@ -372,7 +371,7 @@ const Students = () => {
                 <CustomDropdown
                   compact
                   icon={<BusinessIcon />}
-                  label="Grade"
+                  label="گریڈ"
                   value={selectedGrade}
                   onChange={(value) => setSelectedGrade(value)}
                   options={classes.map(cls => ({
@@ -384,7 +383,7 @@ const Students = () => {
                 <CustomDropdown
                   compact
                   icon={<PersonIcon />}
-                  label="Gender"
+                  label="جنس"
                   value={selectedGender}
                   onChange={(value) => setSelectedGender(value)}
                   options={genderOptions}
@@ -399,33 +398,26 @@ const Students = () => {
               <table className="students-table">
                 <thead>
                   <tr>
-                    <th>S.No</th>
-                    <th>Grade</th>
-                    <th>Name</th>
-                    <th>Father's Name</th>
-                    <th>Roll No</th>
-                    <th>Contact Number</th>
-                    <th>CNIC</th>
-                    <th>Action</th>
+                    <th>کارروائی</th>
+                    <th>شناختی کارڈ نمبر</th>
+                    <th>رابطہ نمبر</th>
+                    <th>رول نمبر</th>
+                    <th>والد کا نام</th>
+                    <th>نام</th>
+                    <th>گریڈ</th>
+                    <th>سیریل نمبر</th>
                   </tr>
                 </thead>
                 <tbody>
                   {sortedStudents?.map((student, index) => (
                     <tr key={student._id}>
-                      <td>{index + 1}</td>
-                      <td>{student.grade}</td>
-                      <td>{student.fullName}</td>
-                      <td>{student.parentDetails?.fullName}</td>
-                      <td>{student.schoolDetails?.rollNumber}</td>
-                      <td>{student.phoneNumber}</td>
-                      <td>{student.parentDetails?.nic}</td>
                       <td>
                         <div className="table-actions">
                           <button
                             className="view-profile-btn"
                             onClick={() => handleViewStudent(student._id)}
                           >
-                            View Profile
+                            پروفائل دیکھیں
                           </button>
                           {(user.role === "admin" || user.role === "superAdmin") && (
                             <div className="table-actions-buttons">
@@ -445,6 +437,13 @@ const Students = () => {
                           )}
                         </div>
                       </td>
+                      <td>{student.parentDetails?.nic}</td>
+                      <td>{student.phoneNumber}</td>
+                      <td>{student.schoolDetails?.rollNumber}</td>
+                      <td>{student.parentDetails?.fullName}</td>
+                      <td>{student.fullName}</td>
+                      <td>{student.grade + " " + classes.find(cls => cls.grade === student.grade)?.className}</td>
+                      <td>{index + 1}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -452,7 +451,7 @@ const Students = () => {
             </div>
           ) : (
             <div className="no-students">
-              <h1 className="no-students-text">There are no students</h1>
+              <h1 className="no-students-text">کوئی طالب علم نہیں ہے</h1>
             </div>
           )}
 
@@ -461,23 +460,23 @@ const Students = () => {
             <div className="modal-overlay">
               <div className="delete-confirmation-modal">
                 <div className="modal-header">
-                  <h2>Confirm Delete</h2>
+                  <h2>حذف کرنے کی تصدیق</h2>
                   <button className="modal-close-btn" onClick={handleCancelDelete}>
                     <FiX />
                   </button>
                 </div>
                 <div className="modal-body">
-                  <p>Are you sure you want to delete this student? This action cannot be undone.</p>
+                  <p>کیا آپ واقعی اس طالب علم کو حذف کرنا چاہتے ہیں؟ یہ عمل واپس نہیں کیا جا سکتا۔</p>
                 </div>
                 <div className="modal-footer">
                   <button className="cancel-btn" onClick={handleCancelDelete}>
-                    Cancel
+                    منسوخ کریں
                   </button>
                   <button 
                     className="delete-btn" 
                     onClick={() => handleDeleteStudent(deleteConfirmation.studentId)}
                   >
-                    Delete
+                    حذف کریں
                   </button>
                 </div>
               </div>
@@ -489,7 +488,7 @@ const Students = () => {
             <div className="modal-overlay">
               <div className="modal-container">
                 <div className="modal-header">
-                  <h2>Edit Student</h2>
+                  <h2>طالب علم میں ترمیم کریں</h2>
                   <button className="close-btn" onClick={handleCloseModal}>
                     <CloseIcon />
                   </button>
@@ -498,10 +497,10 @@ const Students = () => {
                   <form onSubmit={handleSubmit}>
                     {/* Student Personal Information Section */}
                     <div className="form-section">
-                      <h3 className="section-title">Personal Information</h3>
+                      <h3 className="section-title">ذاتی معلومات</h3>
                       <div className="form-row">
                         <div className="form-group">
-                          <label htmlFor="fullName">Full Name</label>
+                          <label htmlFor="fullName">پورا نام</label>
                           <input
                             type="text"
                             id="fullName"
@@ -509,11 +508,11 @@ const Students = () => {
                             value={formData?.fullName}
                             onChange={handleInputChange}
                             required
-                            placeholder="Enter student's full name"
+                            placeholder="طالب علم کا پورا نام درج کریں"
                           />
                         </div>
                         <div className="form-group">
-                          <label htmlFor="gender">Gender</label>
+                          <label htmlFor="gender">جنس</label>
                           <select
                             id="gender"
                             name="gender"
@@ -521,17 +520,17 @@ const Students = () => {
                             onChange={handleInputChange}
                             required
                           >
-                            <option value="">Select Gender</option>
-                            <option value="Male">Male</option>
-                            <option value="Female">Female</option>
-                            <option value="Other">Other</option>
+                            <option value="">جنس منتخب کریں</option>
+                            <option value="Male">مرد</option>
+                            <option value="Female">عورت</option>
+                            <option value="Other">دیگر</option>
                           </select>
                         </div>
                       </div>
 
                       <div className="form-row">
                         <div className="form-group">
-                          <label htmlFor="dateOfBirth">Date of Birth</label>
+                          <label htmlFor="dateOfBirth">تاریخ پیدائش</label>
                           <input
                             type="date"
                             id="dateOfBirth"
@@ -542,7 +541,7 @@ const Students = () => {
                           />
                         </div>
                         <div className="form-group">
-                          <label htmlFor="phoneNumber">Phone Number</label>
+                          <label htmlFor="phoneNumber">فون نمبر</label>
                           <input
                             type="tel"
                             id="phoneNumber"
@@ -555,7 +554,7 @@ const Students = () => {
                       </div>
 
                       <div className="form-group">
-                        <label htmlFor="fullAddress">Full Address</label>
+                        <label htmlFor="fullAddress">مکمل پتہ</label>
                         <textarea
                           id="fullAddress"
                           name="fullAddress"
@@ -569,15 +568,15 @@ const Students = () => {
 
                     {/* Student Documents Section */}
                     <div className="form-section">
-                      <h3 className="section-title">Documents</h3>
+                      <h3 className="section-title">دستاویزات</h3>
                       <div className="form-row">
                         <div className="form-group">
-                          <label htmlFor="profileImage">Profile Image</label>
+                          <label htmlFor="profileImage">پروفائل تصویر</label>
                           <div className="avatar-upload">
                             <div className="image-preview-container">
                               <img
                                 src={formData.profileImage || '/default-avatar.png'}
-                                alt="Profile"
+                                alt="پروفائل"
                                 className="avatar-preview"
                               />
                               {formData.profileImage && (
@@ -599,17 +598,17 @@ const Students = () => {
                               name="profileImage"
                             />
                             <label htmlFor="profileImage" className="upload-btn">
-                              <FiUpload /> Change Image
+                              <FiUpload /> تصویر تبدیل کریں
                             </label>
                           </div>
                         </div>
                         <div className="form-group">
-                          <label htmlFor="nicImage">NIC Image</label>
+                          <label htmlFor="nicImage">شناختی کارڈ کی تصویر</label>
                           <div className="avatar-upload">
                             <div className="image-preview-container">
                               <img
                                 src={formData.nicImage || '/default-nic.png'}
-                                alt="NIC"
+                                alt="شناختی کارڈ"
                                 className="avatar-preview"
                               />
                               {formData.nicImage && (
@@ -631,7 +630,7 @@ const Students = () => {
                               name="nicImage"
                             />
                             <label htmlFor="nicImage" className="upload-btn">
-                              <FiUpload /> Change NIC Image
+                              <FiUpload /> شناختی کارڈ کی تصویر تبدیل کریں
                             </label>
                           </div>
                         </div>
@@ -640,10 +639,10 @@ const Students = () => {
 
                     {/* Parent Information Section */}
                     <div className="form-section">
-                      <h3 className="section-title">Parent Information</h3>
+                      <h3 className="section-title">والدین کی معلومات</h3>
                       <div className="form-row">
                         <div className="form-group">
-                          <label htmlFor="parentDetails.fullName">Parent Full Name</label>
+                          <label htmlFor="parentDetails.fullName">والدین کا پورا نام</label>
                           <input
                             type="text"
                             id="parentDetails.fullName"
@@ -654,7 +653,7 @@ const Students = () => {
                           />
                         </div>
                         <div className="form-group">
-                          <label htmlFor="parentDetails.gender">Parent Gender</label>
+                          <label htmlFor="parentDetails.gender">والدین کی جنس</label>
                           <select
                             id="parentDetails.gender"
                             name="parentDetails.gender"
@@ -662,17 +661,17 @@ const Students = () => {
                             onChange={handleInputChange}
                             required
                           >
-                            <option value="">Select Gender</option>
-                            <option value="Male">Male</option>
-                            <option value="Female">Female</option>
-                            <option value="Other">Other</option>
+                            <option value="">جنس منتخب کریں</option>
+                            <option value="Male">مرد</option>
+                            <option value="Female">عورت</option>
+                            <option value="Other">دیگر</option>
                           </select>
                         </div>
                       </div>
 
                       <div className="form-row">
                         <div className="form-group">
-                          <label htmlFor="parentDetails.dateOfBirth">Parent Date of Birth</label>
+                          <label htmlFor="parentDetails.dateOfBirth">والدین کی تاریخ پیدائش</label>
                           <input
                             type="date"
                             id="parentDetails.dateOfBirth"
@@ -683,7 +682,7 @@ const Students = () => {
                           />
                         </div>
                         <div className="form-group">
-                          <label htmlFor="parentDetails.phoneNumber">Parent Phone Number</label>
+                          <label htmlFor="parentDetails.phoneNumber">والدین کا فون نمبر</label>
                           <input
                             type="tel"
                             id="parentDetails.phoneNumber"
@@ -697,7 +696,7 @@ const Students = () => {
 
                       <div className="form-row">
                         <div className="form-group">
-                          <label htmlFor="parentDetails.nic">Parent NIC</label>
+                          <label htmlFor="parentDetails.nic">والدین کا شناختی کارڈ نمبر</label>
                           <input
                             type="text"
                             id="parentDetails.nic"
@@ -708,7 +707,7 @@ const Students = () => {
                           />
                         </div>
                         <div className="form-group">
-                          <label htmlFor="parentDetails.education">Parent Education</label>
+                          <label htmlFor="parentDetails.education">والدین کی تعلیم</label>
                           <input
                             type="text"
                             id="parentDetails.education"
@@ -721,7 +720,7 @@ const Students = () => {
                       </div>
 
                       <div className="form-group">
-                        <label htmlFor="parentDetails.profession">Parent Profession</label>
+                        <label htmlFor="parentDetails.profession">والدین کا پیشہ</label>
                         <input
                           type="text"
                           id="parentDetails.profession"
@@ -734,12 +733,12 @@ const Students = () => {
 
                       <div className="form-row">
                         <div className="form-group">
-                          <label htmlFor="parentDetails.profileImage">Parent Profile Image</label>
+                          <label htmlFor="parentDetails.profileImage">والدین کی پروفائل تصویر</label>
                           <div className="avatar-upload">
                             <div className="image-preview-container">
                               <img
                                 src={formData.parentDetails.profileImage || '/default-avatar.png'}
-                                alt="Parent Profile"
+                                alt="والدین کی پروفائل"
                                 className="avatar-preview"
                               />
                               {formData.parentDetails.profileImage && (
@@ -761,17 +760,17 @@ const Students = () => {
                               name="parentDetails.profileImage"
                             />
                             <label htmlFor="parentDetails.profileImage" className="upload-btn">
-                              <FiUpload /> Change Parent Image
+                              <FiUpload /> والدین کی تصویر تبدیل کریں
                             </label>
                           </div>
                         </div>
                         <div className="form-group">
-                          <label htmlFor="parentDetails.nicImage">Parent NIC Image</label>
+                          <label htmlFor="parentDetails.nicImage">والدین کا شناختی کارڈ کی تصویر</label>
                           <div className="avatar-upload">
                             <div className="image-preview-container">
                               <img
                                 src={formData.parentDetails.nicImage || '/default-nic.png'}
-                                alt="Parent NIC"
+                                alt="والدین کا شناختی کارڈ"
                                 className="avatar-preview"
                               />
                               {formData.parentDetails.nicImage && (
@@ -793,7 +792,7 @@ const Students = () => {
                               name="parentDetails.nicImage"
                             />
                             <label htmlFor="parentDetails.nicImage" className="upload-btn">
-                              <FiUpload /> Change Parent NIC Image
+                              <FiUpload /> والدین کا شناختی کارڈ کی تصویر تبدیل کریں
                             </label>
                           </div>
                         </div>
@@ -802,10 +801,10 @@ const Students = () => {
 
                     {/* School Information Section */}
                     <div className="form-section">
-                      <h3 className="section-title">School Information</h3>
+                      <h3 className="section-title">اسکول کی معلومات</h3>
                       <div className="form-row">
                         <div className="form-group">
-                          <label htmlFor="grade">Grade</label>
+                          <label htmlFor="grade">گریڈ</label>
                           <input
                             type="text"
                             id="grade"
@@ -816,7 +815,7 @@ const Students = () => {
                           />
                         </div>
                         <div className="form-group">
-                          <label htmlFor="schoolDetails.rollNumber">Roll Number</label>
+                          <label htmlFor="schoolDetails.rollNumber">رول نمبر</label>
                           <input
                             type="text"
                             id="schoolDetails.rollNumber"
@@ -830,7 +829,7 @@ const Students = () => {
 
                       <div className="form-row">
                         <div className="form-group">
-                          <label htmlFor="schoolDetails.joiningDate">Joining Date</label>
+                          <label htmlFor="schoolDetails.joiningDate">تاریخ داخلہ</label>
                           <input
                             type="date"
                             id="schoolDetails.joiningDate"
@@ -841,7 +840,7 @@ const Students = () => {
                           />
                         </div>
                         <div className="form-group">
-                          <label htmlFor="schoolDetails.previousInstitute">Previous Institute</label>
+                          <label htmlFor="schoolDetails.previousInstitute">سابقہ ادارہ</label>
                           <input
                             type="text"
                             id="schoolDetails.previousInstitute"
@@ -853,12 +852,12 @@ const Students = () => {
                       </div>
 
                       <div className="form-group">
-                        <label htmlFor="schoolDetails.previousDegreeWithImage">Previous Degree Image</label>
+                        <label htmlFor="schoolDetails.previousDegreeWithImage">سابقہ ڈگری کی تصویر</label>
                         <div className="avatar-upload">
                           <div className="image-preview-container">
                             <img
                               src={formData.schoolDetails.previousDegreeWithImage || '/default-degree.png'}
-                              alt="Previous Degree"
+                              alt="سابقہ ڈگری"
                               className="avatar-preview"
                             />
                             {formData.schoolDetails.previousDegreeWithImage && (
@@ -880,7 +879,7 @@ const Students = () => {
                             name="schoolDetails.previousDegreeWithImage"
                           />
                           <label htmlFor="schoolDetails.previousDegreeWithImage" className="upload-btn">
-                            <FiUpload /> Change Degree Image
+                            <FiUpload /> ڈگری کی تصویر تبدیل کریں
                           </label>
                         </div>
                       </div>
@@ -888,14 +887,14 @@ const Students = () => {
 
                     <div className="modal-footer">
                       <button type="button" className="cancel-btn" onClick={handleCloseModal}>
-                        Cancel
+                        منسوخ کریں
                       </button>
                       <button type="submit" className="save-btn">
                         {loading ? (
                           <span className="loading-spinner"></span>
                         ) : (
                           <>
-                            <FiSave /> Save Changes
+                            <FiSave /> تبدیلیاں محفوظ کریں
                           </>
                         )}
                       </button>

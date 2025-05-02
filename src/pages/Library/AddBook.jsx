@@ -94,9 +94,9 @@ const AddBook = () => {
       <div className={`add-book-container ${!sidebarOpen ? 'sidebar-closed' : ''}`}>
         <div className="add-book-header">
           <button className="back-btn" onClick={handleCancel}>
-            <ArrowBackIcon /> Back to Library
+            <ArrowBackIcon /> لائبریری پر واپس جائیں
           </button>
-          <h1>Add New Book</h1>
+          <h1>نئی کتاب شامل کریں</h1>
         </div>
 
         <div className="add-book-content">
@@ -104,7 +104,7 @@ const AddBook = () => {
             <div className="form-grid">
               <div className="form-group">
                 <label htmlFor="title">
-                  <MenuBookIcon className="form-icon" /> Book Title
+                  <MenuBookIcon className="form-icon" /> کتاب کا عنوان
                 </label>
                 <input
                   type="text"
@@ -112,14 +112,14 @@ const AddBook = () => {
                   name="title"
                   value={formData.title}
                   onChange={handleInputChange}
-                  placeholder="Enter book title"
+                  placeholder="کتاب کا عنوان درج کریں"
                   required
                 />
               </div>
               
               <div className="form-group">
                 <label htmlFor="author">
-                  <PersonIcon className="form-icon" /> Author
+                  <PersonIcon className="form-icon" /> مصنف
                 </label>
                 <input
                   type="text"
@@ -127,26 +127,26 @@ const AddBook = () => {
                   name="author"
                   value={formData.author}
                   onChange={handleInputChange}
-                  placeholder="Enter author name"
+                  placeholder="مصنف کا نام درج کریں"
                   required
                 />
               </div>
               
               <div className="form-group">
-                <label htmlFor="isbn">ISBN</label>
+                <label htmlFor="isbn">آئی ایس بی این</label>
                 <input
                   type="text"
                   id="isbn"
                   name="isbn"
                   value={formData.isbn}
                   onChange={handleInputChange}
-                  placeholder="Enter ISBN"
+                  placeholder="آئی ایس بی این درج کریں"
                   required
                 />
               </div>
               
               <div className="form-group">
-                <label htmlFor="category">Category</label>
+                <label htmlFor="category">زمرہ</label>
                 <select
                   id="category"
                   name="category"
@@ -154,7 +154,7 @@ const AddBook = () => {
                   onChange={handleInputChange}
                   required
                 >
-                  <option value="">Select a category</option>
+                  <option value="">زمرہ منتخب کریں</option>
                   {categories.map(category => (
                     <option key={category.value} value={category.value}>
                       {category.label}
@@ -165,7 +165,7 @@ const AddBook = () => {
               
               <div className="form-group">
                 <label htmlFor="publisher">
-                  <BusinessIcon className="form-icon" /> Publisher
+                  <BusinessIcon className="form-icon" /> ناشر
                 </label>
                 <input
                   type="text"
@@ -173,14 +173,14 @@ const AddBook = () => {
                   name="publisher"
                   value={formData.publisher}
                   onChange={handleInputChange}
-                  placeholder="Enter publisher name"
+                  placeholder="ناشر کا نام درج کریں"
                   required
                 />
               </div>
               
               <div className="form-group">
                 <label htmlFor="publishYear">
-                  <CalendarTodayIcon className="form-icon" /> Publication Year
+                  <CalendarTodayIcon className="form-icon" /> اشاعت کا سال
                 </label>
                 <input
                   type="number"
@@ -188,7 +188,7 @@ const AddBook = () => {
                   name="publishYear"
                   value={formData.publishYear}
                   onChange={handleInputChange}
-                  placeholder="Enter publication year"
+                  placeholder="اشاعت کا سال درج کریں"
                   min="1000"
                   max={new Date().getFullYear()}
                   required
@@ -197,7 +197,7 @@ const AddBook = () => {
               
               <div className="form-group">
                 <label htmlFor="copies">
-                  <LibraryBooksIcon className="form-icon" /> Total Copies
+                  <LibraryBooksIcon className="form-icon" /> کل کاپیاں
                 </label>
                 <input
                   type="number"
@@ -205,21 +205,21 @@ const AddBook = () => {
                   name="copies"
                   value={formData.copies}
                   onChange={handleInputChange}
-                  placeholder="Enter total copies"
+                  placeholder="کل کاپیاں درج کریں"
                   min="1"
                   required
                 />
               </div>
               
               <div className="form-group">
-                <label htmlFor="availableCopies">Available Copies</label>
+                <label htmlFor="availableCopies">دستیاب کاپیاں</label>
                 <input
                   type="number"
                   id="availableCopies"
                   name="availableCopies"
                   value={formData.availableCopies}
                   onChange={handleInputChange}
-                  placeholder="Enter available copies"
+                  placeholder="دستیاب کاپیاں درج کریں"
                   min="0"
                   max={formData.copies || 999}
                   required
@@ -228,7 +228,7 @@ const AddBook = () => {
               
               <div className="form-group">
                 <label htmlFor="location">
-                  <LocationOnIcon className="form-icon" /> Location
+                  <LocationOnIcon className="form-icon" /> مقام
                 </label>
                 <input
                   type="text"
@@ -236,33 +236,33 @@ const AddBook = () => {
                   name="location"
                   value={formData.location}
                   onChange={handleInputChange}
-                  placeholder="e.g., Shelf A-12"
+                  placeholder="مثال کے طور پر، شیلف اے-12"
                   required
                 />
               </div>
               
               <div className="form-group">
-                <label htmlFor="coverImage">Cover Image URL</label>
+                <label htmlFor="coverImage">کور امیج یو آر ایل</label>
                 <input
                   type="url"
                   id="coverImage"
                   name="coverImage"
                   value={formData.coverImage}
                   onChange={handleInputChange}
-                  placeholder="Enter cover image URL"
+                  placeholder="کور امیج یو آر ایل درج کریں"
                 />
               </div>
               
               <div className="form-group full-width">
                 <label htmlFor="description">
-                  <DescriptionIcon className="form-icon" /> Description
+                  <DescriptionIcon className="form-icon" /> تفصیل
                 </label>
                 <textarea
                   id="description"
                   name="description"
                   value={formData.description}
                   onChange={handleInputChange}
-                  placeholder="Enter book description"
+                  placeholder="کتاب کی تفصیل درج کریں"
                   rows="4"
                 />
               </div>
@@ -275,7 +275,7 @@ const AddBook = () => {
                 onClick={handleCancel}
                 disabled={isLoading}
               >
-                Cancel
+                منسوخ کریں
               </button>
               <button 
                 type="submit" 
@@ -286,7 +286,7 @@ const AddBook = () => {
                   <Loader />
                 ) : (
                   <>
-                    <SaveIcon /> Save Book
+                    <SaveIcon /> کتاب محفوظ کریں
                   </>
                 )}
               </button>

@@ -236,11 +236,11 @@ const Classes = () => {
       
       <div className={`classes-container ${!sidebarOpen ? 'sidebar-closed' : ''}`}>
         <div className="classes-header">
-          <h1>All Classes</h1>
+          <h1>تمام کلاسیں</h1>
           {
             (user.role === "admin" || user.role === "superAdmin") && (
               <button className="add-class-btn" onClick={() => navigate('/classes/add')}>
-                <AddIcon /> Add New Class
+                <AddIcon /> نئی کلاس شامل کریں
               </button>
             )
           }
@@ -253,7 +253,7 @@ const Classes = () => {
                 <SearchIcon className="search-icon" />
                 <input
                   type="text"
-                  placeholder="Search classes..."
+                  placeholder="کلاسیں تلاش کریں..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                 />
@@ -263,13 +263,11 @@ const Classes = () => {
               <CustomDropdown
                 compact
                 icon={<BusinessIcon />}
-                label="Grade"
+                label="گریڈ"
                 value={selectedGrade}
                 onChange={(value) => setSelectedGrade(value)}
                 options={gradeOptions}
               />
-           
-          
             </div>
           </div>
         </div>
@@ -285,25 +283,25 @@ const Classes = () => {
                 <div className="class-info">
                   <div className="classes-info-item">
                     <BusinessIcon className="classes-info-icon" />
-                    <span>Grade {cls.grade}</span>
+                    <span>گریڈ {cls.grade}</span>
                   </div>
                   <div className="classes-info-item">
                     <CalendarMonthIcon className="classes-info-icon" />
-                    <span>Start: {new Date(cls.startDate).toLocaleDateString()}</span>
+                    <span>شروع: {new Date(cls.startDate).toLocaleDateString()}</span>
                   </div>
                   <div className="classes-info-item">
                     <CalendarMonthIcon className="classes-info-icon" />
-                    <span>End: {new Date(cls.endDate).toLocaleDateString()}</span>
+                    <span>اختتام: {new Date(cls.endDate).toLocaleDateString()}</span>
                   </div>
                 </div>
 
                 <div className="class-teachers">
-                  <h4>Class Teachers:</h4>
+                  <h4>کلاس کے اساتذہ:</h4>
                   <br />
                   {cls.classTeachers.map((teacher, index) => (
                     <div key={index} className="classes-info-item">
                       <BadgeIcon className="classes-info-icon" />
-                      {teachers.find(t => t.jobDetails.teacherId === teacher?.teacherId)?.fullName  }
+                      {teachers.find(t => t.jobDetails.teacherId === teacher?.teacherId)?.fullName}
                       <span>{teacher?.teacherId} ({teacher?.year})</span>
                     </div>
                   ))}
@@ -315,7 +313,7 @@ const Classes = () => {
                   className="view-class-btn"
                   onClick={() => handleViewClass(cls._id)}
                 >
-                  <VisibilityIcon /> View Details
+                  <VisibilityIcon /> تفصیلات دیکھیں
                 </button>
                 {
                   (user.role === "admin" || user.role === "superAdmin") && (
@@ -346,23 +344,23 @@ const Classes = () => {
         <div className="modal-overlay">
           <div className="delete-confirmation-modal">
             <div className="modal-header">
-              <h2>Confirm Delete</h2>
+              <h2>حذف کرنے کی تصدیق</h2>
               <button className="modal-close-btn" onClick={handleCancelDelete}>
                 <CloseIcon />
               </button>
             </div>
             <div className="modal-body">
-              <p>Are you sure you want to delete this class? This action cannot be undone.</p>
+              <p>کیا آپ واقعی اس کلاس کو حذف کرنا چاہتے ہیں؟ یہ عمل واپس نہیں کیا جا سکتا۔</p>
             </div>
             <div className="modal-footer">
               <button className="cancel-btn" onClick={handleCancelDelete}>
-                Cancel
+                منسوخ کریں
               </button>
               <button 
                 className="delete-btn" 
                 onClick={() => handleDeleteClass(deleteConfirmation.classId)}
               >
-                Delete
+                حذف کریں
               </button>
             </div>
           </div>
@@ -374,7 +372,7 @@ const Classes = () => {
         <div className="modal-overlay">
           <div className="modal-container">
             <div className="modal-header">
-              <h2>Edit Class</h2>
+              <h2>کلاس میں ترمیم کریں</h2>
               <button className="close-btn" onClick={handleCloseModal}>
                 <CloseIcon />
               </button>
@@ -382,31 +380,31 @@ const Classes = () => {
             <div className="modal-body">
               <form onSubmit={handleSubmit}>
                 <div className="form-group">
-                  <label htmlFor="className">Class Name</label>
+                  <label htmlFor="className">کلاس کا نام</label>
                   <input
                     type="text"
                     id="className"
                     name="className"
                     value={formData.className}
                     onChange={handleInputChange}
-                    placeholder="Enter class name"
+                    placeholder="کلاس کا نام درج کریں"
                   />
                 </div>
 
                 <div className="form-group">
-                  <label htmlFor="grade">Grade</label>
+                  <label htmlFor="grade">گریڈ</label>
                   <input
                     type="number"
                     id="grade"
                     name="grade"
                     value={formData.grade}
                     onChange={handleInputChange}
-                    placeholder="Enter grade"
+                    placeholder="گریڈ درج کریں"
                   />
                 </div>
 
                 <div className="form-group">
-                  <label htmlFor="startDate">Start Date</label>
+                  <label htmlFor="startDate">شروع کی تاریخ</label>
                   <input
                     type="date"
                     id="startDate"
@@ -417,7 +415,7 @@ const Classes = () => {
                 </div>
 
                 <div className="form-group">
-                  <label htmlFor="endDate">End Date</label>
+                  <label htmlFor="endDate">اختتام کی تاریخ</label>
                   <input
                     type="date"
                     id="endDate"
@@ -428,13 +426,13 @@ const Classes = () => {
                 </div>
 
                 <div className="form-group">
-                  <label>Class Teachers</label>
+                  <label>کلاس کے اساتذہ</label>
                   <div className="teacher-input-group">
                     <CustomDropdown
                       value={newTeacherId}
                       onChange={(value) => setNewTeacherId(value)}
                       options={teacherOptions.filter(t => t.value !== 'all')}
-                      placeholder="Select Teacher"
+                      placeholder="استاد منتخب کریں"
                       icon={<BadgeIcon />}
                     />
                     <br />
@@ -442,7 +440,7 @@ const Classes = () => {
                       type="number"
                       value={newTeacherYear}
                       onChange={(e) => setNewTeacherYear(e.target.value)}
-                      placeholder="Year"
+                      placeholder="سال"
                     />
                   </div>
                   
@@ -451,7 +449,7 @@ const Classes = () => {
                     className="add-teacher-btn"
                     onClick={handleAddTeacher}
                   >
-                    <AddIcon /> Add Teacher
+                    <AddIcon /> استاد شامل کریں
                   </button>
 
                   <div className="classes-teachers-list">
@@ -472,14 +470,14 @@ const Classes = () => {
 
                 <div className="modal-footer">
                   <button type="button" className="cancel-btn" onClick={handleCloseModal}>
-                    Cancel
+                    منسوخ کریں
                   </button>
                   <button type="submit" className="save-btn">
                     {loading ? (
                       <span className="loading-spinner"></span>
                     ) : (
                       <>
-                        <SaveIcon /> Save Changes
+                        <SaveIcon /> تبدیلیاں محفوظ کریں
                       </>
                     )}
                   </button>

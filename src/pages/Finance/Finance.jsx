@@ -247,7 +247,7 @@ const Finance = () => {
         <Navbar toggleSidebar={toggleSidebar} isSidebarOpen={sidebarOpen} />
         <div className="finance-main">
           <br />
-          <h1>Finance Management</h1>
+          <h1>مالیات کا انتظام</h1>
 
           <div className="finance-actions">
             <button
@@ -255,28 +255,28 @@ const Finance = () => {
               onClick={() => setViewMode(!viewMode)}
             >
               {viewMode ? <EditNoteIcon /> : <VisibilityIcon />}
-              {viewMode ? ' Edit Mode' : ' View Mode'}
+              {viewMode ? ' ترمیم موڈ' : ' دیکھنے کا موڈ'}
             </button>
             <button
               className="export-btn"
               onClick={exportToCSV}
             >
               <FileDownloadIcon />
-              Export CSV
+              CSV میں ایکسپورٹ کریں
             </button>
           </div>
 
           <div className="finance-summary">
             <div className="summary-card income">
-              <h3>Total Income</h3>
+              <h3>کل آمدنی</h3>
               <p>{totalIncome.toLocaleString()}</p>
             </div>
             <div className="summary-card expense">
-              <h3>Total Expense</h3>
+              <h3>کل اخراجات</h3>
               <p>{totalExpense.toLocaleString()}</p>
             </div>
             <div className="summary-card balance">
-              <h3>Balance</h3>
+              <h3>بقیہ رقم</h3>
               <p>{balance.toLocaleString()}</p>
             </div>
           </div>
@@ -287,13 +287,13 @@ const Finance = () => {
                 className={`tab-btn ${activeTab === "incomes" ? "active" : ""}`}
                 onClick={() => setActiveTab("incomes")}
               >
-                Incomes
+                آمدنی
               </button>
               <button
                 className={`tab-btn ${activeTab === "expenses" ? "active" : ""}`}
                 onClick={() => setActiveTab("expenses")}
               >
-                Expenses
+                اخراجات
               </button>
             </div>
           )}
@@ -301,13 +301,13 @@ const Finance = () => {
           {viewMode ? (
             <div className="finance-viewmode-tables">
               <div className="finance-table">
-                <h2>Incomes</h2>
+                <h2>آمدنی</h2>
                 <table>
                   <thead>
                     <tr>
-                      <th>Date</th>
-                      <th>Details</th>
-                      <th>Credit</th>
+                      <th>تاریخ</th>
+                      <th>تفصیلات</th>
+                      <th>رقم</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -322,13 +322,13 @@ const Finance = () => {
                 </table>
               </div>
               <div className="finance-table">
-                <h2>Expenses</h2>
+                <h2>اخراجات</h2>
                 <table>
                   <thead>
                     <tr>
-                      <th>Date</th>
-                      <th>Details</th>
-                      <th>Spend</th>
+                      <th>تاریخ</th>
+                      <th>تفصیلات</th>
+                      <th>رقم</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -348,7 +348,7 @@ const Finance = () => {
               <>
                 <form onSubmit={handleIncomeSubmit} className="finance-form">
                   <div className="form-group">
-                    <label>Date</label>
+                    <label>تاریخ</label>
                     <input
                       type="date"
                       name="date"
@@ -358,43 +358,43 @@ const Finance = () => {
                     />
                   </div>
                   <div className="form-group">
-                    <label>Details</label>
+                    <label>تفصیلات</label>
                     <input
                       type="text"
                       name="details"
                       value={incomeFormData.details}
                       onChange={handleIncomeChange}
-                      placeholder="Enter income details"
+                      placeholder="آمدنی کی تفصیلات درج کریں"
                       required
                     />
                   </div>
                   <div className="form-group">
-                    <label>Amount</label>
+                    <label>رقم</label>
                     <input
                       type="number"
                       name="credit"
                       value={incomeFormData.credit}
                       onChange={handleIncomeChange}
-                      placeholder="Enter amount"
+                      placeholder="رقم درج کریں"
                       required
                     />
                   </div>
                   <button type="submit" className="submit-btn">
-                    {editMode ? "Update Income" : "Add Income"}
+                    {editMode ? "آمدنی اپ ڈیٹ کریں" : "آمدنی شامل کریں"}
                   </button>
                 </form>
 
-                {incomesLoading && <div className="loading">Loading...</div>}
+                {incomesLoading && <div className="loading">لوڈ ہو رہا ہے...</div>}
                 {incomesError && <div className="error">{incomesError}</div>}
 
                 <div className="finance-table">
                   <table>
                     <thead>
                       <tr>
-                        <th>Date</th>
-                        <th>Details</th>
-                        <th>Credit</th>
-                        <th>Actions</th>
+                        <th>تاریخ</th>
+                        <th>تفصیلات</th>
+                        <th>رقم</th>
+                        <th>اعمال</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -427,7 +427,7 @@ const Finance = () => {
               <>
                 <form onSubmit={handleExpenseSubmit} className="finance-form">
                   <div className="form-group">
-                    <label>Date</label>
+                    <label>تاریخ</label>
                     <input
                       type="date"
                       name="date"
@@ -437,43 +437,43 @@ const Finance = () => {
                     />
                   </div>
                   <div className="form-group">
-                    <label>Details</label>
+                    <label>تفصیلات</label>
                     <input
                       type="text"
                       name="details"
                       value={expenseFormData.details}
                       onChange={handleExpenseChange}
-                      placeholder="Enter expense details"
+                      placeholder="اخراجات کی تفصیلات درج کریں"
                       required
                     />
                   </div>
                   <div className="form-group">
-                    <label>Amount</label>
+                    <label>رقم</label>
                     <input
                       type="number"
                       name="spend"
                       value={expenseFormData.spend}
                       onChange={handleExpenseChange}
-                      placeholder="Enter amount"
+                      placeholder="رقم درج کریں"
                       required
                     />
                   </div>
                   <button type="submit" className="submit-btn">
-                    {editMode ? "Update Expense" : "Add Expense"}
+                    {editMode ? "اخراجات اپ ڈیٹ کریں" : "اخراجات شامل کریں"}
                   </button>
                 </form>
 
-                {expensesLoading && <div className="loading">Loading...</div>}
+                {expensesLoading && <div className="loading">لوڈ ہو رہا ہے...</div>}
                 {expensesError && <div className="error">{expensesError}</div>}
 
                 <div className="finance-table">
                   <table>
                     <thead>
                       <tr style={{gap: "20px !important"}}>
-                        <th>Date</th>
-                        <th>Details</th>
-                        <th>Spend</th>
-                        <th>Actions</th>
+                        <th>تاریخ</th>
+                        <th>تفصیلات</th>
+                        <th>رقم</th>
+                        <th>اعمال</th>
                       </tr>
                     </thead>
                     <tbody>

@@ -124,8 +124,7 @@ const MarkTeacherAttendance = () => {
       
       <div className={`mark-teacher-attendance ${!sidebarOpen ? 'sidebar-closed' : ''}`}>
         <div className="attendance-header">
-        
-          <h1>Mark Teacher Attendance</h1>
+          <h1>استاد کی حاضری درج کریں</h1>
         </div>
 
         <div className="attendance-content">
@@ -138,21 +137,21 @@ const MarkTeacherAttendance = () => {
             <div className="form-row">
               <div className="form-group">
                 <label htmlFor="teacherId">
-                  <PersonIcon className="form-icon" /> Teacher ID
+                  <PersonIcon className="form-icon" /> استاد کا آئی ڈی
                 </label>
                 <input
                   type="text"
                   id="teacherId"
                   value={teacherId}
                   onChange={handleTeacherIdChange}
-                  placeholder="Enter teacher ID"
+                  placeholder="استاد کا آئی ڈی درج کریں"
                   required
                 />
               </div>
 
               <div className="form-group">
                 <label htmlFor="time">
-                  <AccessTimeIcon className="form-icon" /> Time
+                  <AccessTimeIcon className="form-icon" /> وقت
                 </label>
                 <input
                   type="time"
@@ -166,28 +165,28 @@ const MarkTeacherAttendance = () => {
             </div>
 
             <div className="status-selection">
-              <h3>Select Status</h3>
+              <h3>حالت منتخب کریں</h3>
               <div className="status-buttons">
                 <button
                   type="button"
                   className={`status-btn present ${status === 'present' ? 'active' : ''}`}
                   onClick={() => handleStatusChange('present')}
                 >
-                  <CheckCircleIcon /> Present
+                  <CheckCircleIcon /> حاضر
                 </button>
                 <button
                   type="button"
                   className={`status-btn absent ${status === 'absent' ? 'active' : ''}`}
                   onClick={() => handleStatusChange('absent')}
                 >
-                  <CancelIcon /> Absent
+                  <CancelIcon /> غیر حاضر
                 </button>
                 <button
                   type="button"
                   className={`status-btn late ${status === 'late' ? 'active' : ''}`}
                   onClick={() => handleStatusChange('late')}
                 >
-                  <HelpOutlineIcon /> Late
+                  <HelpOutlineIcon /> لیٹ
                 </button>
               </div>
             </div>
@@ -201,7 +200,7 @@ const MarkTeacherAttendance = () => {
                 className="submit-btn"
                 disabled={!teacherId.trim() || (status !== 'absent' && !currentTime)}
               >
-                <SaveIcon /> Submit Attendance
+                <SaveIcon /> حاضری جمع کریں
               </button>
             </div>
           </form>

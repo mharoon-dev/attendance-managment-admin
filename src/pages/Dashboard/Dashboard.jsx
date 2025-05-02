@@ -1,4 +1,4 @@
-import React, {  useState } from "react";
+import React, {  useEffect, useState } from "react";
 import Navbar from "../../components/Navbar/Navbar";
 import Sidebar from "../../components/Sidebar/Sidebar";
 import Loader from "../../components/Loader/Loader";
@@ -10,6 +10,18 @@ import { api } from "../../utils/url.js";
 import { useDispatch, useSelector } from "react-redux";
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip, Sector } from 'recharts';
 import { Plus, Edit2, Trash2, Check, X } from 'react-feather';
+import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip as ChartTooltip, Legend as ChartLegend } from 'chart.js';
+import { Bar } from 'react-chartjs-2';
+
+// Register ChartJS components
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  ChartTooltip,
+  ChartLegend
+);
 
 const Dashboard = () => {
   const { sidebarOpen, toggleSidebar } = useSidebar();
@@ -27,6 +39,7 @@ const Dashboard = () => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [newTodo, setNewTodo] = useState({ title: '', description: '' });
   const [editingTodo, setEditingTodo] = useState(null);
+  const [attendanceByDay, setAttendanceByDay] = useState([]);
 
 
 
@@ -40,12 +53,14 @@ const Dashboard = () => {
 
   // Group attendance by day
   const getAttendanceByDay = () => {
-    if (!dailyAttendance) return [];
+    if (!dailyAttendance || !Array.isArray(dailyAttendance)) return [];
     
     // Create an object to store attendance by day
     const attendanceByDay = {};
     
     dailyAttendance.forEach(record => {
+      if (!record || !record.date) return;
+      
       const date = new Date(record.date);
       const day = date.getDate();
       
@@ -58,8 +73,10 @@ const Dashboard = () => {
         };
       }
       
-      attendanceByDay[day][record.status]++;
-      attendanceByDay[day].total++;
+      if (record.status) {
+        attendanceByDay[day][record.status]++;
+        attendanceByDay[day].total++;
+      }
     });
 
     // Convert to array and sort by day
@@ -71,7 +88,14 @@ const Dashboard = () => {
       .sort((a, b) => a.day - b.day);
   };
 
-  const attendanceByDay = getAttendanceByDay();
+  useEffect(() => {
+    const attendanceData = getAttendanceByDay();
+    setAttendanceByDay(attendanceData);
+    console.log("Raw Attendance Data:", dailyAttendance);
+    console.log("Processed Attendance Data:", attendanceData);
+    console.log("Current Month:", currentMonth);
+    console.log("Current Year:", currentYear);
+  }, [dailyAttendance, currentMonth, currentYear]);
 
   // Get days in current month
   const getDaysInMonth = () => {
@@ -107,6 +131,119 @@ const Dashboard = () => {
     { name: 'Classes', value: classes?.length || 0, color: '#8338EC' },
     { name: 'Books', value: books?.length || 0, color: '#38B000' }
   ];
+
+  // Prepare data for Chart.js
+  const chartData = {
+    labels: Array.from({ length: daysInMonth }, (_, i) => i + 1),
+    datasets: [
+      {
+        label: 'Present',
+        data: Array.from({ length: daysInMonth }, (_, i) => {
+          const dayData = attendanceByDay.find(d => d.day === i + 1);
+          return dayData ? dayData.present : 0;
+        }),
+        backgroundColor: 'rgba(76, 175, 80, 0.8)',
+        borderColor: 'rgba(76, 175, 80, 1)',
+        borderWidth: 1,
+        stack: 'Stack 0',
+      },
+      {
+        label: 'Absent',
+        data: Array.from({ length: daysInMonth }, (_, i) => {
+          const dayData = attendanceByDay.find(d => d.day === i + 1);
+          return dayData ? dayData.absent : 0;
+        }),
+        backgroundColor: 'rgba(244, 67, 54, 0.8)',
+        borderColor: 'rgba(244, 67, 54, 1)',
+        borderWidth: 1,
+        stack: 'Stack 0',
+      },
+      {
+        label: 'Late',
+        data: Array.from({ length: daysInMonth }, (_, i) => {
+          const dayData = attendanceByDay.find(d => d.day === i + 1);
+          return dayData ? dayData.late : 0;
+        }),
+        backgroundColor: 'rgba(255, 193, 7, 0.8)',
+        borderColor: 'rgba(255, 193, 7, 1)',
+        borderWidth: 1,
+        stack: 'Stack 0',
+      },
+    ],
+  };
+
+  const chartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        position: 'bottom',
+        labels: {
+          padding: 20,
+          font: {
+            size: 12
+          }
+        }
+      },
+      title: {
+        display: true,
+        text: `Student Attendance - ${getMonthName(currentMonth)} ${currentYear}`,
+        font: {
+          size: 16,
+          weight: 'bold'
+        }
+      },
+      tooltip: {
+        mode: 'index',
+        intersect: false,
+        callbacks: {
+          label: function(context) {
+            return `${context.dataset.label}: ${context.raw}`;
+          }
+        }
+      }
+    },
+    scales: {
+      x: {
+        stacked: true,
+        title: {
+          display: true,
+          text: 'Day of Month',
+          font: {
+            size: 12,
+            weight: 'bold'
+          }
+        },
+        grid: {
+          display: true,
+          color: 'rgba(0, 0, 0, 0.1)'
+        }
+      },
+      y: {
+        stacked: true,
+        title: {
+          display: true,
+          text: 'Number of Students',
+          font: {
+            size: 12,
+            weight: 'bold'
+          }
+        },
+        beginAtZero: true,
+        grid: {
+          display: true,
+          color: 'rgba(0, 0, 0, 0.1)'
+        }
+      },
+    },
+  };
+
+  // Debug data
+  useEffect(() => {
+    console.log('Chart Data:', chartData);
+    console.log('Attendance By Day:', attendanceByDay);
+    console.log('Days in Month:', daysInMonth);
+  }, [attendanceByDay, daysInMonth]);
 
   // Sample data for dashboard
   const stats = [
@@ -430,70 +567,10 @@ const Dashboard = () => {
               <div className="dashboard-grid">
                 <div className="dashboard-card chart-card">
                   <div className="card-header">
-                    <h2 id="chart-title">Student Attendance - {getMonthName(currentMonth)} {currentYear}</h2>
-                    {/* <div className="card-actions">
-                      <button className="card-action-button">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="16"
-                          height="16"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        >
-                          <circle cx="12" cy="12" r="1"></circle>
-                          <circle cx="19" cy="12" r="1"></circle>
-                          <circle cx="5" cy="12" r="1"></circle>
-                        </svg>
-                      </button>
-                    </div> */}
+                    <h2>Student Attendance - {getMonthName(currentMonth)} {currentYear}</h2>
                   </div>
                   <div className="chart-container">
-                    <div className="chart-placeholder">
-                      {Array.from({ length: daysInMonth }, (_, i) => i + 1).map(day => {
-                        const dayData = attendanceByDay.find(d => d.day === day) || { present: 0, absent: 0, late: 0, total: 0 };
-                        const maxHeight = Math.max(dayData.present, dayData.absent, dayData.late, 1);
-                        
-                        return (
-                          <div key={day} className="chart-day">
-                            <div className="chart-bars">
-                              {dayData.present > 0 && (
-                                <div 
-                                  className="chart-bar present" 
-                                  style={{ 
-                                    height: `${(dayData.present / maxHeight) * 200}px`
-                                  }}
-                                />
-                              )}
-                              {dayData.absent > 0 && (
-                                <div 
-                                  className="chart-bar absent" 
-                                  style={{ 
-                                    height: `${(dayData.absent / maxHeight) * 200}px`
-                                  }}
-                                />
-                              )}
-                              {dayData.late > 0 && (
-                                <div 
-                                  className="chart-bar late" 
-                                  style={{ 
-                                    height: `${(dayData.late / maxHeight) * 200}px`
-                                  }}
-                                />
-                              )}
-                            </div>
-                            <span className="chart-day-label">{day}</span>
-                          </div>
-                        );
-                      })}
-                    </div>
-                    <div className="chart-legend">
-                    
-                 
-                    </div>
+                    <Bar data={chartData} options={chartOptions} />
                   </div>
                 </div>
 
