@@ -235,7 +235,7 @@ const ViewStudentAttendance = () => {
                 onChange={handleYearChange}
                 className="filter-input"
               >
-                {Array.from({ length: 5 }, (_, i) => {
+                {Array.from({ length: 1 }, (_, i) => {
                   const year = new Date().getFullYear() - i;
                   return (
                     <option key={year} value={year}>
