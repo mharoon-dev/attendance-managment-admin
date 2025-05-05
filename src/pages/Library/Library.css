@@ -93,6 +93,7 @@
 .library-toolbar {
   display: flex;
   flex-wrap: wrap;
+  justify-content: flex-end;
   gap: 1rem;
   margin-bottom: 2rem;
   background-color: white;
@@ -742,23 +743,20 @@
 .books-table th,
 .books-table td {
   padding: 1.1rem 1.2rem;
-  text-align: left;
+  text-align: center !important;
   border-bottom: 1px solid #e3e8ee;
   white-space: nowrap;
   transition: background 0.2s;
 }
 
 .books-table th {
-  background: #e3f0ff;
   font-weight: 700;
-  color: #2563eb;
   text-transform: uppercase;
   font-size: 0.95rem;
   letter-spacing: 0.07em;
   position: sticky;
   top: 0;
   z-index: 2;
-  border-bottom: 2px solid #b6d0f7;
 }
 
 .books-table tr {
@@ -774,7 +772,6 @@
 }
 
 .books-table tr:hover {
-  background: #e3f0ff !important;
   box-shadow: 0 2px 12px rgba(74, 144, 226, 0.08);
 }
 

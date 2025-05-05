@@ -74,18 +74,12 @@ const Students = () => {
     console.log(formData);
   }, [formData]);
 
-  const grades = [
-    { value: 'all', label: 'All Grades', icon: <BusinessIcon /> },
-    { value: '10', label: 'Grade 10', icon: <BusinessIcon /> },
-    { value: '11', label: 'Grade 11', icon: <BusinessIcon /> },
-    { value: '12', label: 'Grade 12', icon: <BusinessIcon /> }
-  ];
+
 
   const genderOptions = [
-    { value: 'all', label: 'All Genders', icon: <PersonIcon /> },
-    { value: 'Male', label: 'Male', icon: <PersonIcon /> },
-    { value: 'Female', label: 'Female', icon: <PersonIcon /> },
-    { value: 'Other', label: 'Other', icon: <PersonIcon /> }
+    { value: 'all', label: 'تمام جنس', icon: <PersonIcon /> },
+    { value: 'Male', label: 'آدمی', icon: <PersonIcon /> },
+    { value: 'Female', label: 'عورت', icon: <PersonIcon /> },
   ];
 
   const sortOptions = [
@@ -344,7 +338,6 @@ const Students = () => {
 
         <div className={`students-container ${!sidebarOpen ? 'sidebar-closed' : ''}`}>
           <div className="students-header">
-            <h1>تمام طلباء</h1>
             {
               (user.role === "admin" || user.role === "superAdmin") && (
                 <button className="add-student-btn" onClick={() => navigate('/students/add')}>
@@ -352,6 +345,7 @@ const Students = () => {
                 </button>
               )
             }
+            <h1>تمام طلباء</h1>
           </div>
 
           <div className="toolbar">

@@ -199,7 +199,8 @@ const AddTeacher = () => {
       
       <div className={`add-teacher-container ${!sidebarOpen ? 'sidebar-closed' : ''}`}>
         <div className="add-teacher-header">
-          <h1>Add New Teacher</h1>
+          <h1>نیااستاد شامل کریں
+          </h1>
           <button className="cancel-btn" onClick={() => navigate('/teachers')}>
             <CloseIcon /> Cancel
           </button>

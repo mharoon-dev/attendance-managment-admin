@@ -1,4 +1,4 @@
-import React, {  useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Navbar from "../../components/Navbar/Navbar";
 import Sidebar from "../../components/Sidebar/Sidebar";
 import Loader from "../../components/Loader/Loader";
@@ -12,6 +12,8 @@ import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip, Sector } fro
 import { Plus, Edit2, Trash2, Check, X } from 'react-feather';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip as ChartTooltip, Legend as ChartLegend } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
+import { addTodoSuccess, deleteTodoSuccess, getTodosFailure, getTodosStart, getTodosSuccess, updateTodoSuccess, } from "../../redux/slices/todoSlice.jsx";
+
 
 // Register ChartJS components
 ChartJS.register(
@@ -41,7 +43,31 @@ const Dashboard = () => {
   const [editingTodo, setEditingTodo] = useState(null);
   const [attendanceByDay, setAttendanceByDay] = useState([]);
 
+  // Set current month and year when component mounts
+  useEffect(() => {
+    const today = new Date();
+    setCurrentMonth(today.getMonth() + 1); // getMonth() returns 0-11
+    setCurrentYear(today.getFullYear());
+  }, []);
 
+  // Fetch attendance data when month or year changes
+  useEffect(() => {
+    const fetchAttendanceData = async () => {
+      if (!currentMonth || !currentYear) return;
+
+      try {
+        setLoading(true);
+        const response = await api.get(`attendance/students/get/month?month=${currentMonth}&year=${currentYear}`);
+        dispatch({ type: 'SET_DAILY_ATTENDANCE', payload: response.data.data });
+      } catch (error) {
+        console.error("Error fetching attendance data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchAttendanceData();
+  }, [currentMonth, currentYear, dispatch]);
 
   // Calculate attendance statistics
   const attendanceStats = {
@@ -54,16 +80,16 @@ const Dashboard = () => {
   // Group attendance by day
   const getAttendanceByDay = () => {
     if (!dailyAttendance || !Array.isArray(dailyAttendance)) return [];
-    
+
     // Create an object to store attendance by day
     const attendanceByDay = {};
-    
+
     dailyAttendance.forEach(record => {
       if (!record || !record.date) return;
-      
+
       const date = new Date(record.date);
       const day = date.getDate();
-      
+
       if (!attendanceByDay[day]) {
         attendanceByDay[day] = {
           present: 0,
@@ -72,7 +98,7 @@ const Dashboard = () => {
           total: 0
         };
       }
-      
+
       if (record.status) {
         attendanceByDay[day][record.status]++;
         attendanceByDay[day].total++;
@@ -187,7 +213,7 @@ const Dashboard = () => {
       },
       title: {
         display: true,
-        text: `Student Attendance - ${getMonthName(currentMonth)} ${currentYear}`,
+        text: `طلباء کی حاضری - ${getMonthName(currentMonth)} ${currentYear}`,
         font: {
           size: 16,
           weight: 'bold'
@@ -197,7 +223,7 @@ const Dashboard = () => {
         mode: 'index',
         intersect: false,
         callbacks: {
-          label: function(context) {
+          label: function (context) {
             return `${context.dataset.label}: ${context.raw}`;
           }
         }
@@ -208,7 +234,7 @@ const Dashboard = () => {
         stacked: true,
         title: {
           display: true,
-          text: 'Day of Month',
+          text: 'مہینے کا دن',
           font: {
             size: 12,
             weight: 'bold'
@@ -223,7 +249,7 @@ const Dashboard = () => {
         stacked: true,
         title: {
           display: true,
-          text: 'Number of Students',
+          text: 'طلباء کی تعداد',
           font: {
             size: 12,
             weight: 'bold'
@@ -249,7 +275,7 @@ const Dashboard = () => {
   const stats = [
     {
       id: 1,
-      title: "Total Students",
+      title: "کل طلباء",
       value: students?.length,
       icon: (
         <svg
@@ -273,7 +299,7 @@ const Dashboard = () => {
     },
     {
       id: 2,
-      title: "Total Teachers",
+      title: "کل اساتذہ",
       value: teachers?.length,
       icon: (
         <svg
@@ -295,7 +321,7 @@ const Dashboard = () => {
     },
     {
       id: 3,
-      title: "Total Classes",
+      title: "کل کلاسیں",
       value: classes?.length,
       icon: (
         <svg
@@ -317,7 +343,7 @@ const Dashboard = () => {
     },
     {
       id: 4,
-      title: "Total Books",
+      title: "کل کتب",
       value: books?.length,
       icon: (
         <svg
@@ -452,7 +478,7 @@ const Dashboard = () => {
           <p style={{ margin: '5px 0 0 0', color: '#666' }}>
             Count: {payload[0].value}
           </p>
-       
+
         </div>
       );
     }
@@ -496,11 +522,11 @@ const Dashboard = () => {
         <Sidebar isOpen={sidebarOpen} toggleSidebar={toggleSidebar} />
         <div className={`main-content ${!sidebarOpen ? 'sidebar-closed' : ''}`}>
           {loading ? (
-            <Loader variant="ripple" color="#3A86FF" text="Loading dashboard..." />
+            <Loader variant="ripple" color="#3A86FF" text="ڈیش بورڈ لوڈ ہو رہا ہے..." />
           ) : (
             <>
               <div className="dashboard-header">
-                <h1>Dashboard</h1>
+                <h1>ڈیش بورڈ</h1>
                 <div className="date-display">
                   <span className="month-year">
                     {getMonthName(currentMonth)} {currentYear}
@@ -524,40 +550,6 @@ const Dashboard = () => {
                       <h3 className="stat-title">{stat.title}</h3>
                       <div className="stat-value-container">
                         <p className="stat-value">{stat.value}</p>
-                        {/* <span className={`stat-change ${stat.trend}`}>
-                          {stat.change}
-                          {stat.trend === "up" ? (
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              width="16"
-                              height="16"
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              stroke="currentColor"
-                              strokeWidth="2"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            >
-                              <line x1="12" y1="19" x2="12" y2="5"></line>
-                              <polyline points="5 12 12 5 19 12"></polyline>
-                            </svg>
-                          ) : (
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              width="16"
-                              height="16"
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              stroke="currentColor"
-                              strokeWidth="2"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            >
-                              <line x1="12" y1="5" x2="12" y2="19"></line>
-                              <polyline points="19 12 12 19 5 12"></polyline>
-                            </svg>
-                          )}
-                        </span> */}
                       </div>
                     </div>
                   </div>
@@ -567,7 +559,7 @@ const Dashboard = () => {
               <div className="dashboard-grid">
                 <div className="dashboard-card chart-card">
                   <div className="card-header">
-                    <h2>Student Attendance - {getMonthName(currentMonth)} {currentYear}</h2>
+                    <h2>طلباء کی حاضری - {getMonthName(currentMonth)} {currentYear}</h2>
                   </div>
                   <div className="chart-container">
                     <Bar data={chartData} options={chartOptions} />
@@ -576,7 +568,7 @@ const Dashboard = () => {
 
                 <div className="dashboard-card activity-card">
                   <div className="card-header">
-                    <h2>Distribution Overview</h2>
+                    <h2>تقسیم کا جائزہ</h2>
                   </div>
                   <div className="pie-chart-container">
                     <ResponsiveContainer width="100%" height={290}>
@@ -597,8 +589,8 @@ const Dashboard = () => {
                           animationEasing="ease-out"
                         >
                           {pieChartData.map((entry, index) => (
-                            <Cell 
-                              key={`cell-${index}`} 
+                            <Cell
+                              key={`cell-${index}`}
                               fill={entry.color}
                               stroke="#fff"
                               strokeWidth={2}
@@ -611,127 +603,27 @@ const Dashboard = () => {
                             layout="vertical"
                             align="right"
                             verticalAlign="middle"
-                          wrapperStyle={{
-                            paddingLeft: '20px'
-                          }}
+                            wrapperStyle={{
+                              paddingLeft: '20px'
+                            }}
                           />
                         )}
                       </PieChart>
                     </ResponsiveContainer>
                   </div>
                 </div>
-
-                {/* <div className="dashboard-card events-card">
-                  <div className="card-header">
-                    <h2>Upcoming Events</h2>
-                    <button className="view-all-button">View All</button>
-                  </div>
-                  <div className="events-list">
-                    {upcomingEvents.map((event) => (
-                      <div key={event.id} className="event-item">
-                        <div
-                          className="event-icon"
-                          style={{
-                            backgroundColor:
-                              event.type === "event"
-                                ? "#3A86FF15"
-                                : event.type === "meeting"
-                                ? "#FF006E15"
-                                : event.type === "exam"
-                                ? "#8338EC15"
-                                : "#38B00015",
-                            color:
-                              event.type === "event"
-                                ? "#3A86FF"
-                                : event.type === "meeting"
-                                ? "#FF006E"
-                                : event.type === "exam"
-                                ? "#8338EC"
-                                : "#38B000",
-                          }}
-                        >
-                          {event.type === "event" ? (
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              width="16"
-                              height="16"
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              stroke="currentColor"
-                              strokeWidth="2"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            >
-                              <rect
-                                x="3"
-                                y="4"
-                                width="18"
-                                height="18"
-                                rx="2"
-                                ry="2"
-                              ></rect>
-                              <line x1="16" y1="2" x2="16" y2="6"></line>
-                              <line x1="8" y1="2" x2="8" y2="6"></line>
-                              <line x1="3" y1="10" x2="21" y2="10"></line>
-                            </svg>
-                          ) : event.type === "meeting" ? (
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              width="16"
-                              height="16"
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              stroke="currentColor"
-                              strokeWidth="2"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            >
-                              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                              <circle cx="9" cy="7" r="4"></circle>
-                              <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-                              <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-                            </svg>
-                          ) : (
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              width="16"
-                              height="16"
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              stroke="currentColor"
-                              strokeWidth="2"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            >
-                              <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
-                              <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
-                            </svg>
-                          )}
-                        </div>
-                        <div className="event-content">
-                          <h3 className="event-title">{event.title}</h3>
-                          <div className="event-details">
-                            <span className="event-date">{event.date}</span>
-                            <span className="event-time">{event.time}</span>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div> */}
               </div>
 
-              {/* Todo Section */}
               <div className="todo-section">
                 <div className="todo-header">
-                  <h2>Todo List</h2>
+                  <h2>ٹوڈو فہرست</h2>
                   <div className="todo-stats">
-                    <span className="total-todos">Total: {todos?.length || 0}</span>
+                    <span className="total-todos">کل: {todos?.length || 0}</span>
                     <span className="completed-todos">
-                      Completed: {todos?.filter(todo => todo.completed).length || 0}
+                      مکمل: {todos?.filter(todo => todo.completed).length || 0}
                     </span>
                     <span className="pending-todos">
-                      Pending: {todos?.filter(todo => !todo.completed).length || 0}
+                      زیر التوا: {todos?.filter(todo => !todo.completed).length || 0}
                     </span>
                   </div>
                 </div>
@@ -740,14 +632,14 @@ const Dashboard = () => {
                   <div className="form-group">
                     <input
                       type="text"
-                      placeholder="Enter todo title"
+                      placeholder="ٹوڈو کا عنوان درج کریں"
                       value={newTodo.title}
                       onChange={(e) => setNewTodo({ ...newTodo, title: e.target.value })}
                       required
                     />
                     <input
                       type="text"
-                      placeholder="Enter todo description"
+                      placeholder="ٹوڈو کی تفصیل درج کریں"
                       value={newTodo.description}
                       onChange={(e) => setNewTodo({ ...newTodo, description: e.target.value })}
                       required
@@ -755,7 +647,7 @@ const Dashboard = () => {
                   </div>
                   <button type="submit" className="add-todo-button">
                     <Plus size={16} />
-                    Add Todo
+                    ٹوڈو شامل کریں
                   </button>
                 </form>
 
@@ -769,23 +661,23 @@ const Dashboard = () => {
                               type="text"
                               value={editingTodo.title}
                               onChange={(e) => setEditingTodo({ ...editingTodo, title: e.target.value })}
-                              placeholder="Edit title"
+                              placeholder="عنوان میں ترمیم کریں"
                             />
                             <input
                               type="text"
                               value={editingTodo.description}
                               onChange={(e) => setEditingTodo({ ...editingTodo, description: e.target.value })}
-                              placeholder="Edit description"
+                              placeholder="تفصیل میں ترمیم کریں"
                             />
                           </div>
                           <div className="button-group">
                             <button onClick={() => handleUpdateTodo(todo._id, editingTodo)} className="save-button">
                               <Check size={14} />
-                              Save
+                              محفوظ کریں
                             </button>
                             <button onClick={() => setEditingTodo(null)} className="cancel-button">
                               <X size={14} />
-                              Cancel
+                              منسوخ کریں
                             </button>
                           </div>
                         </div>
@@ -797,24 +689,24 @@ const Dashboard = () => {
                               <p>{todo.description}</p>
                             </div>
                             <div className="todo-actions">
-                              <button 
+                              <button
                                 onClick={() => setEditingTodo(todo)}
                                 className="edit-button"
-                                title="Edit"
+                                title="ترمیم"
                               >
-                                <EditIcon  />
+                                <EditIcon />
                               </button>
-                              <button 
+                              <button
                                 onClick={() => handleDeleteTodo(todo._id)}
                                 className="delete-button"
-                                title="Delete"
+                                title="حذف کریں"
                               >
                                 <DeleteIcon />
                               </button>
                               <button
                                 onClick={() => handleUpdateTodo(todo._id, { ...todo, completed: !todo.completed })}
                                 className={`complete-button ${todo.completed ? 'completed' : ''}`}
-                                title={todo.completed ? 'Mark Incomplete' : 'Mark Complete'}
+                                title={todo.completed ? 'نامکمل کریں' : 'مکمل کریں'}
                               >
                                 <Check size={14} />
                               </button>
@@ -822,7 +714,7 @@ const Dashboard = () => {
                           </div>
                           <div className="todo-status">
                             <span className={`status-badge ${todo.completed ? 'completed' : 'pending'}`}>
-                              {todo.completed ? 'Completed' : 'Pending'}
+                              {todo.completed ? 'مکمل' : 'زیر التوا'}
                             </span>
                           </div>
                         </>

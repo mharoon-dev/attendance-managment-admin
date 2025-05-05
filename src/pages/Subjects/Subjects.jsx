@@ -215,17 +215,17 @@ const Subjects = () => {
           }`}
         >
           <div className="subjects-header">
-            <h1>تمام مضامین</h1>
             {
               (user.role === "admin" || user.role === "superAdmin") && (
                 <button
-                  className="add-subject-btn"
-                  onClick={() => navigate("/subjects/add")}
+                className="add-subject-btn"
+                onClick={() => navigate("/subjects/add")}
                 >
                   <AddIcon /> نیا مضمون شامل کریں
                 </button>
               )
             }
+            <h1>تمام مضامین</h1>
           </div>
 
           <div className="toolbar">

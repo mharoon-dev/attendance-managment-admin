@@ -638,7 +638,7 @@
 .students-table th,
 .students-table td {
   padding: 1rem;
-  text-align: left;
+  text-align: center !important;
   border-bottom: 1px solid #e5e7eb;
 }
 

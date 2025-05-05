@@ -186,8 +186,8 @@ textarea:focus {
   color: #4b5563;
   border: none;
   border-radius: 8px;
-  font-weight: 500;
   cursor: pointer;
+  font-size: 1.2rem;
   transition: all 0.2s ease;
   align-self: flex-start;
 }
@@ -216,7 +216,7 @@ textarea:focus {
   color: #4b5563;
   border: none;
   border-radius: 8px;
-  font-weight: 500;
+  font-size: 1.2rem;
   cursor: pointer;
   transition: all 0.2s ease;
 }
@@ -270,7 +270,7 @@ textarea:focus {
   .add-class-container {
     padding: 1.5rem;
   }
-  
+
   .form-row {
     gap: 1rem;
   }
@@ -282,22 +282,23 @@ textarea:focus {
     width: 100%;
     padding: 1rem;
   }
-  
+
   .add-class-content {
     padding: 1.5rem;
   }
-  
+
   .form-row {
     grid-template-columns: 1fr;
     gap: 1rem;
   }
-  
+
   .form-actions {
     flex-direction: column-reverse;
     gap: 0.75rem;
   }
-  
-  .cancel-btn, .save-btn {
+
+  .cancel-btn,
+  .save-btn {
     width: 100%;
     justify-content: center;
   }
@@ -307,22 +308,22 @@ textarea:focus {
   .add-class-container {
     padding: 0.75rem;
   }
-  
+
   .add-class-content {
     padding: 1rem;
   }
-  
+
   .add-class-header {
     flex-direction: column;
     align-items: flex-start;
     gap: 1rem;
   }
-  
+
   .add-class-header h1 {
     font-size: 1.5rem;
   }
-  
+
   .form-section h2 {
     font-size: 1.1rem;
   }
-} 
+}

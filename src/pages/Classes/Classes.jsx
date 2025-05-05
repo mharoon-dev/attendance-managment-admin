@@ -56,7 +56,7 @@ const Classes = () => {
   
   // Create grade options with proper formatting
   const gradeOptions = [
-    { value: 'all', label: 'All Grades', icon: <BusinessIcon /> },
+    { value: 'all', label: 'تمام گریڈ', icon: <BusinessIcon /> },
     ...uniqueGrades.map(grade => ({
       value: grade.toString(),
       label: `Grade ${grade}`,
@@ -236,7 +236,6 @@ const Classes = () => {
       
       <div className={`classes-container ${!sidebarOpen ? 'sidebar-closed' : ''}`}>
         <div className="classes-header">
-          <h1>تمام کلاسیں</h1>
           {
             (user.role === "admin" || user.role === "superAdmin") && (
               <button className="add-class-btn" onClick={() => navigate('/classes/add')}>
@@ -244,6 +243,7 @@ const Classes = () => {
               </button>
             )
           }
+          <h1>تمام کلاسیں</h1>
         </div>
 
         <div className="toolbar">
@@ -263,7 +263,7 @@ const Classes = () => {
               <CustomDropdown
                 compact
                 icon={<BusinessIcon />}
-                label="گریڈ"
+                // label="گریڈ"
                 value={selectedGrade}
                 onChange={(value) => setSelectedGrade(value)}
                 options={gradeOptions}

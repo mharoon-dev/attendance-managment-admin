@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@400;700&display=swap');
+
 * {
   margin: 0;
   padding: 0;
@@ -44,7 +46,7 @@ article {
 }
 
 body {
-  font-family: "Poppins", sans-serif;
+  font-family: "Poppins", "Noto Nastaliq Urdu", sans-serif !important;
 }
 
 a {
@@ -62,8 +64,6 @@ video {
   max-width: 100%;
 }
 
-
-
 .back-button {
   display: flex;
   align-items: center;
@@ -80,4 +80,10 @@ video {
 .back-button:hover {
   background-color: #4338ca;
   transform: translateX(-5px);
+}
+
+.urdu-text {
+  font-family: "Noto Nastaliq Urdu", serif;
+  direction: rtl;
+  text-align: right;
 }
