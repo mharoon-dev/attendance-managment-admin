@@ -44,196 +44,166 @@ const StudentProfile = () => {
     }
   }, [student]);
 
-  const generatePDF = () => {
-    // Create new PDF document
-    const doc = new jsPDF({
-      orientation: 'portrait',
-      unit: 'mm',
-      format: 'a4'
-    });
-
-    // Define constants
+  const generatePDF = async () => {
+    const doc = new jsPDF();
     const pageWidth = doc.internal.pageSize.getWidth();
-    const pageHeight = doc.internal.pageSize.getHeight();
-    const margin = 15;
-    let yPos = 15;
+    let y = 20;
 
-    // Define colors - Green theme
-    const primaryColor = [44, 139, 59]; // RGB for #2c8b3b
-    const secondaryColor = [102, 102, 102];
-    
-    // Add logo on the left
     try {
-      doc.addImage('/assets/logo.png', 'PNG', margin, 8, 25, 25, undefined, 'FAST');
-    } catch (error) {
-      console.error('Error adding logo:', error);
-      // Fallback: Create colored rectangle if image fails to load
-      doc.setFillColor(primaryColor[0], primaryColor[1], primaryColor[2]);
-      doc.rect(margin, 8, 25, 25, 'F');
-    }
-
-    // Add profile image on the right
-    if (student.profileImage) {
-      try {
-        // Position the profile image on the right side
-        const profileImageSize = 25; // Same size as logo
-        const profileImageX = pageWidth - margin - profileImageSize; // Right aligned
-        
-        doc.addImage(
-          student.profileImage,
-          'PNG',
-          profileImageX, // X position from right
-          8, // Same Y position as logo
-          profileImageSize, // Width
-          profileImageSize, // Height
-          undefined,
-          'FAST'
-        );
-      } catch (error) {
-        console.error('Error adding profile image:', error);
-      }
-    }
-
-    // Add school name and address (centered between logo and profile image)
-    doc.setTextColor(primaryColor[0], primaryColor[1], primaryColor[2]);
-    doc.setFontSize(16);
-    doc.setFont('helvetica', 'bold');
-    doc.text('Jamia Fatima tul zahra', margin + 35, 15);
-    
-    // Add registration number and address
-    doc.setTextColor(secondaryColor[0], secondaryColor[1], secondaryColor[2]);
-    doc.setFontSize(10);
-    doc.setFont('helvetica', 'normal');
-    doc.text([
-      'Reg No: 9879349493',
-      'Address: piplaan miyanwale'
-    ], margin + 35, 23);
-
-    // Add horizontal line
-    yPos = 40;
-    doc.setDrawColor(primaryColor[0], primaryColor[1], primaryColor[2]);
-    doc.setLineWidth(0.5);
-    doc.line(margin, yPos, pageWidth - margin, yPos);
-
-    // Helper function to create table
-    const createTable = (headers, data, startY) => {
-      const cellPadding = 2;
-      const lineHeight = 7;
-      const colWidth = (pageWidth - 2 * margin) / headers.length;
-      
-      // Draw headers with green color
-      doc.setFillColor(primaryColor[0], primaryColor[1], primaryColor[2]);
-      doc.rect(margin, startY, pageWidth - 2 * margin, lineHeight, 'F');
-      doc.setTextColor(255, 255, 255);
-      doc.setFont('helvetica', 'bold');
-      doc.setFontSize(10);
-      
-      headers.forEach((header, i) => {
-        doc.text(header, margin + (i * colWidth) + cellPadding, startY + lineHeight - 2);
+      // --- HEADER ---
+      // Logo
+      const logoUrl = '/assets/logo.png';
+      const logoResponse = await fetch(logoUrl);
+      const logoBlob = await logoResponse.blob();
+      const logoDataUrl = await new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result);
+        reader.readAsDataURL(logoBlob);
       });
+      doc.addImage(logoDataUrl, 'PNG', 20, y, 30, 30);
 
-      // Draw data
-      let currentY = startY + lineHeight;
-      doc.setTextColor(0, 0, 0);
-      doc.setFont('helvetica', 'normal');
-      
-      data.forEach((row, rowIndex) => {
-        if (rowIndex % 2 === 1) {
-          // Light green for alternate rows
-          doc.setFillColor(240, 247, 241);
-          doc.rect(margin, currentY, pageWidth - 2 * margin, lineHeight, 'F');
+      // Add student profile image on the right
+      if (student?.profileImage) {
+        try {
+          const profileResponse = await fetch(student.profileImage);
+          const profileBlob = await profileResponse.blob();
+          const profileDataUrl = await new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.onloadend = () => resolve(reader.result);
+            reader.readAsDataURL(profileBlob);
+          });
+          doc.addImage(profileDataUrl, 'JPEG', pageWidth - 50, y, 30, 30);
+        } catch (error) {
+          console.error('Error loading profile image:', error);
         }
-        
-        row.forEach((cell, i) => {
-          const cellText = cell ? cell.toString() : 'N/A';
-          doc.text(cellText, margin + (i * colWidth) + cellPadding, currentY + lineHeight - 2);
-        });
-        currentY += lineHeight;
+      }
+
+      // School Name and Info
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(22);
+      doc.setTextColor(34, 139, 34); // green
+      doc.text('Jamia Fatima tul zahra', 60, y + 10);
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(12);
+      doc.setTextColor(100, 100, 100);
+      doc.text('Reg No: 9879349493', 60, y + 18);
+      doc.text('Address: piplaan miyanwale', 60, y + 25);
+
+      // Green horizontal line
+      y += 38;
+      doc.setDrawColor(34, 139, 34);
+      doc.setLineWidth(1.2);
+      doc.line(20, y, pageWidth - 20, y);
+
+      // --- TITLE ---
+      y += 15;
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(16);
+      doc.setTextColor(34, 139, 34);
+      doc.text('STUDENT PROFILE', pageWidth / 2, y, { align: 'center' });
+
+      // --- SECTION: Personal Information ---
+      y += 15;
+      doc.setFontSize(13);
+      doc.setTextColor(34, 139, 34);
+      doc.text('Personal Information', 20, y);
+      y += 5;
+      // Table header
+      doc.setFillColor(34, 139, 34);
+      doc.setTextColor(255, 255, 255);
+      doc.rect(20, y, pageWidth - 40, 9, 'F');
+      doc.setFontSize(12);
+      doc.text('Field', 25, y + 6);
+      doc.text('Details', 80, y + 6);
+      y += 9;
+      // Table rows
+      const personalInfo = [
+        ['Full Name', String(student?.fullName || 'N/A')],
+        ['Date of Birth', student?.dateOfBirth ? new Date(student.dateOfBirth).toLocaleDateString() : 'N/A'],
+        ['Gender', String(student?.gender || 'N/A')],
+        ['Phone Number', String(student?.phoneNumber || 'N/A')],
+        ['Address', String(student?.fullAddress || 'N/A')]
+      ];
+      personalInfo.forEach(([field, value], idx) => {
+        doc.setFillColor(idx % 2 === 0 ? 255 : 240, 255, 240); // alternate row color
+        doc.rect(20, y, pageWidth - 40, 9, 'F');
+        doc.setTextColor(0, 0, 0);
+        doc.text(field, 25, y + 6);
+        doc.text(String(value), 80, y + 6);
+        y += 9;
       });
 
-      return currentY + 3;
-    };
+      // --- SECTION: Parent Information ---
+      y += 7;
+      doc.setFontSize(13);
+      doc.setTextColor(34, 139, 34);
+      doc.text('Parent Information', 20, y);
+      y += 5;
+      // Table header
+      doc.setFillColor(34, 139, 34);
+      doc.setTextColor(255, 255, 255);
+      doc.rect(20, y, pageWidth - 40, 9, 'F');
+      doc.setFontSize(12);
+      doc.text('Field', 25, y + 6);
+      doc.text('Details', 80, y + 6);
+      y += 9;
+      // Table rows
+      const parentInfo = [
+        ['Parent Name', String(student?.parentDetails?.fullName || 'N/A')],
+        ['Date of Birth', student?.parentDetails?.dateOfBirth ? new Date(student.parentDetails.dateOfBirth).toLocaleDateString() : 'N/A'],
+        ['Gender', String(student?.parentDetails?.gender || 'N/A')],
+        ['Phone Number', String(student?.parentDetails?.phoneNumber || 'N/A')],
+        ['Education', String(student?.parentDetails?.education || 'N/A')],
+        ['Profession', String(student?.parentDetails?.profession || 'N/A')]
+      ];
+      parentInfo.forEach(([field, value], idx) => {
+        doc.setFillColor(idx % 2 === 0 ? 255 : 240, 255, 240); // alternate row color
+        doc.rect(20, y, pageWidth - 40, 9, 'F');
+        doc.setTextColor(0, 0, 0);
+        doc.text(field, 25, y + 6);
+        doc.text(String(value), 80, y + 6);
+        y += 9;
+      });
 
-    // Add title
-    yPos += 8;
-    doc.setTextColor(primaryColor[0], primaryColor[1], primaryColor[2]);
-    doc.setFontSize(14);
-    doc.setFont('helvetica', 'bold');
-    doc.text('STUDENT PROFILE', pageWidth / 2, yPos, { align: 'center' });
-    yPos += 10;
+      // --- SECTION: Academic Information ---
+      y += 7;
+      doc.setFontSize(13);
+      doc.setTextColor(34, 139, 34);
+      doc.text('Academic Information', 20, y);
+      y += 5;
+      // Table header
+      doc.setFillColor(34, 139, 34);
+      doc.setTextColor(255, 255, 255);
+      doc.rect(20, y, pageWidth - 40, 9, 'F');
+      doc.setFontSize(12);
+      doc.text('Field', 25, y + 6);
+      doc.text('Details', 80, y + 6);
+      y += 9;
+      // Table rows
+      const schoolInfo = [
+        ['Roll Number', String(student?.schoolDetails?.rollNumber || 'N/A')],
+        ['Grade', String(student?.grade || 'N/A')],
+        ['Joining Date', student?.schoolDetails?.joiningDate ? new Date(student.schoolDetails.joiningDate).toLocaleDateString() : 'N/A'],
+        ['Previous Institute', String(student?.schoolDetails?.previousInstitute || 'N/A')]
+      ];
+      schoolInfo.forEach(([field, value], idx) => {
+        doc.setFillColor(idx % 2 === 0 ? 255 : 240, 255, 240); // alternate row color
+        doc.rect(20, y, pageWidth - 40, 9, 'F');
+        doc.setTextColor(0, 0, 0);
+        doc.text(field, 25, y + 6);
+        doc.text(String(value), 80, y + 6);
+        y += 9;
+      });
 
-    // Personal Information Table
-    doc.setFontSize(12);
-    doc.setTextColor(primaryColor[0], primaryColor[1], primaryColor[2]);
-    doc.setFont('helvetica', 'normal');
-    doc.text('Personal Information', margin, yPos);
-    yPos += 7;
-    
-    const personalHeaders = ['Field', 'Details'];
-    const personalData = [
-      ['Full Name', student.fullName || 'N/A'],
-      ['Date of Birth', student.dateOfBirth ? new Date(student.dateOfBirth).toLocaleDateString() : 'N/A'],
-      ['Gender', student.gender || 'N/A'],
-      ['Phone Number', student.phoneNumber || 'N/A'],
-      ['Address', student.fullAddress || 'N/A']
-    ];
-    yPos = createTable(personalHeaders, personalData, yPos);
-
-    // Parent Information Table
-    yPos += 7;
-    doc.setTextColor(primaryColor[0], primaryColor[1], primaryColor[2]);
-    doc.setFontSize(12);
-    doc.setFont('helvetica', 'normal');
-    doc.text('Parent Information', margin, yPos);
-    yPos += 7;
-
-    const parentHeaders = ['Field', 'Details'];
-    const parentData = [
-      ['Parent Name', student.parentDetails?.fullName || 'N/A'],
-      ['Date of Birth', student.parentDetails?.dateOfBirth ? new Date(student.parentDetails.dateOfBirth).toLocaleDateString() : 'N/A'],
-      ['Gender', student.parentDetails?.gender || 'N/A'],
-      ['Phone Number', student.parentDetails?.phoneNumber || 'N/A'],
-      ['Education', student.parentDetails?.education || 'N/A'],
-      ['Profession', student.parentDetails?.profession || 'N/A']
-    ];
-    yPos = createTable(parentHeaders, parentData, yPos);
-
-    // Academic Information Table
-    yPos += 7;
-    doc.setTextColor(primaryColor[0], primaryColor[1], primaryColor[2]);
-    doc.setFontSize(12);
-    doc.setFont('helvetica', 'normal');
-    doc.text('Academic Information', margin, yPos);
-    yPos += 7;
-
-    const academicHeaders = ['Field', 'Details'];
-    const academicData = [
-      ['Roll Number', student.schoolDetails?.rollNumber || 'N/A'],
-      ['Grade', student.grade || 'N/A'],
-      ['Joining Date', student.schoolDetails?.joiningDate ? 
-          new Date(student.schoolDetails.joiningDate).toLocaleDateString() : 'N/A'],
-      ['Previous Institute', student.schoolDetails?.previousInstitute || 'N/A']
-    ];
-    yPos = createTable(academicHeaders, academicData, yPos);
-
-    // Add footer
-    doc.setDrawColor(primaryColor[0], primaryColor[1], primaryColor[2]);
-    doc.setLineWidth(0.5);
-    doc.line(margin, pageHeight - 15, pageWidth - margin, pageHeight - 15);
-
-    doc.setTextColor(secondaryColor[0], secondaryColor[1], secondaryColor[2]);
-    doc.setFontSize(8);
-    doc.setFont('helvetica', 'italic');
-    doc.text(
-      `Generated on ${new Date().toLocaleDateString()}`,
-      pageWidth / 2,
-      pageHeight - 8,
-      { align: 'center' }
-    );
-
-    // Save the PDF
-    doc.save(`${student.fullName}_profile.pdf`);
+      // Save the PDF
+      doc.save('student_profile.pdf');
+    } catch (error) {
+      console.error('Error generating PDF:', error);
+      alert('Error generating PDF. Please try again.');
+    }
   };
+
+  
 
   const handleImageClick = (imageUrl) => {
     setSelectedImage(imageUrl);

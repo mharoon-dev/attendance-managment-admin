@@ -124,7 +124,7 @@ const MarkTeacherAttendance = () => {
       
       <div className={`mark-teacher-attendance ${!sidebarOpen ? 'sidebar-closed' : ''}`}>
         <div className="attendance-header">
-          <h1>استاد کی حاضری درج کریں</h1>
+          <h1 style={{textAlign: "end" , width: "100%"}}>استاد کی حاضری درج کریں</h1>
         </div>
 
         <div className="attendance-content">

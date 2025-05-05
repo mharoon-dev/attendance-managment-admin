@@ -526,12 +526,12 @@ const Dashboard = () => {
           ) : (
             <>
               <div className="dashboard-header">
-                <h1>ڈیش بورڈ</h1>
                 <div className="date-display">
                   <span className="month-year">
                     {getMonthName(currentMonth)} {currentYear}
                   </span>
                 </div>
+                <h1>ڈیش بورڈ</h1>
               </div>
 
               <div className="stats-grid">
@@ -616,30 +616,31 @@ const Dashboard = () => {
 
               <div className="todo-section">
                 <div className="todo-header">
-                  <h2>ٹوڈو فہرست</h2>
                   <div className="todo-stats">
                     <span className="total-todos">کل: {todos?.length || 0}</span>
                     <span className="completed-todos">
                       مکمل: {todos?.filter(todo => todo.completed).length || 0}
                     </span>
                     <span className="pending-todos">
-                      زیر التوا: {todos?.filter(todo => !todo.completed).length || 0}
+                      باقی: {todos?.filter(todo => !todo.completed).length || 0}
                     </span>
                   </div>
+                  <h2>نوٹس فہرست</h2>
+                
                 </div>
 
                 <form onSubmit={handleAddTodo} className="todo-form">
                   <div className="form-group">
                     <input
                       type="text"
-                      placeholder="ٹوڈو کا عنوان درج کریں"
+                      placeholder="نوٹس کا عنوان درج کریں"
                       value={newTodo.title}
                       onChange={(e) => setNewTodo({ ...newTodo, title: e.target.value })}
                       required
                     />
                     <input
                       type="text"
-                      placeholder="ٹوڈو کی تفصیل درج کریں"
+                      placeholder="نوٹس کی تفصیل درج کریں"
                       value={newTodo.description}
                       onChange={(e) => setNewTodo({ ...newTodo, description: e.target.value })}
                       required
@@ -647,7 +648,7 @@ const Dashboard = () => {
                   </div>
                   <button type="submit" className="add-todo-button">
                     <Plus size={16} />
-                    ٹوڈو شامل کریں
+                    نوٹس شامل کریں
                   </button>
                 </form>
 
@@ -714,7 +715,7 @@ const Dashboard = () => {
                           </div>
                           <div className="todo-status">
                             <span className={`status-badge ${todo.completed ? 'completed' : 'pending'}`}>
-                              {todo.completed ? 'مکمل' : 'زیر التوا'}
+                              {todo.completed ? 'مکمل' : 'باقی'}
                             </span>
                           </div>
                         </>

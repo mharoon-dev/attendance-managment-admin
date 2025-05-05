@@ -100,8 +100,8 @@ const MarkAttendance = () => {
           teacherId,
         });
 
-        if (response.data.message === 'Attendance marked successfully' || 
-            response.data.message === 'Attendance updated successfully') {
+        if (response.data.message === 'Attendance marked successfully' ||
+          response.data.message === 'Attendance updated successfully') {
           successCount++;
         } else {
           errorCount++;
@@ -169,26 +169,15 @@ const MarkAttendance = () => {
               <table className="attendance-table">
                 <thead>
                   <tr>
-                    <th>نام</th>
-                    <th>رول نمبر</th>
-                    <th>وقت</th>
                     <th>حالت</th>
+                    <th>وقت</th>
+                    <th>رول نمبر</th>
+                    <th>نام</th>
                   </tr>
                 </thead>
                 <tbody>
                   {students?.map((student) => (
                     <tr key={student?.schoolDetails?.rollNumber}>
-                      <td>{student?.fullName}</td>
-                      <td>{student?.schoolDetails?.rollNumber}</td>
-                      <td>
-                        <input
-                          type="time"
-                          value={attendanceData[student?.schoolDetails?.rollNumber]?.time || ''}
-                          onChange={(e) => handleTimeChange(student?.schoolDetails?.rollNumber, e.target.value)}
-                          disabled={attendanceData[student?.schoolDetails?.rollNumber]?.status === 'absent'}
-                          className="time-input"
-                        />
-                      </td>
                       <td>
                         <div className="status-buttons">
                           <button
@@ -214,6 +203,20 @@ const MarkAttendance = () => {
                           </button>
                         </div>
                       </td>
+                      <td>
+                        <input
+                          type="time"
+                          value={attendanceData[student?.schoolDetails?.rollNumber]?.time || ''}
+                          onChange={(e) => handleTimeChange(student?.schoolDetails?.rollNumber, e.target.value)}
+                          disabled={attendanceData[student?.schoolDetails?.rollNumber]?.status === 'absent'}
+                          className="time-input"
+                        />
+                      </td>
+
+                      <td>{student?.schoolDetails?.rollNumber}</td>
+
+                      <td>{student?.fullName}</td>
+
                     </tr>
                   ))}
                 </tbody>

@@ -202,7 +202,7 @@ const ViewTeacherAttendance = () => {
       
       <div className={`view-teacher-attendance ${!sidebarOpen ? 'sidebar-closed' : ''}`}>
         <div className="attendance-header">
-          <h1>اساتذہ کی حاضری دیکھیں</h1>
+          <h1 style={{textAlign: "end" , width: "100%"}}>اساتذہ کی حاضری دیکھیں</h1>
         </div>
 
         <div className="attendance-content">
@@ -302,16 +302,18 @@ const ViewTeacherAttendance = () => {
               <table className="attendance-table">
                 <thead>
                   <tr>
-                    <th>استاد کا آئی ڈی</th>
-                    <th>حالت</th>
                     <th>تاریخ</th>
                     <th>وقت</th>
+                    <th>حالت</th>
+                    <th>استاد کا آئی ڈی</th>
                   </tr>
                 </thead>
                 <tbody>
                   {filteredData.map((record) => (
                     <tr key={record._id}>
-                      <td>{record.id}</td>
+                    
+                      <td>{record.date}</td>
+                      <td>{record.status != "absent" ? record.time : "N/A"}</td>
                       <td>
                         <div className="status-cell">
                           {getStatusIcon(record.status)}
@@ -322,8 +324,7 @@ const ViewTeacherAttendance = () => {
                           </span>
                         </div>
                       </td>
-                      <td>{record.date}</td>
-                      <td>{record.status != "absent" ? record.time : "N/A"}</td>
+                             <td>{record.id}</td>
                     </tr>
                   ))}
                 </tbody>

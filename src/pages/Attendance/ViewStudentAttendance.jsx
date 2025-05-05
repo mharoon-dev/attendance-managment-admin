@@ -319,17 +319,20 @@ const ViewStudentAttendance = () => {
               <table className="attendance-table">
                 <thead>
                   <tr>
-                    <th>طالب علم کا آئی ڈی</th>
-                    <th>حالت</th>
+                    <th>استاد کا آئی ڈی</th>
                     <th>تاریخ</th>
                     <th>وقت</th>
-                    <th>استاد کا آئی ڈی</th>
+                    <th>حالت</th>
+                    <th>طالب علم کا آئی ڈی</th>
                   </tr>
                 </thead>
                 <tbody>
                   {filteredData.map((record) => (
                     <tr key={record._id}>
-                      <td>{record.id}</td>
+                  
+                      <td>{record?.teacherId || "N/A"}</td>
+                      <td>{record?.date || "N/A"}</td>
+                      <td>{record?.time || "N/A"}</td>
                       <td>
                         <div className="status-cell">
                           {getStatusIcon(record.status)}
@@ -340,9 +343,8 @@ const ViewStudentAttendance = () => {
                           </span>
                         </div>
                       </td>
-                      <td>{record.date}</td>
-                      <td>{record.time || "N/A"}</td>
-                      <td>{record.teacherId || "N/A"}</td>
+                      <td>{record.id}</td>
+
                     </tr>
                   ))}
                 </tbody>

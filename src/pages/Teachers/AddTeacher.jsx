@@ -199,17 +199,17 @@ const AddTeacher = () => {
       
       <div className={`add-teacher-container ${!sidebarOpen ? 'sidebar-closed' : ''}`}>
         <div className="add-teacher-header">
-          <h1>نیااستاد شامل کریں
-          </h1>
           <button className="cancel-btn" onClick={() => navigate('/teachers')}>
             <CloseIcon /> Cancel
           </button>
+          <h1>نیااستاد شامل کریں
+          </h1>
         </div>
 
         <div className="add-teacher-content">
           <form onSubmit={handleSubmit}>
             <div className="form-section">
-              <h2>Basic Information</h2>
+              <h2>بنیادی کی معلومات</h2>
               
               <div className="form-group">
                 <label>پروفائل تصویر</label>
@@ -399,7 +399,8 @@ const AddTeacher = () => {
             </div>
 
             <div className="form-section">
-              <h2>Job Details</h2>
+              <h2>ملازمت کی تفصیلات
+              </h2>
               
               <div className="form-row">
             
@@ -470,7 +471,8 @@ const AddTeacher = () => {
             </div>
 
             <div className="form-section">
-              <h2>Education Details</h2>
+              <h2>تعلیم کی تفصیلات
+              </h2>
               
               <div className="form-row">
                 <div className="form-group">

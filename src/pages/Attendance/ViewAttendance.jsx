@@ -36,16 +36,16 @@ const ViewAttendance = () => {
     absent: 0,
     late: 0
   });
-  const {user} = useSelector((state) => state.user);
+  const { user } = useSelector((state) => state.user);
   console.log(user);
 
   // Sample data for dropdowns
 
 
   const statuses = [
-    { value: 'present', label: 'Present' },
-    { value: 'absent', label: 'Absent' },
-    { value: 'late', label: 'Late' }
+    { value: 'present', label: 'حاضر' },
+    { value: 'absent', label: 'غیر حاضر' },
+    { value: 'late', label: 'لیٹ' }
   ];
 
   useEffect(() => {
@@ -83,7 +83,7 @@ const ViewAttendance = () => {
     }
     if (filters.search) {
       const searchTerm = filters.search.toLowerCase();
-      filtered = filtered.filter(item => 
+      filtered = filtered.filter(item =>
         item.name.toLowerCase().includes(searchTerm) ||
         item.rollNo.toLowerCase().includes(searchTerm)
       );
@@ -147,7 +147,7 @@ xmlns:html="http://www.w3.org/TR/REC-html40">
       const formattedDate = `${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`;
       const formattedRollNo = `'${item.id}`;
       const formattedTime = item.time || '';
-      
+
       return [
         formattedRollNo,
         formattedStatus,
@@ -158,7 +158,7 @@ xmlns:html="http://www.w3.org/TR/REC-html40">
 
     // Convert data to Excel XML format
     let xmlContent = excelHeader;
-    
+
     // Add headers row
     xmlContent += '<Row>';
     headers.forEach(header => {
@@ -191,13 +191,13 @@ xmlns:html="http://www.w3.org/TR/REC-html40">
     <div className={`layout-container ${sidebarOpen ? 'sidebar-open' : ''}`}>
       <Navbar toggleSidebar={toggleSidebar} isSidebarOpen={sidebarOpen} />
       <Sidebar isOpen={sidebarOpen} toggleSidebar={toggleSidebar} />
-      
+
       <div className={`view-attendance-container ${!sidebarOpen ? 'sidebar-closed' : ''}`}>
         <div className="view-attendance-header">
-          <h1>حاضری دیکھیں</h1>
           <button className="refresh-button" onClick={fetchAttendanceData}>
             <RefreshIcon /> ڈیٹا ریفریش کریں
           </button>
+          <h1>حاضری دیکھیں</h1>
         </div>
 
         <div className="view-attendance-content">
@@ -208,7 +208,7 @@ xmlns:html="http://www.w3.org/TR/REC-html40">
                 <FilterListIcon /> {showFilters ? 'فلٹرز چھپائیں' : 'فلٹرز دکھائیں'}
               </button>
             </div>
-            
+
             {showFilters && (
               <div className="filter-row">
                 <div className="filter-group">
@@ -219,7 +219,7 @@ xmlns:html="http://www.w3.org/TR/REC-html40">
                     onChange={(e) => handleFilterChange('date', e.target.value)}
                   />
                 </div>
-                
+
                 <CustomDropdown
                   label="حالت"
                   options={statuses}
@@ -229,7 +229,7 @@ xmlns:html="http://www.w3.org/TR/REC-html40">
                 />
               </div>
             )}
-            
+
             <div className="filter-actions">
               <button className="reset-button" onClick={resetFilters}>
                 فلٹرز ری سیٹ کریں
@@ -240,7 +240,7 @@ xmlns:html="http://www.w3.org/TR/REC-html40">
               </button>
             </div>
           </div>
-          
+
           <div className="attendance-stats">
             <div className="stat-card total">
               <h3>کل</h3>
@@ -268,7 +268,7 @@ xmlns:html="http://www.w3.org/TR/REC-html40">
               </div>
             </div>
           </div>
-          
+
           <div className="attendance-table-container">
             {loading ? (
               <Loader />
@@ -276,25 +276,27 @@ xmlns:html="http://www.w3.org/TR/REC-html40">
               <table className="attendance-table">
                 <thead>
                   <tr>
-                    <th>رول نمبر</th>
-                    <th>حالت</th>
                     <th>تاریخ</th>
                     <th>وقت</th>
+                    <th>حالت</th>
+                    <th>رول نمبر</th>
                   </tr>
                 </thead>
                 <tbody>
                   {filteredData.map((record) => (
                     <tr key={record?.id}>
-                      <td>{record?.id}</td>
-                      <td>
-                        <span className={`status-badge ${record?.status}`}>
-                          {record?.status === 'present' ? 'حاضر' : 
-                           record?.status === 'absent' ? 'غیر حاضر' : 
-                           'لیٹ'}
-                        </span>
-                      </td>
+
                       <td>{record?.date}</td>
                       <td>{record?.time || "N/A"}</td>
+                      <td>
+                        <span className={`status-badge ${record?.status}`}>
+                          {record?.status === 'present' ? 'حاضر' :
+                            record?.status === 'absent' ? 'غیر حاضر' :
+                              'لیٹ'}
+                        </span>
+                      </td>
+                      <td>{record?.id}</td>
+
                     </tr>
                   ))}
                 </tbody>

@@ -339,7 +339,7 @@ const SubjectProfile = () => {
                               <td>{assignment.dueDate}</td>
                               <td>
                                 <span className={`status-badge ${assignment.status}`}>
-                                  {assignment.status === 'completed' ? 'مکمل' : 'زیر التواء'}
+                                  {assignment.status === 'completed' ? 'مکمل' : 'باقیء'}
                                 </span>
                               </td>
                             </tr>

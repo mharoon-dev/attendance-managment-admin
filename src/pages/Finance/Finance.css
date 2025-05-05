@@ -140,26 +140,29 @@
 
 .finance-table {
   background: white;
-  padding: 20px;
   border-radius: 12px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  text-align: center;
   overflow-x: auto;
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
+  text-align: center;
 }
 
-th, td {
+.finance-table th, .finance-table td {
   padding: 12px 15px;
-  text-align: left;
+  text-align: center;
   border-bottom: 1px solid #e5e7eb;
 }
 
-th {
+.finance-table th {
+  text-align: center;
   background-color: #f9fafb;
   color: #666;
+  padding: 10px !important;
   font-weight: 600;
 }
 

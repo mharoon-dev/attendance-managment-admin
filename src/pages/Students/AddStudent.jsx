@@ -239,16 +239,16 @@ const AddStudent = () => {
       
       <div className={`add-student-container ${!sidebarOpen ? 'sidebar-closed' : ''}`}>
         <div className="add-student-header">
-          <h1>نیا طالب علم شامل کریں</h1>
           <button className="cancel-btn" onClick={() => navigate('/students')}>
             <CloseIcon /> منسوخ کریں
           </button>
+          <h1>نیا طالب علم شامل کریں</h1>
         </div>
 
         <div className="add-student-content">
           <form onSubmit={handleSubmit}>
             <div className="form-section">
-              <h2>بنیادی معلومات</h2>
+              <h2 style={{width: '100%' ,textAlign: 'end'}}>بنیادی معلومات</h2>
               
               <div className="form-group">
                 <label>پروفائل تصویر</label>
@@ -406,7 +406,7 @@ const AddStudent = () => {
             </div>
 
             <div className="form-section">
-              <h2>والدین کی معلومات</h2>
+              <h2 style={{width: '100%' ,textAlign: 'end'}}>والدین کی معلومات</h2>
               
               <div className="form-group">
                 <label>والدین کی پروفائل تصویر</label>
@@ -600,7 +600,7 @@ const AddStudent = () => {
             </div>
 
             <div className="form-section">
-              <h2>اسکول کی تفصیلات</h2>
+              <h2 style={{width: '100%' ,textAlign: 'end'}}>اسکول کی تفصیلات</h2>
               
               <div className="form-row">
                 <div className="form-group">

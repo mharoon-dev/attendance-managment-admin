@@ -74,26 +74,27 @@ const ClassProfile = () => {
       <Sidebar isOpen={sidebarOpen} toggleSidebar={toggleSidebar} />
 
       <div
-        className={`class-profile-container ${
-          !sidebarOpen ? "sidebar-closed" : ""
-        }`}
+        className={`class-profile-container ${!sidebarOpen ? "sidebar-closed" : ""
+          }`}
       >
         {isLoading ? (
-        <Loader />
+          <Loader />
         ) : (
           <>
             <div className="class-profile-header">
-            <div className="class-profile-title">
+              <div className="class-profile-title">
                 <h1>{classData.className}</h1>
                 <div className="class-status" data-status="active">
-                  فعال
+                  کلاس کا نام
+
+
                 </div>
               </div>
               <div className="back-button" onClick={() => navigate("/classes")}>
                 <ArrowBackIcon /> کلاسز کی فہرست پر واپس جائیں
               </div>
-              
-             
+
+
             </div>
 
             <div className="">

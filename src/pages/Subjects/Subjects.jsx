@@ -183,7 +183,7 @@ const Subjects = () => {
 
   // Create class options for dropdown
   const classOptions = [
-    { value: "all", label: "All Classes", icon: <BadgeIcon /> },
+    { value: "all", label: "تمام کلاسز", icon: <BadgeIcon /> },
     ...classes.map((cls) => ({
       value: cls.className,
       label: cls.className,
