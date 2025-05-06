@@ -24,7 +24,7 @@ const Profile = () => {
   const formatDate = (dateString) => {
     if (!dateString) return 'N/A';
     const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', {
+    return date.toLocaleDateString('ur-PK', {
       year: 'numeric',
       month: 'long',
       day: 'numeric'
@@ -38,7 +38,7 @@ const Profile = () => {
       
       <div className={`profile-page-container ${!sidebarOpen ? 'sidebar-closed' : ''}`}>
         <div className="profile-page-header">
-          <h1>My Profile</h1>
+          <h1>میری پروفائل</h1>
         </div>
 
         <div className="profile-page-content">
@@ -47,14 +47,10 @@ const Profile = () => {
               <div className="profile-page-image-container">
                 <img 
                   src={user?.teacher?.profileImage || 'https://via.placeholder.com/150'} 
-                  alt="Profile" 
+                  alt="پروفائل" 
                   className="profile-page-image"
                 />
-                <div className="profile-page-image-overlay">
-                  <button className="profile-page-image-edit-btn">
-                    Change Photo
-                  </button>
-                </div>
+            
               </div>
               <div className="profile-page-basic-info">
                 <h2>{user?.teacher?.fullName || 'N/A'}</h2>
@@ -64,43 +60,43 @@ const Profile = () => {
                 </p>
                 <p className="profile-page-teacher-id">
                   <BadgeIcon className="profile-page-icon" />
-                  ID: {user?.teacherId}
+                  شناختی کارڈ: {user?.teacherId}
                 </p>
               </div>
             </div>
 
             <div className="profile-page-details">
               <div className="profile-page-details-section">
-                <h3>
+                <h3 style={{textAlign: 'end',width: '100%'}}>
                   <PersonIcon className="profile-page-section-icon" />
-                  Personal Information
+                  ذاتی معلومات
                 </h3>
                 <div className="profile-page-details-grid">
                   <div className="profile-page-detail-item">
                     <CalendarMonthIcon className="profile-page-detail-icon" />
                     <div className="profile-page-detail-content">
-                      <span className="profile-page-detail-label">Date of Birth</span>
+                      <span className="profile-page-detail-label">تاریخ پیدائش</span>
                       <span className="profile-page-detail-value">{formatDate(user?.teacher?.dateOfBirth)}</span>
                     </div>
                   </div>
                   <div className="profile-page-detail-item">
                     <TransgenderIcon className="profile-page-detail-icon" />
                     <div className="profile-page-detail-content">
-                      <span className="profile-page-detail-label">Gender</span>
+                      <span className="profile-page-detail-label">جنس</span>
                       <span className="profile-page-detail-value">{user?.teacher?.gender || 'N/A'}</span>
                     </div>
                   </div>
                   <div className="profile-page-detail-item">
                     <BadgeIcon className="profile-page-detail-icon" />
                     <div className="profile-page-detail-content">
-                      <span className="profile-page-detail-label">NIC</span>
+                      <span className="profile-page-detail-label">قومی شناختی کارڈ</span>
                       <span className="profile-page-detail-value">{user?.teacher?.nic || 'N/A'}</span>
                     </div>
                   </div>
                   <div className="profile-page-detail-item">
                     <FamilyRestroomIcon className="profile-page-detail-icon" />
                     <div className="profile-page-detail-content">
-                      <span className="profile-page-detail-label">Marital Status</span>
+                      <span className="profile-page-detail-label">شادی شدہ</span>
                       <span className="profile-page-detail-value">{user?.teacher?.maritalStatus || 'N/A'}</span>
                     </div>
                   </div>
@@ -110,34 +106,34 @@ const Profile = () => {
               <div className="profile-page-details-section">
                 <h3>
                   <PhoneIcon className="profile-page-section-icon" />
-                  Contact Information
+                  رابطے کی معلومات
                 </h3>
                 <div className="profile-page-details-grid">
                   <div className="profile-page-detail-item">
                     <PhoneIcon className="profile-page-detail-icon" />
                     <div className="profile-page-detail-content">
-                      <span className="profile-page-detail-label">Phone Number</span>
+                      <span className="profile-page-detail-label">فون نمبر</span>
                       <span className="profile-page-detail-value">{user?.teacher?.phoneNumber || 'N/A'}</span>
                     </div>
                   </div>
                   <div className="profile-page-detail-item">
                     <PhoneIcon className="profile-page-detail-icon" />
                     <div className="profile-page-detail-content">
-                      <span className="profile-page-detail-label">Next of Kin Phone</span>
+                      <span className="profile-page-detail-label">قریبی رشتہ دار کا فون</span>
                       <span className="profile-page-detail-value">{user?.teacher?.nextOfKinPhoneNumber || 'N/A'}</span>
                     </div>
                   </div>
                   <div className="profile-page-detail-item">
                     <EmailIcon className="profile-page-detail-icon" />
                     <div className="profile-page-detail-content">
-                      <span className="profile-page-detail-label">Email</span>
+                      <span className="profile-page-detail-label">ای میل</span>
                       <span className="profile-page-detail-value">{user?.teacher?.emailAddress || 'N/A'}</span>
                     </div>
                   </div>
                   <div className="profile-page-detail-item">
                     <LocationOnIcon className="profile-page-detail-icon" />
                     <div className="profile-page-detail-content">
-                      <span className="profile-page-detail-label">Address</span>
+                      <span className="profile-page-detail-label">پتہ</span>
                       <span className="profile-page-detail-value">{user?.teacher?.fullAddress || 'N/A'}</span>
                     </div>
                   </div>
@@ -148,34 +144,34 @@ const Profile = () => {
                 <div className="profile-page-details-section">
                   <h3>
                     <WorkIcon className="profile-page-section-icon" />
-                    Job Details
+                    ملازمت کی تفصیلات
                   </h3>
                   <div className="profile-page-details-grid">
                     <div className="profile-page-detail-item">
                       <WorkIcon className="profile-page-detail-icon" />
                       <div className="profile-page-detail-content">
-                        <span className="profile-page-detail-label">Designation</span>
+                        <span className="profile-page-detail-label">عہدہ</span>
                         <span className="profile-page-detail-value">{user?.teacher?.jobDetails?.designation || 'N/A'}</span>
                       </div>
                     </div>
                     <div className="profile-page-detail-item">
                       <CalendarMonthIcon className="profile-page-detail-icon" />
                       <div className="profile-page-detail-content">
-                        <span className="profile-page-detail-label">Joining Date</span>
+                        <span className="profile-page-detail-label">شمولیت کی تاریخ</span>
                         <span className="profile-page-detail-value">{formatDate(user?.teacher?.jobDetails?.joiningDate)}</span>
                       </div>
                     </div>
                     <div className="profile-page-detail-item">
                       <WorkIcon className="profile-page-detail-icon" />
                       <div className="profile-page-detail-content">
-                        <span className="profile-page-detail-label">Working Hours</span>
+                        <span className="profile-page-detail-label">کام کے اوقات</span>
                         <span className="profile-page-detail-value">{user?.teacher?.jobDetails?.workingHours || 'N/A'}</span>
                       </div>
                     </div>
                     <div className="profile-page-detail-item">
                       <WorkIcon className="profile-page-detail-icon" />
                       <div className="profile-page-detail-content">
-                        <span className="profile-page-detail-label">Salary</span>
+                        <span className="profile-page-detail-label">تنخواہ</span>
                         <span className="profile-page-detail-value">${user?.teacher?.jobDetails?.salary || 'N/A'}</span>
                       </div>
                     </div>
@@ -186,71 +182,69 @@ const Profile = () => {
               <div className="profile-page-details-section">
                 <h3>
                   <SchoolIcon className="profile-page-section-icon" />
-                  Education Details
+                  تعلیمی تفصیلات
                 </h3>
                 <div className="profile-page-details-grid">
                   <div className="profile-page-detail-item">
                     <SchoolIcon className="profile-page-detail-icon" />
                     <div className="profile-page-detail-content">
-                      <span className="profile-page-detail-label">Degree Title</span>
+                      <span className="profile-page-detail-label">ڈگری کا عنوان</span>
                       <span className="profile-page-detail-value">{user?.teacher?.degreeTitle || 'N/A'}</span>
                     </div>
                   </div>
                   <div className="profile-page-detail-item">
                     <SchoolIcon className="profile-page-detail-icon" />
                     <div className="profile-page-detail-content">
-                      <span className="profile-page-detail-label">Board</span>
+                      <span className="profile-page-detail-label">بورڈ</span>
                       <span className="profile-page-detail-value">{user?.teacher?.board || 'N/A'}</span>
                     </div>
                   </div>
                   <div className="profile-page-detail-item">
                     <SchoolIcon className="profile-page-detail-icon" />
                     <div className="profile-page-detail-content">
-                      <span className="profile-page-detail-label">Grade</span>
+                      <span className="profile-page-detail-label">گریڈ</span>
                       <span className="profile-page-detail-value">{user?.teacher?.grade || 'N/A'}</span>
                     </div>
                   </div>
                 </div>
               </div>
 
-              {/* NIC Image Section */}
               <div className="profile-page-details-section">
                 <h3>
                   <DescriptionIcon className="profile-page-section-icon" />
-                  NIC Document
+                  قومی شناختی کارڈ کی دستاویز
                 </h3>
                 <div className="profile-page-document-container">
                   <img 
                     src={user?.teacher?.nicImage || 'https://via.placeholder.com/300x200'} 
-                    alt="NIC Document" 
+                    alt="قومی شناختی کارڈ" 
                     className="profile-page-document-image"
                   />
                   <div className="profile-page-document-overlay">
                     <button className="profile-page-document-view-btn">
-                      View Document
+                      دستاویز دیکھیں
                     </button>
                   </div>
                 </div>
               </div>
 
-              {/* Marksheet Images Section */}
               {user?.teacher?.marksheetImages && user?.teacher?.marksheetImages.length > 0 && (
                 <div className="profile-page-details-section">
                   <h3>
                     <AssignmentIcon className="profile-page-section-icon" />
-                    Marksheet Documents
+                    مارک شیٹ کی دستاویزات
                   </h3>
                   <div className="profile-page-marksheets-grid">
                     {user?.teacher?.marksheetImages.map((image, index) => (
                       <div key={index} className="profile-page-document-container">
                         <img 
                           src={image} 
-                          alt={`Marksheet ${index + 1}`} 
+                          alt={`مارک شیٹ ${index + 1}`} 
                           className="profile-page-document-image"
                         />
                         <div className="profile-page-document-overlay">
                           <button className="profile-page-document-view-btn">
-                            View Document
+                            دستاویز دیکھیں
                           </button>
                         </div>
                       </div>

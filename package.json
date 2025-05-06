@@ -17,6 +17,7 @@
     "@reduxjs/toolkit": "^2.7.0",
     "axios": "^1.8.4",
     "chart.js": "^4.4.9",
+    "html2pdf.js": "^0.9.0",
     "jspdf": "^1.4.1",
     "jspdf-autotable": "^5.0.2",
     "jspdf-customfonts": "^0.0.4-rc.4",

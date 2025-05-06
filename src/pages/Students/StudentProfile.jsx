@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import PersonIcon from '@mui/icons-material/Person';
@@ -19,7 +19,7 @@ import useSidebar from '../../hooks/useSidebar';
 import './StudentProfile.css';
 import { useDispatch, useSelector } from 'react-redux';
 import Loader from '../../components/Loader/Loader';
-import { jsPDF } from 'jspdf';
+import html2pdf from 'html2pdf.js';
 import ImageViewer from '../../components/ImageViewer/ImageViewer';
 
 const StudentProfile = () => {
@@ -32,6 +32,7 @@ const StudentProfile = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [showImageViewer, setShowImageViewer] = useState(false);
   const [selectedImage, setSelectedImage] = useState('');
+  const pdfRef = useRef(null);
 
   useEffect(() => {
     if (student) {
@@ -45,165 +46,126 @@ const StudentProfile = () => {
   }, [student]);
 
   const generatePDF = async () => {
-    const doc = new jsPDF();
-    const pageWidth = doc.internal.pageSize.getWidth();
-    let y = 20;
+    const element = document.createElement('div');
+    element.style.direction = 'rtl';
+    element.style.fontFamily = 'Noto Nastaliq Urdu';
+    element.style.padding = '10px';
+    element.style.backgroundColor = 'white';
 
-    try {
-      // --- HEADER ---
-      // Logo
-      const logoUrl = '/assets/logo.png';
-      const logoResponse = await fetch(logoUrl);
-      const logoBlob = await logoResponse.blob();
-      const logoDataUrl = await new Promise((resolve) => {
-        const reader = new FileReader();
-        reader.onloadend = () => resolve(reader.result);
-        reader.readAsDataURL(logoBlob);
-      });
-      doc.addImage(logoDataUrl, 'PNG', 20, y, 30, 30);
+    // Create the PDF content with enhanced visual design
+    element.innerHTML = `
+      <div style="background: linear-gradient(135deg, #1a5f1a, #2e8b2e); padding: 20px; border-radius: 12px; margin-bottom: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <div style="width: 80px; height: 80px; background: white; padding: 8px; border-radius: 12px; box-shadow: 0 4px 8px rgba(0,0,0,0.15);">
+            <img src="/assets/logo.png" style="width: 100%; height: 100%; object-fit: contain;" />
+          </div>
+          <div style="text-align: center; flex-grow: 1; margin: 0 20px;">
+            <h1 style="color: white; font-size: 28px; margin: 0; text-shadow: 2px 2px 4px rgba(0,0,0,0.2); font-weight: bold;">جامعہ فاطمہ الزہرا</h1>
+            <p style="color: rgba(255,255,255,0.95); font-size: 14px; margin: 4px 0;">رجسٹریشن نمبر: 9879349493</p>
+            <p style="color: rgba(255,255,255,0.95); font-size: 14px; margin: 4px 0;">پتہ: پیپلان میانوالے</p>
+          </div>
+          <div style="width: 120px; height: 120px; background: white; padding: 4px; border-radius: 50%; box-shadow: 0 4px 12px rgba(0,0,0,0.2);">
+            <img src="${student?.profileImage || '/assets/default-profile.png'}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;" />
+          </div>
+        </div>
+      </div>
 
-      // Add student profile image on the right
-      if (student?.profileImage) {
-        try {
-          const profileResponse = await fetch(student.profileImage);
-          const profileBlob = await profileResponse.blob();
-          const profileDataUrl = await new Promise((resolve) => {
-            const reader = new FileReader();
-            reader.onloadend = () => resolve(reader.result);
-            reader.readAsDataURL(profileBlob);
-          });
-          doc.addImage(profileDataUrl, 'JPEG', pageWidth - 50, y, 30, 30);
-        } catch (error) {
-          console.error('Error loading profile image:', error);
-        }
+      <div style="background: white; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); padding: 15px; margin-bottom: 15px;">
+        <table style="width: 100%; border-collapse: collapse; font-size: 13px;">
+          <tr>
+            <th colspan="4" style="background: linear-gradient(135deg, #1a5f1a, #2e8b2e); color: white; padding: 12px; text-align: right; font-size: 16px; border-radius: 8px 8px 0 0;">ذاتی معلومات</th>
+          </tr>
+          <tr>
+            <td style="padding: 10px; background-color: rgba(26,95,26,0.08); border: 1px solid #e0e0e0; width: 25%; font-weight: bold; color: #1a5f1a;">پورا نام</td>
+            <td style="padding: 10px; border: 1px solid #e0e0e0; width: 25%;">${student?.fullName || 'N/A'}</td>
+            <td style="padding: 10px; background-color: rgba(26,95,26,0.08); border: 1px solid #e0e0e0; width: 25%; font-weight: bold; color: #1a5f1a;">تاریخ پیدائش</td>
+            <td style="padding: 10px; border: 1px solid #e0e0e0; width: 25%;">${student?.dateOfBirth ? new Date(student.dateOfBirth).toLocaleDateString() : 'N/A'}</td>
+          </tr>
+          <tr>
+            <td style="padding: 10px; background-color: rgba(26,95,26,0.08); border: 1px solid #e0e0e0; font-weight: bold; color: #1a5f1a;">جنس</td>
+            <td style="padding: 10px; border: 1px solid #e0e0e0;">${student?.gender || 'N/A'}</td>
+            <td style="padding: 10px; background-color: rgba(26,95,26,0.08); border: 1px solid #e0e0e0; font-weight: bold; color: #1a5f1a;">فون نمبر</td>
+            <td style="padding: 10px; border: 1px solid #e0e0e0;">${student?.phoneNumber || 'N/A'}</td>
+          </tr>
+          <tr>
+            <td style="padding: 10px; background-color: rgba(26,95,26,0.08); border: 1px solid #e0e0e0; font-weight: bold; color: #1a5f1a;">پتہ</td>
+            <td colspan="3" style="padding: 10px; border: 1px solid #e0e0e0;">${student?.fullAddress || 'N/A'}</td>
+          </tr>
+        </table>
+
+        <table style="width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 15px;">
+          <tr>
+            <th colspan="4" style="background: linear-gradient(135deg, #1a5f1a, #2e8b2e); color: white; padding: 12px; text-align: right; font-size: 16px; border-radius: 8px 8px 0 0;">والدین کی معلومات</th>
+          </tr>
+          <tr>
+            <td style="padding: 10px; background-color: rgba(26,95,26,0.08); border: 1px solid #e0e0e0; width: 25%; font-weight: bold; color: #1a5f1a;">والدین کا نام</td>
+            <td style="padding: 10px; border: 1px solid #e0e0e0; width: 25%;">${student?.parentDetails?.fullName || 'N/A'}</td>
+            <td style="padding: 10px; background-color: rgba(26,95,26,0.08); border: 1px solid #e0e0e0; width: 25%; font-weight: bold; color: #1a5f1a;">تاریخ پیدائش</td>
+            <td style="padding: 10px; border: 1px solid #e0e0e0; width: 25%;">${student?.parentDetails?.dateOfBirth ? new Date(student.parentDetails.dateOfBirth).toLocaleDateString() : 'N/A'}</td>
+          </tr>
+          <tr>
+            <td style="padding: 10px; background-color: rgba(26,95,26,0.08); border: 1px solid #e0e0e0; font-weight: bold; color: #1a5f1a;">جنس</td>
+            <td style="padding: 10px; border: 1px solid #e0e0e0;">${student?.parentDetails?.gender || 'N/A'}</td>
+            <td style="padding: 10px; background-color: rgba(26,95,26,0.08); border: 1px solid #e0e0e0; font-weight: bold; color: #1a5f1a;">فون نمبر</td>
+            <td style="padding: 10px; border: 1px solid #e0e0e0;">${student?.parentDetails?.phoneNumber || 'N/A'}</td>
+          </tr>
+          <tr>
+            <td style="padding: 10px; background-color: rgba(26,95,26,0.08); border: 1px solid #e0e0e0; font-weight: bold; color: #1a5f1a;">تعلیم</td>
+            <td style="padding: 10px; border: 1px solid #e0e0e0;">${student?.parentDetails?.education || 'N/A'}</td>
+            <td style="padding: 10px; background-color: rgba(26,95,26,0.08); border: 1px solid #e0e0e0; font-weight: bold; color: #1a5f1a;">پیشہ</td>
+            <td style="padding: 10px; border: 1px solid #e0e0e0;">${student?.parentDetails?.profession || 'N/A'}</td>
+          </tr>
+        </table>
+
+        <table style="width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 15px;">
+          <tr>
+            <th colspan="4" style="background: linear-gradient(135deg, #1a5f1a, #2e8b2e); color: white; padding: 12px; text-align: right; font-size: 16px; border-radius: 8px 8px 0 0;">تعلیمی معلومات</th>
+          </tr>
+          <tr>
+            <td style="padding: 10px; background-color: rgba(26,95,26,0.08); border: 1px solid #e0e0e0; width: 25%; font-weight: bold; color: #1a5f1a;">رول نمبر</td>
+            <td style="padding: 10px; border: 1px solid #e0e0e0; width: 25%;">${student?.schoolDetails?.rollNumber || 'N/A'}</td>
+            <td style="padding: 10px; background-color: rgba(26,95,26,0.08); border: 1px solid #e0e0e0; width: 25%; font-weight: bold; color: #1a5f1a;">گریڈ</td>
+            <td style="padding: 10px; border: 1px solid #e0e0e0; width: 25%;">${student?.grade || 'N/A'}</td>
+          </tr>
+          <tr>
+            <td style="padding: 10px; background-color: rgba(26,95,26,0.08); border: 1px solid #e0e0e0; font-weight: bold; color: #1a5f1a;">تاریخ داخلہ</td>
+            <td style="padding: 10px; border: 1px solid #e0e0e0;">${student?.schoolDetails?.joiningDate ? new Date(student.schoolDetails.joiningDate).toLocaleDateString() : 'N/A'}</td>
+            <td style="padding: 10px; background-color: rgba(26,95,26,0.08); border: 1px solid #e0e0e0; font-weight: bold; color: #1a5f1a;">سابقہ ادارہ</td>
+            <td style="padding: 10px; border: 1px solid #e0e0e0;">${student?.schoolDetails?.previousInstitute || 'N/A'}</td>
+          </tr>
+        </table>
+      </div>
+
+      <div style="text-align: center; margin-top: 10px; padding: 6px; background: linear-gradient(135deg, #1a5f1a, #2e8b2e); border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+        <p style="color: white; font-size: 11px; margin: 2px 0; text-shadow: 1px 1px 2px rgba(0,0,0,0.2);">تاریخ: ${new Date().toLocaleDateString()}</p>
+      </div>
+    `;
+
+    // Configure html2pdf options
+    const opt = {
+      margin: 0.3,
+      filename: 'student_profile.pdf',
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { 
+        scale: 2,
+        useCORS: true,
+        logging: true
+      },
+      jsPDF: { 
+        unit: 'in', 
+        format: 'letter', 
+        orientation: 'portrait'
       }
+    };
 
-      // School Name and Info
-      doc.setFont('helvetica', 'bold');
-      doc.setFontSize(22);
-      doc.setTextColor(34, 139, 34); // green
-      doc.text('Jamia Fatima tul zahra', 60, y + 10);
-      doc.setFont('helvetica', 'normal');
-      doc.setFontSize(12);
-      doc.setTextColor(100, 100, 100);
-      doc.text('Reg No: 9879349493', 60, y + 18);
-      doc.text('Address: piplaan miyanwale', 60, y + 25);
-
-      // Green horizontal line
-      y += 38;
-      doc.setDrawColor(34, 139, 34);
-      doc.setLineWidth(1.2);
-      doc.line(20, y, pageWidth - 20, y);
-
-      // --- TITLE ---
-      y += 15;
-      doc.setFont('helvetica', 'bold');
-      doc.setFontSize(16);
-      doc.setTextColor(34, 139, 34);
-      doc.text('STUDENT PROFILE', pageWidth / 2, y, { align: 'center' });
-
-      // --- SECTION: Personal Information ---
-      y += 15;
-      doc.setFontSize(13);
-      doc.setTextColor(34, 139, 34);
-      doc.text('Personal Information', 20, y);
-      y += 5;
-      // Table header
-      doc.setFillColor(34, 139, 34);
-      doc.setTextColor(255, 255, 255);
-      doc.rect(20, y, pageWidth - 40, 9, 'F');
-      doc.setFontSize(12);
-      doc.text('Field', 25, y + 6);
-      doc.text('Details', 80, y + 6);
-      y += 9;
-      // Table rows
-      const personalInfo = [
-        ['Full Name', String(student?.fullName || 'N/A')],
-        ['Date of Birth', student?.dateOfBirth ? new Date(student.dateOfBirth).toLocaleDateString() : 'N/A'],
-        ['Gender', String(student?.gender || 'N/A')],
-        ['Phone Number', String(student?.phoneNumber || 'N/A')],
-        ['Address', String(student?.fullAddress || 'N/A')]
-      ];
-      personalInfo.forEach(([field, value], idx) => {
-        doc.setFillColor(idx % 2 === 0 ? 255 : 240, 255, 240); // alternate row color
-        doc.rect(20, y, pageWidth - 40, 9, 'F');
-        doc.setTextColor(0, 0, 0);
-        doc.text(field, 25, y + 6);
-        doc.text(String(value), 80, y + 6);
-        y += 9;
-      });
-
-      // --- SECTION: Parent Information ---
-      y += 7;
-      doc.setFontSize(13);
-      doc.setTextColor(34, 139, 34);
-      doc.text('Parent Information', 20, y);
-      y += 5;
-      // Table header
-      doc.setFillColor(34, 139, 34);
-      doc.setTextColor(255, 255, 255);
-      doc.rect(20, y, pageWidth - 40, 9, 'F');
-      doc.setFontSize(12);
-      doc.text('Field', 25, y + 6);
-      doc.text('Details', 80, y + 6);
-      y += 9;
-      // Table rows
-      const parentInfo = [
-        ['Parent Name', String(student?.parentDetails?.fullName || 'N/A')],
-        ['Date of Birth', student?.parentDetails?.dateOfBirth ? new Date(student.parentDetails.dateOfBirth).toLocaleDateString() : 'N/A'],
-        ['Gender', String(student?.parentDetails?.gender || 'N/A')],
-        ['Phone Number', String(student?.parentDetails?.phoneNumber || 'N/A')],
-        ['Education', String(student?.parentDetails?.education || 'N/A')],
-        ['Profession', String(student?.parentDetails?.profession || 'N/A')]
-      ];
-      parentInfo.forEach(([field, value], idx) => {
-        doc.setFillColor(idx % 2 === 0 ? 255 : 240, 255, 240); // alternate row color
-        doc.rect(20, y, pageWidth - 40, 9, 'F');
-        doc.setTextColor(0, 0, 0);
-        doc.text(field, 25, y + 6);
-        doc.text(String(value), 80, y + 6);
-        y += 9;
-      });
-
-      // --- SECTION: Academic Information ---
-      y += 7;
-      doc.setFontSize(13);
-      doc.setTextColor(34, 139, 34);
-      doc.text('Academic Information', 20, y);
-      y += 5;
-      // Table header
-      doc.setFillColor(34, 139, 34);
-      doc.setTextColor(255, 255, 255);
-      doc.rect(20, y, pageWidth - 40, 9, 'F');
-      doc.setFontSize(12);
-      doc.text('Field', 25, y + 6);
-      doc.text('Details', 80, y + 6);
-      y += 9;
-      // Table rows
-      const schoolInfo = [
-        ['Roll Number', String(student?.schoolDetails?.rollNumber || 'N/A')],
-        ['Grade', String(student?.grade || 'N/A')],
-        ['Joining Date', student?.schoolDetails?.joiningDate ? new Date(student.schoolDetails.joiningDate).toLocaleDateString() : 'N/A'],
-        ['Previous Institute', String(student?.schoolDetails?.previousInstitute || 'N/A')]
-      ];
-      schoolInfo.forEach(([field, value], idx) => {
-        doc.setFillColor(idx % 2 === 0 ? 255 : 240, 255, 240); // alternate row color
-        doc.rect(20, y, pageWidth - 40, 9, 'F');
-        doc.setTextColor(0, 0, 0);
-        doc.text(field, 25, y + 6);
-        doc.text(String(value), 80, y + 6);
-        y += 9;
-      });
-
-      // Save the PDF
-      doc.save('student_profile.pdf');
+    // Generate PDF
+    try {
+      await html2pdf().set(opt).from(element).save();
     } catch (error) {
       console.error('Error generating PDF:', error);
       alert('Error generating PDF. Please try again.');
     }
   };
-
-  
 
   const handleImageClick = (imageUrl) => {
     setSelectedImage(imageUrl);
@@ -214,7 +176,7 @@ const StudentProfile = () => {
     <div className={`layout-container ${sidebarOpen ? 'sidebar-open' : ''}`}>
       <Navbar toggleSidebar={toggleSidebar} isSidebarOpen={sidebarOpen} />
       <Sidebar isOpen={sidebarOpen} toggleSidebar={toggleSidebar} />
-      
+
       <div className={`student-profile-container ${!sidebarOpen ? 'sidebar-closed' : ''}`}>
         {isLoading ? (
           <Loader />
@@ -250,8 +212,8 @@ const StudentProfile = () => {
                       <div className="student-profile-section">
                         <div className="image-label">پروفائل تصویر</div>
                         <div className="image-container">
-                          <img 
-                            src={student.profileImage} 
+                          <img
+                            src={student.profileImage}
                             alt={student.fullName}
                             onClick={() => handleImageClick(student.profileImage)}
                             style={{ cursor: 'pointer' }}
@@ -261,8 +223,8 @@ const StudentProfile = () => {
                       <div className="student-nic-section">
                         <div className="image-label">شناختی کارڈ کی دستاویز</div>
                         <div className="image-container">
-                          <img 
-                            src={student.nicImage || 'https://via.placeholder.com/150'} 
+                          <img
+                            src={student.nicImage || 'https://via.placeholder.com/150'}
                             alt="طالب علم کا شناختی کارڈ"
                             onClick={() => handleImageClick(student.nicImage)}
                             style={{ cursor: 'pointer' }}
@@ -324,8 +286,8 @@ const StudentProfile = () => {
                       <div className="parent-profile-section">
                         <div className="image-label">پروفائل تصویر</div>
                         <div className="image-container">
-                          <img 
-                            src={student.parentDetails.profileImage || 'https://via.placeholder.com/150'} 
+                          <img
+                            src={student.parentDetails.profileImage || 'https://via.placeholder.com/150'}
                             alt={student.parentDetails.fullName}
                             onClick={() => handleImageClick(student.parentDetails.profileImage)}
                             style={{ cursor: 'pointer' }}
@@ -335,8 +297,8 @@ const StudentProfile = () => {
                       <div className="parent-nic-section">
                         <div className="image-label">شناختی کارڈ کی دستاویز</div>
                         <div className="image-container">
-                          <img 
-                            src={student.parentDetails.nicImage || 'https://via.placeholder.com/150'} 
+                          <img
+                            src={student.parentDetails.nicImage || 'https://via.placeholder.com/150'}
                             alt="والدین کا شناختی کارڈ"
                             onClick={() => handleImageClick(student.parentDetails.nicImage)}
                             style={{ cursor: 'pointer' }}
@@ -435,11 +397,11 @@ const StudentProfile = () => {
                         <div className="info-details">
                           <span className="info-label">سابقہ ڈگری</span>
                           <div className="image-container">
-                            <img 
-                              src={student.schoolDetails.previousDegreeWithImage || 'https://via.placeholder.com/150'} 
+                            <img
+                              src={student.schoolDetails.previousDegreeWithImage || 'https://via.placeholder.com/150'}
                               alt="سابقہ ڈگری"
                               onClick={() => handleImageClick(student.schoolDetails.previousDegreeWithImage)}
-                              style={{ cursor: 'pointer',}}
+                              style={{ cursor: 'pointer', }}
                             />
                           </div>
                         </div>
