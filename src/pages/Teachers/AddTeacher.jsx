@@ -47,7 +47,7 @@ const AddTeacher = () => {
     dateOfBirth: '',
     gender: '',
     nic: '',
-    nicImage: '',
+    nicImage: [],
     phoneNumber: '',
     nextOfKinPhoneNumber: '',
     emailAddress: '',
@@ -103,7 +103,10 @@ const AddTeacher = () => {
         if (fieldName === 'profileImage') {
           setFormData(prev => ({ ...prev, profileImage: response.data.data }));
         } else if (fieldName === 'nicImage') {
-          setFormData(prev => ({ ...prev, nicImage: response.data.data }));
+          setFormData(prev => ({
+            ...prev,
+            nicImage: [...prev.nicImage, response.data.data]
+          }));
         } else if (fieldName === 'marksheetImages') {
           setFormData(prev => ({
             ...prev,
@@ -121,8 +124,11 @@ const AddTeacher = () => {
   const handleRemoveImage = (fieldName, index = null) => {
     if (fieldName === 'profileImage') {
       setFormData(prev => ({ ...prev, profileImage: '' }));
-    } else if (fieldName === 'nicImage') {
-      setFormData(prev => ({ ...prev, nicImage: '' }));
+    } else if (fieldName === 'nicImage' && index !== null) {
+      setFormData(prev => ({
+        ...prev,
+        nicImage: prev.nicImage.filter((_, i) => i !== index)
+      }));
     } else if (fieldName === 'marksheetImages' && index !== null) {
       setFormData(prev => ({
         ...prev,
@@ -542,32 +548,7 @@ const AddTeacher = () => {
 
               <div className="form-group">
                 <label>شناختی کارڈ کی تصویر</label>
-                <div className="avatar-upload">
-                  <div className="image-preview-container">
-                    {imageLoading.nicImage ? (
-                      <div className="image-loader">
-                        <div className="loading-spinner-small"></div>
-                      </div>
-                    ) : (
-                      <>
-                        <img
-                          src={formData.nicImage || '/default-nic.png'}
-                          className="avatar-preview"
-                          onClick={() => handleImageClick(formData.nicImage || '/default-nic.png')}
-                          style={{ cursor: 'pointer' }}
-                        />
-                        {formData.nicImage && (
-                          <button
-                            type="button"
-                            className="remove-image-btn"
-                            onClick={() => handleRemoveImage('nicImage')}
-                          >
-                            <FiX />
-                          </button>
-                        )}
-                      </>
-                    )}
-                  </div>
+                <div className="marksheet-upload">
                   <input
                     type="file"
                     accept="image/*"
@@ -578,6 +559,33 @@ const AddTeacher = () => {
                   <label htmlFor="nicImage" className="upload-btn">
                     <UploadIcon /> شناختی کارڈ کی تصویر اپ لوڈ کریں
                   </label>
+                  <div className="marksheet-preview">
+                    {formData.nicImage.map((url, index) => (
+                      <div key={index} className="marksheet-image-container">
+                        {imageLoading.nicImage ? (
+                          <div className="image-loader">
+                            <div className="loading-spinner-small"></div>
+                          </div>
+                        ) : (
+                          <>
+                            <img
+                              src={url}
+                              className="marksheet-preview-image"
+                              onClick={() => handleImageClick(url)}
+                              style={{ cursor: 'pointer' }}
+                            />
+                            <button
+                              type="button"
+                              className="remove-image-btn"
+                              onClick={() => handleRemoveImage('nicImage', index)}
+                            >
+                              <FiX />
+                            </button>
+                          </>
+                        )}
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
 

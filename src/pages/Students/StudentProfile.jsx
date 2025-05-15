@@ -222,13 +222,28 @@ const StudentProfile = () => {
                       </div>
                       <div className="student-nic-section">
                         <div className="image-label">شناختی کارڈ کی دستاویز</div>
-                        <div className="image-container">
-                          <img
-                            src={student.nicImage || 'https://via.placeholder.com/150'}
-                            alt="طالب علم کا شناختی کارڈ"
-                            onClick={() => handleImageClick(student.nicImage)}
-                            style={{ cursor: 'pointer' }}
-                          />
+                        <div className="multiple-images-container">
+                          {student.nicImage && student.nicImage.length > 0 ? (
+                            student.nicImage.map((image, index) => (
+                              <div key={index} className="image-container">
+                                <img
+                                  src={image}
+                                  alt={`طالب علم کا شناختی کارڈ ${index + 1}`}
+                                  onClick={() => handleImageClick(image)}
+                                  style={{ cursor: 'pointer' }}
+                                />
+                              </div>
+                            ))
+                          ) : (
+                            <div className="image-container">
+                              <img
+                                src="/default-nic.png"
+                                alt="طالب علم کا شناختی کارڈ"
+                                onClick={() => handleImageClick('/default-nic.png')}
+                                style={{ cursor: 'pointer' }}
+                              />
+                            </div>
+                          )}
                         </div>
                       </div>
                     </div>
@@ -283,26 +298,30 @@ const StudentProfile = () => {
                   </div>
                   <div className="card-content">
                     <div className="parent-images-container">
-                      <div className="parent-profile-section">
-                        <div className="image-label">پروفائل تصویر</div>
-                        <div className="image-container">
-                          <img
-                            src={student.parentDetails.profileImage || 'https://via.placeholder.com/150'}
-                            alt={student.parentDetails.fullName}
-                            onClick={() => handleImageClick(student.parentDetails.profileImage)}
-                            style={{ cursor: 'pointer' }}
-                          />
-                        </div>
-                      </div>
                       <div className="parent-nic-section">
                         <div className="image-label">شناختی کارڈ کی دستاویز</div>
-                        <div className="image-container">
-                          <img
-                            src={student.parentDetails.nicImage || 'https://via.placeholder.com/150'}
-                            alt="والدین کا شناختی کارڈ"
-                            onClick={() => handleImageClick(student.parentDetails.nicImage)}
-                            style={{ cursor: 'pointer' }}
-                          />
+                        <div className="multiple-images-container">
+                          {student.parentDetails.nicImage && student.parentDetails.nicImage.length > 0 ? (
+                            student.parentDetails.nicImage.map((image, index) => (
+                              <div key={index} className="image-container">
+                                <img
+                                  src={image}
+                                  alt={`والدین کا شناختی کارڈ ${index + 1}`}
+                                  onClick={() => handleImageClick(image)}
+                                  style={{ cursor: 'pointer' }}
+                                />
+                              </div>
+                            ))
+                          ) : (
+                            <div className="image-container">
+                              <img
+                                src="/default-nic.png"
+                                alt="والدین کا شناختی کارڈ"
+                                onClick={() => handleImageClick('/default-nic.png')}
+                                style={{ cursor: 'pointer' }}
+                              />
+                            </div>
+                          )}
                         </div>
                       </div>
                     </div>
@@ -316,24 +335,17 @@ const StudentProfile = () => {
                         </div>
                       </div>
                       <div className="info-item">
-                        <CalendarMonthIcon className="info-icon" />
+                        <PhoneIcon className="info-icon" />
                         <div className="info-details">
-                          <span className="info-label">تاریخ پیدائش</span>
-                          <span className="info-value">{new Date(student.parentDetails.dateOfBirth).toLocaleDateString()}</span>
-                        </div>
-                      </div>
-                      <div className="info-item">
-                        <PersonIcon className="info-icon" />
-                        <div className="info-details">
-                          <span className="info-label">جنس</span>
-                          <span className="info-value">{student.parentDetails.gender}</span>
+                          <span className="info-label">والد کا فون نمبر</span>
+                          <span className="info-value">{student.parentDetails.phoneNumber}</span>
                         </div>
                       </div>
                       <div className="info-item">
                         <PhoneIcon className="info-icon" />
                         <div className="info-details">
-                          <span className="info-label">فون نمبر</span>
-                          <span className="info-value">{student.parentDetails.phoneNumber}</span>
+                          <span className="info-label">والدہ کا فون نمبر</span>
+                          <span className="info-value">{student.parentDetails.motherPhoneNumber}</span>
                         </div>
                       </div>
                       <div className="info-item">

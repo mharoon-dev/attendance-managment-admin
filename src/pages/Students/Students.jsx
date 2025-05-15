@@ -46,15 +46,13 @@ const Students = () => {
     phoneNumber: '',
     fullAddress: '',
     gender: '',
-    nicImage: '',
+    nicImage: [],
     parentDetails: {
-      profileImage: '',
       fullName: '',
-      dateOfBirth: '',
-      gender: '',
       nic: '',
-      nicImage: '',
+      nicImage: [],
       phoneNumber: '',
+      motherPhoneNumber: '',
       education: '',
       profession: ''
     },
@@ -121,24 +119,22 @@ const Students = () => {
     setFormData({
       fullName: student.fullName || '',
       profileImage: student.profileImage || '',
-      dateOfBirth: student.dateOfBirth?.split('T')[0] || '', // Split the date to remove time
+      dateOfBirth: student.dateOfBirth?.split('T')[0] || '',
       phoneNumber: student.phoneNumber || '',
       fullAddress: student.fullAddress || '',
       gender: student.gender || '',
-      nicImage: student.nicImage || '',
+      nicImage: student.nicImage || [],
       parentDetails: {
-        profileImage: student.parentDetails?.profileImage || '',
         fullName: student.parentDetails?.fullName || '',
-        dateOfBirth: student.parentDetails?.dateOfBirth?.split('T')[0] || '', // Split the date to remove time
-        gender: student.parentDetails?.gender || '',
         nic: student.parentDetails?.nic || '',
-        nicImage: student.parentDetails?.nicImage || '',
+        nicImage: student.parentDetails?.nicImage || [],
         phoneNumber: student.parentDetails?.phoneNumber || '',
+        motherPhoneNumber: student.parentDetails?.motherPhoneNumber || '',
         education: student.parentDetails?.education || '',
         profession: student.parentDetails?.profession || ''
       },
       schoolDetails: {
-        joiningDate: student.schoolDetails?.joiningDate?.split('T')[0] || '', // Split the date to remove time
+        joiningDate: student.schoolDetails?.joiningDate?.split('T')[0] || '',
         rollNumber: student.schoolDetails?.rollNumber || '',
         previousInstitute: student.schoolDetails?.previousInstitute || '',
         previousDegreeWithImage: student.schoolDetails?.previousDegreeWithImage || ''
@@ -158,15 +154,13 @@ const Students = () => {
       phoneNumber: '',
       fullAddress: '',
       gender: '',
-      nicImage: '',
+      nicImage: [],
       parentDetails: {
-        profileImage: '',
         fullName: '',
-        dateOfBirth: '',
-        gender: '',
         nic: '',
-        nicImage: '',
+        nicImage: [],
         phoneNumber: '',
+        motherPhoneNumber: '',
         education: '',
         profession: ''
       },
@@ -178,7 +172,6 @@ const Students = () => {
       },
       grade: ''
     });
-
   };
 
   const handleInputChange = (e) => {
@@ -263,21 +256,16 @@ const Students = () => {
         if (fieldName === 'profileImage') {
           setFormData(prev => ({ ...prev, profileImage: response.data.data }));
         } else if (fieldName === 'nicImage') {
-          setFormData(prev => ({ ...prev, nicImage: response.data.data }));
-        } else if (fieldName === 'parentDetails.profileImage') {
-          setFormData(prev => ({
-            ...prev,
-            parentDetails: {
-              ...prev.parentDetails,
-              profileImage: response.data.data
-            }
+          setFormData(prev => ({ 
+            ...prev, 
+            nicImage: [...(prev.nicImage || []), response.data.data] 
           }));
         } else if (fieldName === 'parentDetails.nicImage') {
           setFormData(prev => ({
             ...prev,
             parentDetails: {
               ...prev.parentDetails,
-              nicImage: response.data.data
+              nicImage: [...(prev.parentDetails.nicImage || []), response.data.data]
             }
           }));
         } else if (fieldName === 'schoolDetails.previousDegreeWithImage') {
@@ -296,36 +284,41 @@ const Students = () => {
     }
   };
 
-  const handleRemoveImage = (fieldName) => {
-    if (fieldName === 'profileImage') {
-      setFormData(prev => ({ ...prev, profileImage: '' }));
-    } else if (fieldName === 'nicImage') {
-      setFormData(prev => ({ ...prev, nicImage: '' }));
-    } else if (fieldName === 'parentDetails.profileImage') {
-      setFormData(prev => ({
-        ...prev,
-        parentDetails: {
-          ...prev.parentDetails,
-          profileImage: ''
-        }
-      }));
-    } else if (fieldName === 'parentDetails.nicImage') {
-      setFormData(prev => ({
-        ...prev,
-        parentDetails: {
-          ...prev.parentDetails,
-          nicImage: ''
-        }
-      }));
-    } else if (fieldName === 'schoolDetails.previousDegreeWithImage') {
-      setFormData(prev => ({
-        ...prev,
-        schoolDetails: {
-          ...prev.schoolDetails,
-          previousDegreeWithImage: ''
-        }
-      }));
+  const handleRemoveImage = (fieldName, index) => {
+    if (fieldName === 'nicImage' || fieldName === 'parentDetails.nicImage') {
+      if (fieldName.includes('.')) {
+        const [parent, child] = fieldName.split('.');
+        setFormData(prev => ({
+          ...prev,
+          [parent]: {
+            ...prev[parent],
+            [child]: prev[parent][child].filter((_, i) => i !== index)
+          }
+        }));
+      } else {
+        setFormData(prev => ({
+          ...prev,
+          [fieldName]: prev[fieldName].filter((_, i) => i !== index)
+        }));
+      }
+    } else {
+      if (fieldName.includes('.')) {
+        const [parent, child] = fieldName.split('.');
+        setFormData(prev => ({
+          ...prev,
+          [parent]: {
+            ...prev[parent],
+            [child]: ''
+          }
+        }));
+      } else {
+        setFormData(prev => ({ ...prev, [fieldName]: '' }));
+      }
     }
+  };
+
+  const handleImageClick = (imageUrl) => {
+    window.open(imageUrl, '_blank');
   };
 
   return (
@@ -572,6 +565,8 @@ const Students = () => {
                                 src={formData.profileImage || '/default-avatar.png'}
                                 alt="پروفائل"
                                 className="avatar-preview"
+                                onClick={() => formData.profileImage && handleImageClick(formData.profileImage)}
+                                style={{ cursor: formData.profileImage ? 'pointer' : 'default' }}
                               />
                               {formData.profileImage && (
                                 <button
@@ -597,23 +592,37 @@ const Students = () => {
                           </div>
                         </div>
                         <div className="form-group">
-                          <label htmlFor="nicImage">شناختی کارڈ کی تصویر</label>
+                          <label htmlFor="nicImage">شناختی کارڈ کی تصاویر</label>
                           <div className="avatar-upload">
-                            <div className="image-preview-container">
-                              <img
-                                src={formData.nicImage || '/default-nic.png'}
-                                alt="شناختی کارڈ"
-                                className="avatar-preview"
-                              />
-                              {formData.nicImage && (
-                                <button
-                                  type="button"
-                                  className="remove-image-btn"
-                                  onClick={() => handleRemoveImage('nicImage')}
-                                >
-                                  <FiX />
-                                </button>
-                              )}
+                            <div className="multiple-images-main-container">
+                              <div className="multiple-images-container">
+                                {formData.nicImage.map((image, index) => (
+                                  <div key={index} className="image-wrapper">
+                                    <img
+                                      src={image}
+                                      alt={`NIC Image ${index + 1}`}
+                                      onClick={() => handleImageClick(image)}
+                                      style={{ cursor: 'pointer' }}
+                                    />
+                                    <button
+                                      type="button"
+                                      className="remove-image-btn"
+                                      onClick={() => handleRemoveImage('nicImage', index)}
+                                    >
+                                      <FiX />
+                                    </button>
+                                  </div>
+                                ))}
+                                {formData.nicImage.length === 0 && (
+                                  <div className="empty-state">
+                                    <img
+                                      src="/default-nic.png"
+                                      alt="Default NIC"
+                                      style={{ opacity: 0.5 }}
+                                    />
+                                  </div>
+                                )}
+                              </div>
                             </div>
                             <input
                               type="file"
@@ -624,7 +633,7 @@ const Students = () => {
                               name="nicImage"
                             />
                             <label htmlFor="nicImage" className="upload-btn">
-                              <FiUpload /> شناختی کارڈ کی تصویر تبدیل کریں
+                              <FiUpload /> شناختی کارڈ کی تصویر اپ لوڈ کریں
                             </label>
                           </div>
                         </div>
@@ -646,42 +655,27 @@ const Students = () => {
                             required
                           />
                         </div>
-                        <div className="form-group">
-                          <label htmlFor="parentDetails.gender">والدین کی جنس</label>
-                          <select
-                            id="parentDetails.gender"
-                            name="parentDetails.gender"
-                            value={formData.parentDetails.gender}
-                            onChange={handleInputChange}
-                            required
-                          >
-                            <option value="">جنس منتخب کریں</option>
-                            <option value="Male">مرد</option>
-                            <option value="Female">عورت</option>
-                            <option value="Other">دیگر</option>
-                          </select>
-                        </div>
                       </div>
 
                       <div className="form-row">
                         <div className="form-group">
-                          <label htmlFor="parentDetails.dateOfBirth">والدین کی تاریخ پیدائش</label>
-                          <input
-                            type="date"
-                            id="parentDetails.dateOfBirth"
-                            name="parentDetails.dateOfBirth"
-                            value={formData.parentDetails.dateOfBirth}
-                            onChange={handleInputChange}
-                            required
-                          />
-                        </div>
-                        <div className="form-group">
-                          <label htmlFor="parentDetails.phoneNumber">والدین کا فون نمبر</label>
+                          <label htmlFor="parentDetails.phoneNumber">والد کا فون نمبر</label>
                           <input
                             type="tel"
                             id="parentDetails.phoneNumber"
                             name="parentDetails.phoneNumber"
                             value={formData.parentDetails.phoneNumber}
+                            onChange={handleInputChange}
+                            required
+                          />
+                        </div>
+                        <div className="form-group">
+                          <label htmlFor="parentDetails.motherPhoneNumber">والدہ کا فون نمبر</label>
+                          <input
+                            type="tel"
+                            id="parentDetails.motherPhoneNumber"
+                            name="parentDetails.motherPhoneNumber"
+                            value={formData.parentDetails.motherPhoneNumber}
                             onChange={handleInputChange}
                             required
                           />
@@ -725,70 +719,50 @@ const Students = () => {
                         />
                       </div>
 
-                      <div className="form-row">
-                        <div className="form-group">
-                          <label htmlFor="parentDetails.profileImage">والدین کی پروفائل تصویر</label>
-                          <div className="avatar-upload">
-                            <div className="image-preview-container">
-                              <img
-                                src={formData.parentDetails.profileImage || '/default-avatar.png'}
-                                alt="والدین کی پروفائل"
-                                className="avatar-preview"
-                              />
-                              {formData.parentDetails.profileImage && (
-                                <button
-                                  type="button"
-                                  className="remove-image-btn"
-                                  onClick={() => handleRemoveImage('parentDetails.profileImage')}
-                                >
-                                  <FiX />
-                                </button>
+                      <div className="form-group">
+                        <label>والدین کا شناختی کارڈ کی تصاویر</label>
+                        <div className="avatar-upload">
+                          <div className="multiple-images-main-container">
+                            <div className="multiple-images-container">
+                              {formData.parentDetails.nicImage.map((image, index) => (
+                                <div key={index} className="image-wrapper">
+                                  <img
+                                    src={image}
+                                    alt={`Parent NIC Image ${index + 1}`}
+                                    onClick={() => handleImageClick(image)}
+                                    style={{ cursor: 'pointer' }}
+                                  />
+                                  <button
+                                    type="button"
+                                    className="remove-image-btn"
+                                    onClick={() => handleRemoveImage('parentDetails.nicImage', index)}
+                                  >
+                                    <FiX />
+                                  </button>
+                                </div>
+                              ))}
+                              {formData.parentDetails.nicImage.length === 0 && (
+                                <div className="empty-state">
+                                  <img
+                                    src="/default-nic.png"
+                                    alt="Default Parent NIC"
+                                    style={{ opacity: 0.5 }}
+                                  />
+                                </div>
                               )}
                             </div>
-                            <input
-                              type="file"
-                              accept="image/*"
-                              onChange={(e) => handleFileUpload(e, 'parentDetails.profileImage')}
-                              style={{ display: 'none' }}
-                              id="parentDetails.profileImage"
-                              name="parentDetails.profileImage"
-                            />
-                            <label htmlFor="parentDetails.profileImage" className="upload-btn">
-                              <FiUpload /> والدین کی تصویر تبدیل کریں
-                            </label>
                           </div>
-                        </div>
-                        <div className="form-group">
-                          <label htmlFor="parentDetails.nicImage">والدین کا شناختی کارڈ کی تصویر</label>
-                          <div className="avatar-upload">
-                            <div className="image-preview-container">
-                              <img
-                                src={formData.parentDetails.nicImage || '/default-nic.png'}
-                                alt="والدین کا شناختی کارڈ"
-                                className="avatar-preview"
-                              />
-                              {formData.parentDetails.nicImage && (
-                                <button
-                                  type="button"
-                                  className="remove-image-btn"
-                                  onClick={() => handleRemoveImage('parentDetails.nicImage')}
-                                >
-                                  <FiX />
-                                </button>
-                              )}
-                            </div>
-                            <input
-                              type="file"
-                              accept="image/*"
-                              onChange={(e) => handleFileUpload(e, 'parentDetails.nicImage')}
-                              style={{ display: 'none' }}
-                              id="parentDetails.nicImage"
-                              name="parentDetails.nicImage"
-                            />
-                            <label htmlFor="parentDetails.nicImage" className="upload-btn">
-                              <FiUpload /> والدین کا شناختی کارڈ کی تصویر تبدیل کریں
-                            </label>
-                          </div>
+                          <input
+                            type="file"
+                            accept="image/*"
+                            onChange={(e) => handleFileUpload(e, 'parentDetails.nicImage')}
+                            style={{ display: 'none' }}
+                            id="parentDetails.nicImage"
+                            name="parentDetails.nicImage"
+                          />
+                          <label htmlFor="parentDetails.nicImage" className="upload-btn">
+                            <FiUpload /> والدین کا شناختی کارڈ کی تصویر اپ لوڈ کریں
+                          </label>
                         </div>
                       </div>
                     </div>
@@ -853,6 +827,8 @@ const Students = () => {
                               src={formData.schoolDetails.previousDegreeWithImage || '/default-degree.png'}
                               alt="سابقہ ڈگری"
                               className="avatar-preview"
+                              onClick={() => formData.schoolDetails.previousDegreeWithImage && handleImageClick(formData.schoolDetails.previousDegreeWithImage)}
+                              style={{ cursor: formData.schoolDetails.previousDegreeWithImage ? 'pointer' : 'default' }}
                             />
                             {formData.schoolDetails.previousDegreeWithImage && (
                               <button

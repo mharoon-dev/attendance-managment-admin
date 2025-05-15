@@ -52,7 +52,7 @@ const Teachers = () => {
     dateOfBirth: "",
     gender: "",
     nic: "",
-    nicImage: "",
+    nicImage: [],
     phoneNumber: "",
     nextOfKinPhoneNumber: "",
     emailAddress: "",
@@ -147,7 +147,10 @@ const Teachers = () => {
         if (fieldName === 'profileImage') {
           setFormData(prev => ({ ...prev, profileImage: response.data.data }));
         } else if (fieldName === 'nicImage') {
-          setFormData(prev => ({ ...prev, nicImage: response.data.data }));
+          setFormData(prev => ({
+            ...prev,
+            nicImage: [...(prev.nicImage || []), response.data.data]
+          }));
         } else if (fieldName === 'marksheetImages') {
           setFormData(prev => ({
             ...prev,
@@ -163,8 +166,11 @@ const Teachers = () => {
   const handleRemoveImage = (fieldName, index = null) => {
     if (fieldName === 'profileImage') {
       setFormData(prev => ({ ...prev, profileImage: '' }));
-    } else if (fieldName === 'nicImage') {
-      setFormData(prev => ({ ...prev, nicImage: '' }));
+    } else if (fieldName === 'nicImage' && index !== null) {
+      setFormData(prev => ({
+        ...prev,
+        nicImage: prev.nicImage.filter((_, i) => i !== index)
+      }));
     } else if (fieldName === 'marksheetImages' && index !== null) {
       setFormData(prev => ({
         ...prev,
@@ -647,26 +653,8 @@ const Teachers = () => {
                       </div>
 
                       <div className="form-group">
-                        <label>شناختی کارڈ کی تصویر</label>
-                        <div className="avatar-upload">
-                          <div className="image-preview-container">
-                            <img
-                              src={formData.nicImage || '/default-nic.png'}
-                              alt="NIC"
-                              className="avatar-preview"
-                              onClick={() => handleImageClick(formData.nicImage || '/default-nic.png')}
-                              style={{ cursor: 'pointer' }}
-                            />
-                            {formData.nicImage && (
-                              <button
-                                type="button"
-                                className="remove-image-btn"
-                                onClick={() => handleRemoveImage('nicImage')}
-                              >
-                                <FiX />
-                              </button>
-                            )}
-                          </div>
+                        <label>شناختی کارڈ کی تصاویر</label>
+                        <div className="marksheet-upload">
                           <input
                             type="file"
                             accept="image/*"
@@ -675,8 +663,27 @@ const Teachers = () => {
                             id="nicImage"
                           />
                           <label htmlFor="nicImage" className="upload-btn">
-                            <FiUpload /> شناختی کارڈ کی تصویر تبدیل کریں
+                            <FiUpload /> شناختی کارڈ کی تصویر اپ لوڈ کریں
                           </label>
+                          <div className="marksheet-preview">
+                            {formData.nicImage.map((url, index) => (
+                              <div key={index} className="marksheet-image-container">
+                                <img
+                                  src={url}
+                                  className="marksheet-preview-image"
+                                  onClick={() => handleImageClick(url)}
+                                  style={{ cursor: 'pointer' }}
+                                />
+                                <button
+                                  type="button"
+                                  className="remove-image-btn"
+                                  onClick={() => handleRemoveImage('nicImage', index)}
+                                >
+                                  <FiX />
+                                </button>
+                              </div>
+                            ))}
+                          </div>
                         </div>
                       </div>
 

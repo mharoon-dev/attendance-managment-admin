@@ -31,7 +31,6 @@ const AddStudent = () => {
     profileImage: false,
     nicImage: false,
     parentDetails: {
-      profileImage: false,
       nicImage: false
     },
     schoolDetails: {
@@ -48,15 +47,13 @@ const AddStudent = () => {
     phoneNumber: '',
     fullAddress: '',
     gender: '',
-    nicImage: '',
+    nicImage: [],
     parentDetails: {
-      profileImage: '',
       fullName: '',
-      dateOfBirth: '',
-      gender: '',
       nic: '',
-      nicImage: '',
+      nicImage: [],
       phoneNumber: '',
+      motherPhoneNumber: '',
       education: '',
       profession: ''
     },
@@ -122,15 +119,32 @@ const AddStudent = () => {
         
         if (fieldName.includes('.')) {
           const [parent, child] = fieldName.split('.');
-          setFormData(prev => ({
-            ...prev,
-            [parent]: {
-              ...prev[parent],
-              [child]: response.data.data
-            }
-          }));
+          if (child === 'nicImage') {
+            setFormData(prev => ({
+              ...prev,
+              [parent]: {
+                ...prev[parent],
+                [child]: [...(prev[parent][child] || []), response.data.data]
+              }
+            }));
+          } else {
+            setFormData(prev => ({
+              ...prev,
+              [parent]: {
+                ...prev[parent],
+                [child]: response.data.data
+              }
+            }));
+          }
         } else {
-          setFormData(prev => ({ ...prev, [fieldName]: response.data.data }));
+          if (fieldName === 'nicImage') {
+            setFormData(prev => ({ 
+              ...prev, 
+              [fieldName]: [...(prev[fieldName] || []), response.data.data] 
+            }));
+          } else {
+            setFormData(prev => ({ ...prev, [fieldName]: response.data.data }));
+          }
         }
       } catch (error) {
         console.error('Error uploading file:', error);
@@ -152,18 +166,36 @@ const AddStudent = () => {
     }
   };
 
-  const handleRemoveImage = (fieldName) => {
-    if (fieldName.includes('.')) {
-      const [parent, child] = fieldName.split('.');
-      setFormData(prev => ({
-        ...prev,
-        [parent]: {
-          ...prev[parent],
-          [child]: ''
-        }
-      }));
+  const handleRemoveImage = (fieldName, index) => {
+    if (fieldName === 'nicImage' || fieldName === 'parentDetails.nicImage') {
+      if (fieldName.includes('.')) {
+        const [parent, child] = fieldName.split('.');
+        setFormData(prev => ({
+          ...prev,
+          [parent]: {
+            ...prev[parent],
+            [child]: prev[parent][child].filter((_, i) => i !== index)
+          }
+        }));
+      } else {
+        setFormData(prev => ({
+          ...prev,
+          [fieldName]: prev[fieldName].filter((_, i) => i !== index)
+        }));
+      }
     } else {
-      setFormData(prev => ({ ...prev, [fieldName]: '' }));
+      if (fieldName.includes('.')) {
+        const [parent, child] = fieldName.split('.');
+        setFormData(prev => ({
+          ...prev,
+          [parent]: {
+            ...prev[parent],
+            [child]: ''
+          }
+        }));
+      } else {
+        setFormData(prev => ({ ...prev, [fieldName]: '' }));
+      }
     }
   };
 
@@ -364,31 +396,41 @@ const AddStudent = () => {
               </div>
 
               <div className="form-group">
-                <label>شناختی کارڈ کی تصویر</label>
+                <label>شناختی کارڈ کی تصاویر</label>
                 <div className="avatar-upload">
-                  <div className="image-preview-container">
+                  <div className="multiple-images-main-container">
                     {imageLoading.nicImage ? (
                       <div className="image-loader">
                         <div className="loading-spinner-small"></div>
                       </div>
                     ) : (
-                      <>
-                        <img
-                          src={formData.nicImage || '/default-nic.png'}
-                          className="avatar-preview"
-                          onClick={() => handleImageClick(formData.nicImage || '/default-nic.png')}
-                          style={{ cursor: 'pointer' }}
-                        />
-                        {formData.nicImage && (
-                          <button
-                            type="button"
-                            className="remove-image-btn"
-                            onClick={() => handleRemoveImage('nicImage')}
-                          >
-                            <FiX />
-                          </button>
+                      <div className="multiple-images-container">
+                        {formData.nicImage.map((image, index) => (
+                          <div key={index} className="image-wrapper">
+                            <img
+                              src={image}
+                              className="avatar-preview"
+                              onClick={() => handleImageClick(image)}
+                              style={{ cursor: 'pointer' }}
+                            />
+                            <button
+                              type="button"
+                              className="remove-image-btn"
+                              onClick={() => handleRemoveImage('nicImage', index)}
+                            >
+                              <FiX />
+                            </button>
+                          </div>
+                        ))}
+                        {formData.nicImage.length === 0 && (
+                          <img
+                            src="/default-nic.png"
+                            className="avatar-preview"
+                            onClick={() => handleImageClick('/default-nic.png')}
+                            style={{ cursor: 'pointer' }}
+                          />
                         )}
-                      </>
+                      </div>
                     )}
                   </div>
                   <input
@@ -408,47 +450,6 @@ const AddStudent = () => {
             <div className="form-section">
               <h2 style={{width: '100%' ,textAlign: 'end'}}>والدین کی معلومات</h2>
               
-              <div className="form-group">
-                <label>والدین کی پروفائل تصویر</label>
-                <div className="avatar-upload">
-                  <div className="image-preview-container">
-                    {imageLoading.parentDetails.profileImage ? (
-                      <div className="image-loader">
-                        <div className="loading-spinner-small"></div>
-                      </div>
-                    ) : (
-                      <>
-                        <img
-                          src={formData.parentDetails.profileImage || '/default-avatar.png'}
-                          className="avatar-preview"
-                          onClick={() => handleImageClick(formData.parentDetails.profileImage || '/default-avatar.png')}
-                          style={{ cursor: 'pointer' }}
-                        />
-                        {formData.parentDetails.profileImage && (
-                          <button
-                            type="button"
-                            className="remove-image-btn"
-                            onClick={() => handleRemoveImage('parentDetails.profileImage')}
-                          >
-                            <FiX />
-                          </button>
-                        )}
-                      </>
-                    )}
-                  </div>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={(e) => handleFileUpload(e, 'parentDetails.profileImage')}
-                    style={{ display: 'none' }}
-                    id="parentProfileImage"
-                  />
-                  <label htmlFor="parentProfileImage" className="upload-btn">
-                    <UploadIcon /> والدین کی تصویر اپ لوڈ کریں
-                  </label>
-                </div>
-              </div>
-
               <div className="form-row">
                 <div className="form-group">
                   <label htmlFor="parentDetails.fullName">والدین کا نام</label>
@@ -466,33 +467,7 @@ const AddStudent = () => {
                   </div>
                 </div>
                 <div className="form-group">
-                  <label htmlFor="parentDetails.dateOfBirth">والدین کی تاریخ پیدائش</label>
-                  <div className="input-with-icon">
-                    <CalendarTodayIcon className="input-icon" />
-                    <input
-                      type="date"
-                      id="parentDetails.dateOfBirth"
-                      name="parentDetails.dateOfBirth"
-                      value={formData.parentDetails.dateOfBirth}
-                      onChange={handleInputChange}
-                      required
-                    />
-                  </div>
-                </div>
-              </div>
-
-              <div className="form-row">
-                <div className="form-group">
-                  <label htmlFor="parentDetails.gender">والدین کی جنس</label>
-                  <CustomDropdown
-                    options={genderOptions}
-                    value={formData.parentDetails.gender}
-                    onChange={(value) => handleInputChange({ target: { name: 'parentDetails.gender', value } })}
-                    placeholder="والدین کی جنس منتخب کریں"
-                  />
-                </div>
-                <div className="form-group">
-                  <label htmlFor="parentDetails.phoneNumber">والدین کا فون نمبر</label>
+                  <label htmlFor="parentDetails.phoneNumber">والد کا فون نمبر</label>
                   <div className="input-with-icon">
                     <PhoneIcon className="input-icon" />
                     <input
@@ -501,7 +476,7 @@ const AddStudent = () => {
                       name="parentDetails.phoneNumber"
                       value={formData.parentDetails.phoneNumber}
                       onChange={handleInputChange}
-                      placeholder="والدین کا فون نمبر درج کریں"
+                      placeholder="والد کا فون نمبر درج کریں"
                       required
                     />
                   </div>
@@ -509,6 +484,21 @@ const AddStudent = () => {
               </div>
 
               <div className="form-row">
+                <div className="form-group">
+                  <label htmlFor="parentDetails.motherPhoneNumber">والدہ کا فون نمبر</label>
+                  <div className="input-with-icon">
+                    <PhoneIcon className="input-icon" />
+                    <input
+                      type="tel"
+                      id="parentDetails.motherPhoneNumber"
+                      name="parentDetails.motherPhoneNumber"
+                      value={formData.parentDetails.motherPhoneNumber}
+                      onChange={handleInputChange}
+                      placeholder="والدہ کا فون نمبر درج کریں"
+                      required
+                    />
+                  </div>
+                </div>
                 <div className="form-group">
                   <label htmlFor="parentDetails.nic">والدین کا شناختی کارڈ نمبر</label>
                   <div className="input-with-icon">
@@ -524,6 +514,9 @@ const AddStudent = () => {
                     />
                   </div>
                 </div>
+              </div>
+
+              <div className="form-row">
                 <div className="form-group">
                   <label htmlFor="parentDetails.education">والدین کی تعلیم</label>
                   <div className="input-with-icon">
@@ -539,50 +532,59 @@ const AddStudent = () => {
                     />
                   </div>
                 </div>
-              </div>
-
-              <div className="form-group">
-                <label htmlFor="parentDetails.profession">والدین کا پیشہ</label>
-                <div className="input-with-icon">
-                  <BusinessIcon className="input-icon" />
-                  <input
-                    type="text"
-                    id="parentDetails.profession"
-                    name="parentDetails.profession"
-                    value={formData.parentDetails.profession}
-                    onChange={handleInputChange}
-                    placeholder="والدین کا پیشہ درج کریں"
-                    required
-                  />
+                <div className="form-group">
+                  <label htmlFor="parentDetails.profession">والدین کا پیشہ</label>
+                  <div className="input-with-icon">
+                    <BusinessIcon className="input-icon" />
+                    <input
+                      type="text"
+                      id="parentDetails.profession"
+                      name="parentDetails.profession"
+                      value={formData.parentDetails.profession}
+                      onChange={handleInputChange}
+                      placeholder="والدین کا پیشہ درج کریں"
+                      required
+                    />
+                  </div>
                 </div>
               </div>
 
               <div className="form-group">
-                <label>والدین کا شناختی کارڈ کی تصویر</label>
+                <label>والدین کا شناختی کارڈ کی تصاویر</label>
                 <div className="avatar-upload">
-                  <div className="image-preview-container">
+                  <div className="multiple-images-main-container">
                     {imageLoading.parentDetails.nicImage ? (
                       <div className="image-loader">
                         <div className="loading-spinner-small"></div>
                       </div>
                     ) : (
-                      <>
-                        <img
-                          src={formData.parentDetails.nicImage || '/default-nic.png'}
-                          className="avatar-preview"
-                          onClick={() => handleImageClick(formData.parentDetails.nicImage || '/default-nic.png')}
-                          style={{ cursor: 'pointer' }}
-                        />
-                        {formData.parentDetails.nicImage && (
-                          <button
-                            type="button"
-                            className="remove-image-btn"
-                            onClick={() => handleRemoveImage('parentDetails.nicImage')}
-                          >
-                            <FiX />
-                          </button>
+                      <div className="multiple-images-container">
+                        {formData.parentDetails.nicImage.map((image, index) => (
+                          <div key={index} className="image-wrapper">
+                            <img
+                              src={image}
+                              className="avatar-preview"
+                              onClick={() => handleImageClick(image)}
+                              style={{ cursor: 'pointer' }}
+                            />
+                            <button
+                              type="button"
+                              className="remove-image-btn"
+                              onClick={() => handleRemoveImage('parentDetails.nicImage', index)}
+                            >
+                              <FiX />
+                            </button>
+                          </div>
+                        ))}
+                        {formData.parentDetails.nicImage.length === 0 && (
+                          <img
+                            src="/default-nic.png"
+                            className="avatar-preview"
+                            onClick={() => handleImageClick('/default-nic.png')}
+                            style={{ cursor: 'pointer' }}
+                          />
                         )}
-                      </>
+                      </div>
                     )}
                   </div>
                   <input

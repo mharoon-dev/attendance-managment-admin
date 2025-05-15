@@ -151,17 +151,20 @@ const TeacherProfile = () => {
             </div>
           </div>
 
-          {teacher?.nicImage && (
+          {teacher?.nicImage && teacher.nicImage.length > 0 && (
             <div className="detail-section">
               <h3><DescriptionIcon /> شناختی کارڈ کا دستاویز</h3>
-              <div className="document-container">
-                <img 
-                  src={teacher.nicImage} 
-                  alt="NIC Document" 
-                  className="document-image"
-                  onClick={() => handleImageClick(teacher.nicImage)}
-                  style={{ cursor: 'pointer' }}
-                />
+              <div className="marksheet-grid">
+                {teacher.nicImage.map((image, index) => (
+                  <div 
+                    key={index} 
+                    className="marksheet-item"
+                    onClick={() => handleImageClick(image)}
+                    style={{ cursor: 'pointer' }}
+                  >
+                    <img src={image} alt={`NIC Document ${index + 1}`} />
+                  </div>
+                ))}
               </div>
             </div>
           )}
