@@ -215,6 +215,7 @@ const Subjects = () => {
           }`}
         >
           <div className="subjects-header">
+            <h1>تمام مضامین</h1>
             {
               (user.role === "admin" || user.role === "superAdmin") && (
                 <button
@@ -225,7 +226,6 @@ const Subjects = () => {
                 </button>
               )
             }
-            <h1>تمام مضامین</h1>
           </div>
 
           <div className="toolbar">
@@ -277,10 +277,11 @@ const Subjects = () => {
                   </div>
                 </div>
 
-                <div className="subject-card-footer">
                  
                   {
                     (user.role === "admin" || user.role === "superAdmin") && (
+                <div className="subject-card-footer">
+
                       <div className="quick-actions">
                         <button 
                           className="action-btn edit"
@@ -295,9 +296,9 @@ const Subjects = () => {
                           <DeleteIcon />
                         </button>
                       </div>
+                      </div>
                     )
                   }
-                </div>
               </div>
             ))}
           </div>

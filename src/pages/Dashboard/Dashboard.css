@@ -55,11 +55,11 @@
 }
 
 .date-filter-button:hover {
-  color: #3A86FF;
+  color: #3a86ff;
 }
 
 .date-filter-button.active {
-  background-color: #3A86FF;
+  background-color: #3a86ff;
   color: #fff;
 }
 
@@ -143,11 +143,11 @@
 }
 
 .stat-change.up {
-  color: #38B000;
+  color: #38b000;
 }
 
 .stat-change.down {
-  color: #FF006E;
+  color: #ff006e;
 }
 
 .dashboard-grid {
@@ -177,18 +177,19 @@
   font-size: 1.25rem;
   font-weight: 600;
   color: #1a1a1a;
+  margin-left: auto;
   margin: 0;
   position: relative;
 }
 
 .card-header h2::after {
-  content: '';
+  content: "";
   position: absolute;
   bottom: -0.5rem;
   left: 0;
   width: 50px;
   height: 3px;
-  background: linear-gradient(90deg, #3A86FF, #FF006E);
+  background: linear-gradient(90deg, #3a86ff, #ff006e);
   border-radius: 3px;
 }
 
@@ -208,7 +209,7 @@
 
 .card-action-button:hover {
   background-color: #f3f4f6;
-  color: #3A86FF;
+  color: #3a86ff;
 }
 
 .view-all-button {
@@ -217,13 +218,13 @@
   background: none;
   border-radius: 0.375rem;
   font-size: 0.875rem;
-  color: #3A86FF;
+  color: #3a86ff;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 .view-all-button:hover {
-  background-color: #3A86FF15;
+  background-color: #3a86ff15;
 }
 
 .chart-container {
@@ -232,7 +233,7 @@
   padding: 20px;
   background-color: #fff;
   border-radius: 10px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .chart-placeholder {
@@ -274,15 +275,15 @@
 }
 
 .chart-bar.present {
-  background-color: #4CAF50;
+  background-color: #4caf50;
 }
 
 .chart-bar.absent {
-  background-color: #F44336;
+  background-color: #f44336;
 }
 
 .chart-bar.late {
-  background-color: #FFC107;
+  background-color: #ffc107;
 }
 
 .chart-day-label {
@@ -313,15 +314,15 @@
 }
 
 .legend-color.present {
-  background-color: #4CAF50;
+  background-color: #4caf50;
 }
 
 .legend-color.absent {
-  background-color: #F44336;
+  background-color: #f44336;
 }
 
 .legend-color.late {
-  background-color: #FFC107;
+  background-color: #ffc107;
 }
 
 .activity-list {
@@ -466,74 +467,77 @@
     max-height: 300px;
   }
 
-.chart-legend {
-  width: 1000px;
-}
+  .chart-legend {
+    width: 1000px;
+  }
 }
 
 @media (max-width: 768px) {
+  .dashboard-header {
+    justify-content: flex-end;
+  }
   .main-content {
     margin-left: 0;
     width: 100%;
     padding: 1rem;
   }
-  
+
   .main-content.sidebar-closed {
     margin-left: 0;
     width: 100%;
   }
-  
+
   .dashboard-header {
     flex-direction: column;
-    align-items: flex-start;
+    align-items: flex-end;
     gap: 1rem;
   }
-  
+
   .date-filter {
     width: 100%;
     overflow-x: auto;
     padding: 0.5rem;
     justify-content: flex-start;
   }
-  
+
   .date-filter-button {
     white-space: nowrap;
     padding: 0.5rem 0.75rem;
     font-size: 0.813rem;
   }
-  
+
   .stats-grid {
     grid-template-columns: 1fr;
     gap: 1rem;
   }
-  
+
   .stat-card {
     padding: 1.25rem;
   }
-  
+
   .stat-icon {
     width: 40px;
     height: 40px;
   }
-  
+
   .stat-value {
     font-size: 1.25rem;
   }
-  
+
   .dashboard-card {
     padding: 1rem;
   }
-  
+
   .chart-container {
     height: 350px;
     padding: 15px;
   }
-  
+
   .activity-item,
   .event-item {
     padding: 0.5rem 0;
   }
-  
+
   .activity-avatar,
   .event-icon {
     width: 36px;
@@ -566,16 +570,16 @@
   .main-content {
     padding: 0.75rem;
   }
-  
+
   .main-content.sidebar-closed {
     padding: 0.75rem;
   }
-  
+
   .chart-container {
     height: 300px;
     padding: 10px;
   }
-  
+
   .chart-legend {
     width: 720px;
   }
@@ -585,24 +589,24 @@
   .dashboard-header h1 {
     font-size: 1.5rem;
   }
-  
+
   .stat-card {
     padding: 1rem;
   }
-  
+
   .stat-icon {
     width: 36px;
     height: 36px;
   }
-  
+
   .dashboard-card {
     padding: 0.875rem;
   }
-  
+
   .card-header h2 {
     font-size: 1.125rem;
   }
-  
+
   .chart-day {
     min-width: 20px;
   }
@@ -624,7 +628,7 @@
     min-height: calc(100vh - 56px);
     overflow-x: hidden;
   }
-  
+
   .main-content.sidebar-closed {
     padding: 0.5rem;
     margin-top: 56px;
@@ -691,6 +695,7 @@
   }
 
   .card-header {
+    justify-content: end;
     margin-bottom: 0.75rem;
   }
 
@@ -734,7 +739,7 @@
     gap: 0.75rem;
     max-height: 200px;
   }
-} 
+}
 
 .activity-list,
 .events-list {
@@ -817,20 +822,20 @@
 }
 
 .todo-header h2::after {
-  content: '';
+  content: "";
   position: absolute;
   bottom: -1rem;
   left: 0;
   width: 50px;
   height: 3px;
-  background: linear-gradient(90deg, #3A86FF, #FF006E);
+  background: linear-gradient(90deg, #3a86ff, #ff006e);
   border-radius: 3px;
 }
 
 .todo-stats {
-margin-top: 15px;
+  margin-top: 15px;
   display: flex;
-  flex-wrap: wrap ;
+  flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
   gap: 1rem;
@@ -883,13 +888,9 @@ margin-top: 15px;
   flex: 0.4; /* Title input takes less space */
 }
 
-.form-group input:last-child {
-  flex: 0.6; /* Description input takes more space */
-}
-
 .form-group input:focus {
   outline: none;
-  border-color: #3A86FF;
+  border-color: #3a86ff;
   box-shadow: 0 0 0 4px rgba(58, 134, 255, 0.1);
 }
 
@@ -898,7 +899,7 @@ margin-top: 15px;
   align-items: center;
   gap: 0.75rem;
   padding: 0.875rem 1.75rem;
-  background: linear-gradient(135deg, #3A86FF, #2563eb);
+  background: linear-gradient(135deg, #3a86ff, #2563eb);
   color: white;
   border: none;
   border-radius: 0.75rem;
@@ -906,6 +907,7 @@ margin-top: 15px;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.3s ease;
+  margin-left: auto;
   box-shadow: 0 4px 6px rgba(58, 134, 255, 0.2);
 }
 
@@ -931,13 +933,13 @@ margin-top: 15px;
 }
 
 .todo-item::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
   width: 4px;
   height: 100%;
-  background: linear-gradient(to bottom, #3A86FF, #FF006E);
+  background: linear-gradient(to bottom, #3a86ff, #ff006e);
   opacity: 0;
   transition: opacity 0.3s ease;
 }
@@ -1001,7 +1003,7 @@ margin-top: 15px;
 }
 
 .edit-button {
-  color: #3A86FF;
+  color: #3a86ff;
 }
 
 .edit-button:hover {
@@ -1010,7 +1012,7 @@ margin-top: 15px;
 }
 
 .delete-button {
-  color: #FF006E;
+  color: #ff006e;
 }
 
 .delete-button:hover {
@@ -1019,7 +1021,7 @@ margin-top: 15px;
 }
 
 .complete-button {
-  color: #38B000;
+  color: #38b000;
 }
 
 .complete-button.completed {
@@ -1048,12 +1050,12 @@ margin-top: 15px;
 
 .status-badge.pending {
   background-color: rgba(255, 0, 110, 0.1);
-  color: #FF006E;
+  color: #ff006e;
 }
 
 .status-badge.completed {
   background-color: rgba(56, 176, 0, 0.1);
-  color: #38B000;
+  color: #38b000;
 }
 
 .edit-todo {
@@ -1081,7 +1083,7 @@ margin-top: 15px;
 }
 
 .save-button {
-  background: linear-gradient(135deg, #3A86FF, #2563eb);
+  background: linear-gradient(135deg, #3a86ff, #2563eb);
   color: white;
   padding: 0.75rem 1.25rem;
   border-radius: 0.75rem;
@@ -1122,7 +1124,7 @@ margin-top: 15px;
 
   .todo-header {
     flex-direction: column;
-    align-items: flex-start;
+    align-items: flex-end;
     gap: 1rem;
   }
 
@@ -1144,7 +1146,7 @@ margin-top: 15px;
 
   .todo-content {
     flex-direction: column;
-    align-items: flex-start;
+    align-items: flex-end;
   }
 
   .todo-actions {

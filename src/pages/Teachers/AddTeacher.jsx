@@ -174,15 +174,14 @@ const AddTeacher = () => {
   };
 
   const genderOptions = [
-    { value: 'Male', label: 'Male', icon: <PersonIcon /> },
-    { value: 'Female', label: 'Female', icon: <PersonIcon /> }
+    { value: 'Male', label: 'مرد', icon: <PersonIcon /> },
+    { value: 'Female', label: 'عورت', icon: <PersonIcon /> }
   ];
 
   const maritalStatusOptions = [
-    { value: 'Single', label: 'Single', icon: <PersonIcon /> },
-    { value: 'Married', label: 'Married', icon: <PersonIcon /> },
-    { value: 'Divorced', label: 'Divorced', icon: <PersonIcon /> },
-    { value: 'Widowed', label: 'Widowed', icon: <PersonIcon /> }
+    { value: 'Single', label: 'غیر شادی شدہ', icon: <PersonIcon /> },
+      { value: 'Married', label: 'شادی شدہ', icon: <PersonIcon /> },
+      { value: 'Divorced', label: 'طلاق یافتہ', icon: <PersonIcon /> },
   ];
 
   const handleImageClick = (imageUrl) => {
@@ -215,7 +214,7 @@ const AddTeacher = () => {
         <div className="add-teacher-content">
           <form onSubmit={handleSubmit}>
             <div className="form-section">
-              <h2>بنیادی کی معلومات</h2>
+              <h2>بنیادی معلومات</h2>
               
               <div className="form-group">
                 <label>پروفائل تصویر</label>
@@ -317,7 +316,7 @@ const AddTeacher = () => {
                   <div className="input-with-icon">
                     <BadgeIcon className="input-icon" />
                     <input
-                      type="text"
+                      type="number"
                       id="nic"
                       name="nic"
                       value={formData.nic}
@@ -327,6 +326,24 @@ const AddTeacher = () => {
                     />
                   </div>
                 </div>
+                <div className="form-group">
+                  <label htmlFor="fatherName">والد کا نام</label>
+                  <div className="input-with-icon">
+                    <PersonIcon className="input-icon" />
+                    <input
+                      type="text"
+                      id="fatherName"
+                      name="fatherName"
+                      value={formData.fatherName}
+                      onChange={handleInputChange}
+                      placeholder="Enter father's name"
+                      required
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="form-row">
                 <div className="form-group">
                   <label htmlFor="phoneNumber">فون نمبر</label>
                   <div className="input-with-icon">
@@ -342,9 +359,6 @@ const AddTeacher = () => {
                     />
                   </div>
                 </div>
-              </div>
-
-              <div className="form-row">
                 <div className="form-group">
                   <label htmlFor="nextOfKinPhoneNumber">قریبی رشتہ دار کا فون نمبر</label>
                   <div className="input-with-icon">
@@ -360,6 +374,9 @@ const AddTeacher = () => {
                     />
                   </div>
                 </div>
+              </div>
+
+              <div className="form-row">
                 <div className="form-group">
                   <label htmlFor="emailAddress">ای میل ایڈریس</label>
                   <div className="input-with-icon">
@@ -388,6 +405,48 @@ const AddTeacher = () => {
                   rows="3"
                   required
                 />
+              </div>
+              <div className="form-group">
+                <label>شناختی کارڈ کی تصویر</label>
+                <div className="marksheet-upload">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => handleFileUpload(e, 'nicImage')}
+                    style={{ display: 'none' }}
+                    id="nicImage"
+                  />
+                  <label htmlFor="nicImage" className="upload-btn">
+                    <UploadIcon /> شناختی کارڈ کی تصویر اپ لوڈ کریں
+                  </label>
+                  <div className="marksheet-preview">
+                    {formData.nicImage.map((url, index) => (
+                      <div key={index} className="marksheet-image-container">
+                        {imageLoading.nicImage ? (
+                          <div className="image-loader">
+                            <div className="loading-spinner-small"></div>
+                          </div>
+                        ) : (
+                          <>
+                            <img
+                              src={url}
+                              className="marksheet-preview-image"
+                              onClick={() => handleImageClick(url)}
+                              style={{ cursor: 'pointer' }}
+                            />
+                            <button
+                              type="button"
+                              className="remove-image-btn"
+                              onClick={() => handleRemoveImage('nicImage', index)}
+                            >
+                              <FiX />
+                            </button>
+                          </>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
               </div>
               <div className="form-group">
                 <label htmlFor="password">پاس ورڈ</label>
@@ -527,64 +586,6 @@ const AddTeacher = () => {
                       placeholder="Enter grade"
                       required
                     />
-                  </div>
-                </div>
-                <div className="form-group">
-                  <label htmlFor="fatherName">والد کا نام</label>
-                  <div className="input-with-icon">
-                    <PersonIcon className="input-icon" />
-                    <input
-                      type="text"
-                      id="fatherName"
-                      name="fatherName"
-                      value={formData.fatherName}
-                      onChange={handleInputChange}
-                      placeholder="Enter father's name"
-                      required
-                    />
-                  </div>
-                </div>
-              </div>
-
-              <div className="form-group">
-                <label>شناختی کارڈ کی تصویر</label>
-                <div className="marksheet-upload">
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={(e) => handleFileUpload(e, 'nicImage')}
-                    style={{ display: 'none' }}
-                    id="nicImage"
-                  />
-                  <label htmlFor="nicImage" className="upload-btn">
-                    <UploadIcon /> شناختی کارڈ کی تصویر اپ لوڈ کریں
-                  </label>
-                  <div className="marksheet-preview">
-                    {formData.nicImage.map((url, index) => (
-                      <div key={index} className="marksheet-image-container">
-                        {imageLoading.nicImage ? (
-                          <div className="image-loader">
-                            <div className="loading-spinner-small"></div>
-                          </div>
-                        ) : (
-                          <>
-                            <img
-                              src={url}
-                              className="marksheet-preview-image"
-                              onClick={() => handleImageClick(url)}
-                              style={{ cursor: 'pointer' }}
-                            />
-                            <button
-                              type="button"
-                              className="remove-image-btn"
-                              onClick={() => handleRemoveImage('nicImage', index)}
-                            >
-                              <FiX />
-                            </button>
-                          </>
-                        )}
-                      </div>
-                    ))}
                   </div>
                 </div>
               </div>

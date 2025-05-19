@@ -371,7 +371,7 @@
 @media (max-width: 768px) {
   .view-attendance-header {
     flex-direction: column;
-    align-items: flex-start;
+    align-items: flex-end;
     gap: 0.5rem;
   }
   

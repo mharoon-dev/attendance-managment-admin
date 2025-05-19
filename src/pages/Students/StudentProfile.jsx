@@ -45,6 +45,22 @@ const StudentProfile = () => {
     }
   }, [student]);
 
+  const formatPhoneNumber = (phoneNumber) => {
+    if (!phoneNumber) return 'N/A';
+    const cleaned = phoneNumber.replace(/\D/g, '');
+    return cleaned.replace(/^(\d{4})(\d+)/, '$1-$2');
+  };
+
+  const formatNIC = (nic) => {
+    if (!nic) return 'N/A';
+    let newNic;
+    const part1 = nic.slice(0,5);
+    const part2 = nic.slice(5,11);
+    const part3 = nic.slice(11);
+    newNic = part1 + '-' + part2 + '-' + part3;
+    return newNic;
+  };
+
   const generatePDF = async () => {
     const element = document.createElement('div');
     element.style.direction = 'rtl';
@@ -87,7 +103,7 @@ const StudentProfile = () => {
             <td style="padding: 10px; background-color: rgba(26,95,26,0.08); border: 1px solid #e0e0e0; font-weight: bold; color: #1a5f1a;">جنس</td>
             <td style="padding: 10px; border: 1px solid #e0e0e0;">${student?.gender || 'N/A'}</td>
             <td style="padding: 10px; background-color: rgba(26,95,26,0.08); border: 1px solid #e0e0e0; font-weight: bold; color: #1a5f1a;">فون نمبر</td>
-            <td style="padding: 10px; border: 1px solid #e0e0e0;">${student?.phoneNumber || 'N/A'}</td>
+            <td style="padding: 10px; border: 1px solid #e0e0e0;">${formatPhoneNumber(student?.phoneNumber) || 'N/A'}</td>
           </tr>
           <tr>
             <td style="padding: 10px; background-color: rgba(26,95,26,0.08); border: 1px solid #e0e0e0; font-weight: bold; color: #1a5f1a;">پتہ</td>
@@ -107,7 +123,7 @@ const StudentProfile = () => {
         
          
             <td style="padding: 10px; background-color: rgba(26,95,26,0.08); border: 1px solid #e0e0e0; font-weight: bold; color: #1a5f1a;">فون نمبر</td>
-            <td style="padding: 10px; border: 1px solid #e0e0e0;">${student?.parentDetails?.phoneNumber || 'N/A'}</td>
+            <td style="padding: 10px; border: 1px solid #e0e0e0;">${formatPhoneNumber(student?.parentDetails?.phoneNumber) || 'N/A'}</td>
           </tr>
           <tr>
             <td style="padding: 10px; background-color: rgba(26,95,26,0.08); border: 1px solid #e0e0e0; font-weight: bold; color: #1a5f1a;">تعلیم</td>
@@ -274,7 +290,7 @@ const StudentProfile = () => {
                         <PhoneIcon className="info-icon" />
                         <div className="info-details">
                           <span className="info-label">فون نمبر</span>
-                          <span className="info-value">{student.phoneNumber}</span>
+                          <span className="info-value">{formatPhoneNumber(student.phoneNumber)}</span>
                         </div>
                       </div>
                       <div className="info-item">
@@ -282,6 +298,13 @@ const StudentProfile = () => {
                         <div className="info-details">
                           <span className="info-label">پتہ</span>
                           <span className="info-value">{student.fullAddress}</span>
+                        </div>
+                      </div>
+                      <div className="info-item">
+                        <BadgeIcon className="info-icon" />
+                        <div className="info-details">
+                          <span className="info-label">شناختی کارڈ نمبر</span>
+                          <span className="info-value">{formatNIC(student?.parentDetails?.nic)}</span>
                         </div>
                       </div>
                     </div>
@@ -338,14 +361,14 @@ const StudentProfile = () => {
                         <PhoneIcon className="info-icon" />
                         <div className="info-details">
                           <span className="info-label">والد کا فون نمبر</span>
-                          <span className="info-value">{student.parentDetails.phoneNumber}</span>
+                          <span className="info-value">{formatPhoneNumber(student.parentDetails.phoneNumber)}</span>
                         </div>
                       </div>
                       <div className="info-item">
                         <PhoneIcon className="info-icon" />
                         <div className="info-details">
                           <span className="info-label">والدہ کا فون نمبر</span>
-                          <span className="info-value">{student.parentDetails.motherPhoneNumber}</span>
+                          <span className="info-value">{formatPhoneNumber(student.parentDetails.motherPhoneNumber)}</span>
                         </div>
                       </div>
                       <div className="info-item">

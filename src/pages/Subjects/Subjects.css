@@ -430,7 +430,6 @@
   .subjects-container {
     margin-left: 0;
     padding: 1.5rem;
-    margin-top: 60px;
   }
   
   .subjects-grid {
@@ -442,12 +441,11 @@
   .subjects-container {
     padding: 1rem;
     margin-left: 0;
-    margin-top: 60px;
   }
   
   .subjects-header {
     flex-direction: column;
-    align-items: flex-start;
+    align-items: flex-end;
     gap: 10px;
   }
   
@@ -477,7 +475,6 @@
 @media (max-width: 480px) {
   .subjects-container {
     padding: 1rem;
-    margin-top: 60px;
   }
   
   .subjects-header h1 {

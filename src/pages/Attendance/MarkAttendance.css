@@ -336,7 +336,7 @@
 @media (max-width: 768px) {
   .mark-attendance-header {
     flex-direction: column;
-    align-items: flex-start;
+    align-items: flex-end;
     gap: 1rem;
   }
 

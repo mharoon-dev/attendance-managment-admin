@@ -5,6 +5,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import EditNoteIcon from '@mui/icons-material/EditNote';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
+import { FiX } from 'react-icons/fi';
 import {
   getIncomesStart,
   getIncomesSuccess,
@@ -58,6 +59,11 @@ const Finance = () => {
   const [editId, setEditId] = useState(null);
   const { sidebarOpen, toggleSidebar } = useSidebar();
   const [viewMode, setViewMode] = useState(false);
+  const [deleteConfirmation, setDeleteConfirmation] = useState({
+    show: false,
+    id: null,
+    type: null // 'income' or 'expense'
+  });
 
   useEffect(() => {
     fetchIncomes();
@@ -235,10 +241,27 @@ const Finance = () => {
 
     console.log("CSV Content:\n", csvContent);
   };
-  // 
-  // 
-  // 
-  // 
+
+  const handleDeleteClick = (id, type) => {
+    setDeleteConfirmation({ show: true, id, type });
+  };
+
+  const handleCancelDelete = () => {
+    setDeleteConfirmation({ show: false, id: null, type: null });
+  };
+
+  const handleConfirmDelete = async () => {
+    try {
+      if (deleteConfirmation.type === 'income') {
+        await handleIncomeDelete(deleteConfirmation.id);
+      } else {
+        await handleExpenseDelete(deleteConfirmation.id);
+      }
+      handleCancelDelete();
+    } catch (error) {
+      console.error("Error deleting:", error);
+    }
+  };
 
   return (
     <div className="finance-container">
@@ -403,7 +426,7 @@ const Finance = () => {
                           <td style={{width: "30%", padding: "10px"}}>{new Date(income.date).toLocaleDateString()}</td>
                           <td style={{width: "40%", padding: "10px"}}>{income.details}</td>
                           <td style={{width: "30%", padding: "10px"}}>{income.credit}</td>
-                          <td id="actions" style={{width: "30%", padding: "10px"}}>
+                          <td id="actions" style={{width: window.innerWidth < 768 ? "" : "30%", padding: "10px"}}>
                             <button
                               className="edit-btn"
                               onClick={() => handleIncomeEdit(income)}
@@ -412,7 +435,7 @@ const Finance = () => {
                             </button>
                             <button
                               className="delete-btn"
-                              onClick={() => handleIncomeDelete(income._id)}
+                              onClick={() => handleDeleteClick(income._id, 'income')}
                             >
                               <DeleteIcon />
                             </button>
@@ -482,7 +505,7 @@ const Finance = () => {
                           <td style={{width: "30%", padding: "10px"}}>{new Date(expense.date).toLocaleDateString()}</td>
                           <td style={{width: "40%", padding: "10px"}}>{expense.details}</td>
                           <td style={{width: "30%", padding: "10px"}}>{expense.spend}</td>
-                          <td id="actions" style={{width: "30%", padding: "10px"}}>
+                          <td id="actions" style={{width: window.innerWidth < 768 ? "" : "30%", padding: "10px"}}>
                             <button
                               className="edit-btn"
                               onClick={() => handleExpenseEdit(expense)}
@@ -491,7 +514,7 @@ const Finance = () => {
                             </button>
                             <button
                               className="delete-btn"
-                              onClick={() => handleExpenseDelete(expense?._id)}
+                              onClick={() => handleDeleteClick(expense._id, 'expense')}
                             >
                               <DeleteIcon />
                             </button>
@@ -506,6 +529,38 @@ const Finance = () => {
           )}
         </div>
       </div>
+      {deleteConfirmation.show && (
+        <div className="modal-overlay">
+          <div className="delete-confirmation-modal">
+            <div className="modal-header">
+              <h2>حذف کرنے کی تصدیق</h2>
+              <button
+                className="modal-close-btn"
+                onClick={handleCancelDelete}
+              >
+                <FiX />
+              </button>
+            </div>
+            <div className="modal-body">
+              <p>
+                کیا آپ واقعی اس {deleteConfirmation.type === 'income' ? 'آمدنی' : 'خرچ'} کو حذف کرنا چاہتے ہیں؟ یہ عمل واپس
+                نہیں کیا جا سکتا۔
+              </p>
+            </div>
+            <div className="modal-footer">
+              <button className="cancel-btn" onClick={handleCancelDelete}>
+                منسوخ کریں
+              </button>
+              <button
+                className="delete-btn"
+                onClick={handleConfirmDelete}
+              >
+                حذف کریں
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

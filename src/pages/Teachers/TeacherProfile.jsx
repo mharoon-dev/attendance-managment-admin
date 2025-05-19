@@ -37,6 +37,25 @@ const TeacherProfile = () => {
   const [showImageViewer, setShowImageViewer] = useState(false);
   const [selectedImage, setSelectedImage] = useState('');
   
+
+  const formatPhoneNumber = (phoneNumber) => {
+    if (!phoneNumber) return 'N/A';
+    const cleaned = phoneNumber.replace(/\D/g, '');
+    return cleaned.replace(/^(\d{4})(\d+)/, '$1-$2');
+  };
+
+  const formatNIC = (nic) => {
+    if (!nic) return 'N/A';
+    let newNic;
+    const part1 = nic.slice(0,5);
+    const part2 = nic.slice(5,11);
+    const part3 = nic.slice(11);
+    newNic = part1 + '-' + part2 + '-' + part3;
+    return newNic;
+  };
+
+
+
   useEffect(() => {
     const teacher = teachers.find((teacher) => teacher._id === id);
     setTeacher(teacher);
@@ -64,7 +83,7 @@ const TeacherProfile = () => {
             <h2>{teacher?.fullName}</h2>
             <div className="contact-info">
               <span><EmailIcon /> {teacher?.emailAddress}</span>
-              <span><PhoneIcon /> {teacher?.phoneNumber}</span>
+              <span><PhoneIcon /> {formatPhoneNumber(teacher?.phoneNumber)}</span>
             </div>
             
           </div>
@@ -84,7 +103,7 @@ const TeacherProfile = () => {
               </div>
               <div className="detail-item">
                 <label>شناختی کارڈ نمبر</label>
-                <p><BadgeIcon /> {teacher?.nic}</p>
+                <p><BadgeIcon /> {formatNIC(teacher?.nic)}</p>
               </div>
               <div className="detail-item">
                 <label>والد کا نام</label>
@@ -100,7 +119,7 @@ const TeacherProfile = () => {
               </div>
               <div className="detail-item">
                 <label>قریبی رشتہ دار کا رابطہ</label>
-                <p><PhoneIcon /> {teacher?.nextOfKinPhoneNumber}</p>
+                <p><PhoneIcon /> {formatPhoneNumber(teacher?.nextOfKinPhoneNumber)}</p>
               </div>
             </div>
           </div>

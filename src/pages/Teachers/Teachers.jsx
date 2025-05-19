@@ -218,6 +218,8 @@ const Teachers = () => {
     }
   };
 
+  
+
   const handleDeleteClick = (id, teacherJobId) => {
     setDeleteConfirmation({ show: true, teacherId: id, teacherJobId });
   };
@@ -300,7 +302,8 @@ const Teachers = () => {
                   onClick={() => navigate("/teachers/add")}
                 >
                   <AddIcon />
-                  نئی استاد شامل کریں
+                  نیااستاد شامل کریں
+
                 </button>
               )}
               <h1>تمام استاد</h1>
@@ -382,7 +385,7 @@ const Teachers = () => {
               </div>
             ) : (
               <div className="no-teachers">
-                <h1 className="no-teachers-text">There is no teacher</h1>
+                <h1 className="no-teachers-text">کوئی استاد نہیں ہے</h1>
               </div>
             )}
 
@@ -390,7 +393,7 @@ const Teachers = () => {
               <div className="modal-overlay">
                 <div className="modal-container">
                   <div className="modal-header">
-                    <h2>استاد کی معلومات میں ترمیم کریں</h2>
+                    <h2>استاد کی معلومات کو تبدیل کریں</h2>
                     <button className="modal-close-btn" onClick={handleCloseModal}>
                       <FiX />
                     </button>

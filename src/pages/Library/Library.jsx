@@ -268,8 +268,8 @@ const Library = () => {
               ) : (
                 <div className="no-results">
                   <MenuBookIcon className="no-results-icon" />
-                  <h3>کوئی کتاب نہیں ملی</h3>
-                  <p>اپنی تلاش کو ایڈجسٹ کریں</p>
+                  <h3>کوئی کتاب نہیں </h3>
+                  <p>کتاب شامل کریں</p>
                 </div>
               )}
             </div>
