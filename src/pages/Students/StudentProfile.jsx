@@ -56,13 +56,15 @@ const StudentProfile = () => {
     element.innerHTML = `
       <div style="background: linear-gradient(135deg, #1a5f1a, #2e8b2e); padding: 20px; border-radius: 12px; margin-bottom: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
         <div style="display: flex; justify-content: space-between; align-items: center;">
-          <div style="width: 80px; height: 80px; background: white; padding: 8px; border-radius: 12px; box-shadow: 0 4px 8px rgba(0,0,0,0.15);">
+          <div style="width: 120px; height: 120px; background: white; padding: 8px; border-radius: 12px; box-shadow: 0 4px 8px rgba(0,0,0,0.15);">
             <img src="/assets/logo.png" style="width: 100%; height: 100%; object-fit: contain;" />
           </div>
           <div style="text-align: center; flex-grow: 1; margin: 0 20px;">
-            <h1 style="color: white; font-size: 28px; margin: 0; text-shadow: 2px 2px 4px rgba(0,0,0,0.2); font-weight: bold;">جامعہ فاطمہ الزہرا</h1>
+            <h1 style="color: white; font-size: 16px; margin: 0; text-shadow: 2px 2px 4px rgba(0,0,0,0.2); font-weight: bold;">جامعہ فاطمة الزھراء رضی اللّٰہ عنھا للبنین والبنات
+</h1>
             <p style="color: rgba(255,255,255,0.95); font-size: 14px; margin: 4px 0;">رجسٹریشن نمبر: 9879349493</p>
-            <p style="color: rgba(255,255,255,0.95); font-size: 14px; margin: 4px 0;">پتہ: پیپلان میانوالے</p>
+            <p style="color: rgba(255,255,255,0.95); font-size: 14px; margin: 4px 0;">پتہ: محلہ سالو خیل جالجنوبی، پپلاں میانوالی پنجاب
+</p>
           </div>
           <div style="width: 120px; height: 120px; background: white; padding: 4px; border-radius: 50%; box-shadow: 0 4px 12px rgba(0,0,0,0.2);">
             <img src="${student?.profileImage || '/assets/default-profile.png'}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;" />
@@ -100,12 +102,10 @@ const StudentProfile = () => {
           <tr>
             <td style="padding: 10px; background-color: rgba(26,95,26,0.08); border: 1px solid #e0e0e0; width: 25%; font-weight: bold; color: #1a5f1a;">والدین کا نام</td>
             <td style="padding: 10px; border: 1px solid #e0e0e0; width: 25%;">${student?.parentDetails?.fullName || 'N/A'}</td>
-            <td style="padding: 10px; background-color: rgba(26,95,26,0.08); border: 1px solid #e0e0e0; width: 25%; font-weight: bold; color: #1a5f1a;">تاریخ پیدائش</td>
-            <td style="padding: 10px; border: 1px solid #e0e0e0; width: 25%;">${student?.parentDetails?.dateOfBirth ? new Date(student.parentDetails.dateOfBirth).toLocaleDateString() : 'N/A'}</td>
-          </tr>
-          <tr>
-            <td style="padding: 10px; background-color: rgba(26,95,26,0.08); border: 1px solid #e0e0e0; font-weight: bold; color: #1a5f1a;">جنس</td>
-            <td style="padding: 10px; border: 1px solid #e0e0e0;">${student?.parentDetails?.gender || 'N/A'}</td>
+           
+         
+        
+         
             <td style="padding: 10px; background-color: rgba(26,95,26,0.08); border: 1px solid #e0e0e0; font-weight: bold; color: #1a5f1a;">فون نمبر</td>
             <td style="padding: 10px; border: 1px solid #e0e0e0;">${student?.parentDetails?.phoneNumber || 'N/A'}</td>
           </tr>

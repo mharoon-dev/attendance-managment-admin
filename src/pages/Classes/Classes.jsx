@@ -59,7 +59,7 @@ const Classes = () => {
     { value: 'all', label: 'تمام گریڈ', icon: <BusinessIcon /> },
     ...uniqueGrades.map(grade => ({
       value: grade.toString(),
-      label: `Grade ${grade}`,
+      label: `گریڈ ${grade}`,
       icon: <BusinessIcon />
     }))
   ];

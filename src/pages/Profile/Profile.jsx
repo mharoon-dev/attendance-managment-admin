@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import Navbar from '../../components/Navbar/Navbar';
 import Sidebar from '../../components/Sidebar/Sidebar';
@@ -16,10 +16,18 @@ import TransgenderIcon from '@mui/icons-material/Transgender';
 import FamilyRestroomIcon from '@mui/icons-material/FamilyRestroom';
 import DescriptionIcon from '@mui/icons-material/Description';
 import AssignmentIcon from '@mui/icons-material/Assignment';
+import ImageViewer from '../../components/ImageViewer/ImageViewer';
 
 const Profile = () => {
   const { sidebarOpen, toggleSidebar } = useSidebar();
   const { user } = useSelector((state) => state.user);
+  const [showImageViewer, setShowImageViewer] = useState(false);
+  const [selectedImage, setSelectedImage] = useState('');
+
+  const handleImageClick = (imageUrl) => {
+    setSelectedImage(imageUrl);
+    setShowImageViewer(true);
+  };
 
   const formatDate = (dateString) => {
     if (!dateString) return 'N/A';
@@ -49,8 +57,9 @@ const Profile = () => {
                   src={user?.teacher?.profileImage || 'https://via.placeholder.com/150'} 
                   alt="پروفائل" 
                   className="profile-page-image"
+                  onClick={() => handleImageClick(user?.teacher?.profileImage || 'https://via.placeholder.com/150')}
+                  style={{ cursor: 'pointer' }}
                 />
-            
               </div>
               <div className="profile-page-basic-info">
                 <h2>{user?.teacher?.fullName || 'N/A'}</h2>
@@ -67,7 +76,7 @@ const Profile = () => {
 
             <div className="profile-page-details">
               <div className="profile-page-details-section">
-                <h3 style={{textAlign: 'end',width: '100%'}}>
+                <h3 style={{display: 'flex', justifyContent: 'end', width: '100%'}}>
                   <PersonIcon className="profile-page-section-icon" />
                   ذاتی معلومات
                 </h3>
@@ -215,16 +224,16 @@ const Profile = () => {
                   قومی شناختی کارڈ کی دستاویز
                 </h3>
                 <div className="profile-page-document-container">
-                  <img 
-                    src={user?.teacher?.nicImage || 'https://via.placeholder.com/300x200'} 
-                    alt="قومی شناختی کارڈ" 
-                    className="profile-page-document-image"
-                  />
-                  <div className="profile-page-document-overlay">
-                    <button className="profile-page-document-view-btn">
-                      دستاویز دیکھیں
-                    </button>
-                  </div>
+                  {user?.teacher?.nicImage.map((image, index) => (
+                    <img 
+                      key={index}
+                      src={image} 
+                      alt={`قومی شناختی کارڈ ${index + 1}`} 
+                      className="profile-page-document-image"
+                      onClick={() => handleImageClick(image)}
+                      style={{ cursor: 'pointer' }}
+                    />
+                  ))}
                 </div>
               </div>
 
@@ -241,12 +250,9 @@ const Profile = () => {
                           src={image} 
                           alt={`مارک شیٹ ${index + 1}`} 
                           className="profile-page-document-image"
+                          onClick={() => handleImageClick(image)}
+                          style={{ cursor: 'pointer' }}
                         />
-                        <div className="profile-page-document-overlay">
-                          <button className="profile-page-document-view-btn">
-                            دستاویز دیکھیں
-                          </button>
-                        </div>
                       </div>
                     ))}
                   </div>
@@ -256,6 +262,13 @@ const Profile = () => {
           </div>
         </div>
       </div>
+
+      {showImageViewer && (
+        <ImageViewer
+          imageUrl={selectedImage}
+          onClose={() => setShowImageViewer(false)}
+        />
+      )}
     </div>
   );
 };

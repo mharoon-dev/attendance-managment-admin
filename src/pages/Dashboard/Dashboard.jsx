@@ -13,6 +13,8 @@ import { Plus, Edit2, Trash2, Check, X } from 'react-feather';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip as ChartTooltip, Legend as ChartLegend } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
 import { addTodoSuccess, deleteTodoSuccess, getTodosFailure, getTodosStart, getTodosSuccess, updateTodoSuccess, } from "../../redux/slices/todoSlice.jsx";
+import { FiX } from 'react-icons/fi';
+import { toast, Toaster } from "sonner";
 
 
 // Register ChartJS components
@@ -42,6 +44,7 @@ const Dashboard = () => {
   const [newTodo, setNewTodo] = useState({ title: '', description: '' });
   const [editingTodo, setEditingTodo] = useState(null);
   const [attendanceByDay, setAttendanceByDay] = useState([]);
+  const [deleteConfirmation, setDeleteConfirmation] = useState({ show: false, todoId: null });
 
   // Set current month and year when component mounts
   useEffect(() => {
@@ -506,229 +509,271 @@ const Dashboard = () => {
     }
   };
 
-  const handleDeleteTodo = async (id) => {
+  const handleDeleteClick = (id) => {
+    setDeleteConfirmation({ show: true, todoId: id });
+  };
+
+  const handleCancelDelete = () => {
+    setDeleteConfirmation({ show: false, todoId: null });
+  };
+
+  const handleDelete = async (id) => {
     try {
       await api.delete(`todos/delete/${id}`);
       dispatch(deleteTodoSuccess(id));
+      setDeleteConfirmation({ show: false, todoId: null });
+      toast.success('Todo deleted successfully');
     } catch (error) {
       console.error("Error deleting todo:", error);
+      toast.error('Failed to delete todo');
     }
   };
 
   return (
-    <div className="dashboard">
-      <Navbar toggleSidebar={toggleSidebar} isSidebarOpen={sidebarOpen} />
-      <div className="dashboard-container">
-        <Sidebar isOpen={sidebarOpen} toggleSidebar={toggleSidebar} />
-        <div className={`main-content ${!sidebarOpen ? 'sidebar-closed' : ''}`}>
-          {loading ? (
-            <Loader variant="ripple" color="#3A86FF" text="ڈیش بورڈ لوڈ ہو رہا ہے..." />
-          ) : (
-            <>
-              <div className="dashboard-header">
-                <div className="date-display">
-                  <span className="month-year">
-                    {getMonthName(currentMonth)} {currentYear}
-                  </span>
+    <>
+      <Toaster position="top-right" />
+      <div className="dashboard">
+        <Navbar toggleSidebar={toggleSidebar} isSidebarOpen={sidebarOpen} />
+        <div className="dashboard-container">
+          <Sidebar isOpen={sidebarOpen} toggleSidebar={toggleSidebar} />
+          <div className={`main-content ${!sidebarOpen ? 'sidebar-closed' : ''}`}>
+            {loading ? (
+              <Loader variant="ripple" color="#3A86FF" text="ڈیش بورڈ لوڈ ہو رہا ہے..." />
+            ) : (
+              <>
+                <div className="dashboard-header">
+                  <div className="date-display">
+                    <span className="month-year">
+                      {getMonthName(currentMonth)} {currentYear}
+                    </span>
+                  </div>
+                  <h1>ڈیش بورڈ</h1>
                 </div>
-                <h1>ڈیش بورڈ</h1>
-              </div>
 
-              <div className="stats-grid">
-                {stats.map((stat) => (
-                  <div key={stat.id} className="stat-card">
-                    <div
-                      className="stat-icon"
-                      style={{
-                        backgroundColor: `${stat.color}15`,
-                        color: stat.color,
-                      }}
-                    >
-                      {stat.icon}
-                    </div>
-                    <div className="stat-content">
-                      <h3 className="stat-title">{stat.title}</h3>
-                      <div className="stat-value-container">
-                        <p className="stat-value">{stat.value}</p>
+                <div className="stats-grid">
+                  {stats.map((stat) => (
+                    <div key={stat.id} className="stat-card">
+                      <div
+                        className="stat-icon"
+                        style={{
+                          backgroundColor: `${stat.color}15`,
+                          color: stat.color,
+                        }}
+                      >
+                        {stat.icon}
                       </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              <div className="dashboard-grid">
-                <div className="dashboard-card chart-card">
-                  <div className="card-header">
-                    <h2>طلباء کی حاضری - {getMonthName(currentMonth)} {currentYear}</h2>
-                  </div>
-                  <div className="chart-container">
-                    <Bar data={chartData} options={chartOptions} />
-                  </div>
-                </div>
-
-                <div className="dashboard-card activity-card">
-                  <div className="card-header">
-                    <h2>تقسیم کا جائزہ</h2>
-                  </div>
-                  <div className="pie-chart-container">
-                    <ResponsiveContainer width="100%" height={290}>
-                      <PieChart>
-                        <Pie
-                          activeIndex={activeIndex}
-                          activeShape={renderActiveShape}
-                          data={pieChartData}
-                          cx="50%"
-                          cy="50%"
-                          innerRadius={60}
-                          outerRadius={120}
-                          paddingAngle={5}
-                          dataKey="value"
-                          onMouseEnter={(_, index) => setActiveIndex(index)}
-                          animationBegin={0}
-                          animationDuration={1000}
-                          animationEasing="ease-out"
-                        >
-                          {pieChartData.map((entry, index) => (
-                            <Cell
-                              key={`cell-${index}`}
-                              fill={entry.color}
-                              stroke="#fff"
-                              strokeWidth={2}
-                            />
-                          ))}
-                        </Pie>
-                        <Tooltip content={<CustomTooltip />} />
-                        {window.innerWidth > 768 && (
-                          <Legend
-                            layout="vertical"
-                            align="right"
-                            verticalAlign="middle"
-                            wrapperStyle={{
-                              paddingLeft: '20px'
-                            }}
-                          />
-                        )}
-                      </PieChart>
-                    </ResponsiveContainer>
-                  </div>
-                </div>
-              </div>
-
-              <div className="todo-section">
-                <div className="todo-header">
-                  <div className="todo-stats">
-                    <span className="total-todos">کل: {todos?.length || 0}</span>
-                    <span className="completed-todos">
-                      مکمل: {todos?.filter(todo => todo.completed).length || 0}
-                    </span>
-                    <span className="pending-todos">
-                      باقی: {todos?.filter(todo => !todo.completed).length || 0}
-                    </span>
-                  </div>
-                  <h2>نوٹس فہرست</h2>
-                
-                </div>
-
-                <form onSubmit={handleAddTodo} className="todo-form">
-                  <div className="form-group">
-                    <input
-                      type="text"
-                      placeholder="نوٹس کا عنوان درج کریں"
-                      value={newTodo.title}
-                      onChange={(e) => setNewTodo({ ...newTodo, title: e.target.value })}
-                      required
-                    />
-                    <input
-                      type="text"
-                      placeholder="نوٹس کی تفصیل درج کریں"
-                      value={newTodo.description}
-                      onChange={(e) => setNewTodo({ ...newTodo, description: e.target.value })}
-                      required
-                    />
-                  </div>
-                  <button type="submit" className="add-todo-button">
-                    <Plus size={16} />
-                    نوٹس شامل کریں
-                  </button>
-                </form>
-
-                <div className="todo-list">
-                  {todos?.map((todo) => (
-                    <div key={todo._id} className={`todo-item ${todo.completed ? 'completed' : ''}`}>
-                      {editingTodo?._id === todo._id ? (
-                        <div className="edit-todo">
-                          <div className="form-group">
-                            <input
-                              type="text"
-                              value={editingTodo.title}
-                              onChange={(e) => setEditingTodo({ ...editingTodo, title: e.target.value })}
-                              placeholder="عنوان میں ترمیم کریں"
-                            />
-                            <input
-                              type="text"
-                              value={editingTodo.description}
-                              onChange={(e) => setEditingTodo({ ...editingTodo, description: e.target.value })}
-                              placeholder="تفصیل میں ترمیم کریں"
-                            />
-                          </div>
-                          <div className="button-group">
-                            <button onClick={() => handleUpdateTodo(todo._id, editingTodo)} className="save-button">
-                              <Check size={14} />
-                              محفوظ کریں
-                            </button>
-                            <button onClick={() => setEditingTodo(null)} className="cancel-button">
-                              <X size={14} />
-                              منسوخ کریں
-                            </button>
-                          </div>
+                      <div className="stat-content">
+                        <h3 className="stat-title">{stat.title}</h3>
+                        <div className="stat-value-container">
+                          <p className="stat-value">{stat.value}</p>
                         </div>
-                      ) : (
-                        <>
-                          <div className="todo-content">
-                            <div className="todo-info">
-                              <h3>{todo.title}</h3>
-                              <p>{todo.description}</p>
-                            </div>
-                            <div className="todo-actions">
-                              <button
-                                onClick={() => setEditingTodo(todo)}
-                                className="edit-button"
-                                title="ترمیم"
-                              >
-                                <EditIcon />
-                              </button>
-                              <button
-                                onClick={() => handleDeleteTodo(todo._id)}
-                                className="delete-button"
-                                title="حذف کریں"
-                              >
-                                <DeleteIcon />
-                              </button>
-                              <button
-                                onClick={() => handleUpdateTodo(todo._id, { ...todo, completed: !todo.completed })}
-                                className={`complete-button ${todo.completed ? 'completed' : ''}`}
-                                title={todo.completed ? 'نامکمل کریں' : 'مکمل کریں'}
-                              >
-                                <Check size={14} />
-                              </button>
-                            </div>
-                          </div>
-                          <div className="todo-status">
-                            <span className={`status-badge ${todo.completed ? 'completed' : 'pending'}`}>
-                              {todo.completed ? 'مکمل' : 'باقی'}
-                            </span>
-                          </div>
-                        </>
-                      )}
+                      </div>
                     </div>
                   ))}
                 </div>
-              </div>
-            </>
-          )}
+
+                <div className="dashboard-grid">
+                  <div className="dashboard-card chart-card">
+                    <div className="card-header">
+                      <h2>طلباء کی حاضری - {getMonthName(currentMonth)} {currentYear}</h2>
+                    </div>
+                    <div className="chart-container">
+                      <Bar data={chartData} options={chartOptions} />
+                    </div>
+                  </div>
+
+                  <div className="dashboard-card activity-card">
+                    <div className="card-header">
+                      <h2>تقسیم کا جائزہ</h2>
+                    </div>
+                    <div className="pie-chart-container">
+                      <ResponsiveContainer width="100%" height={290}>
+                        <PieChart>
+                          <Pie
+                            activeIndex={activeIndex}
+                            activeShape={renderActiveShape}
+                            data={pieChartData}
+                            cx="50%"
+                            cy="50%"
+                            innerRadius={60}
+                            outerRadius={120}
+                            paddingAngle={5}
+                            dataKey="value"
+                            onMouseEnter={(_, index) => setActiveIndex(index)}
+                            animationBegin={0}
+                            animationDuration={1000}
+                            animationEasing="ease-out"
+                          >
+                            {pieChartData.map((entry, index) => (
+                              <Cell
+                                key={`cell-${index}`}
+                                fill={entry.color}
+                                stroke="#fff"
+                                strokeWidth={2}
+                              />
+                            ))}
+                          </Pie>
+                          <Tooltip content={<CustomTooltip />} />
+                          {window.innerWidth > 768 && (
+                            <Legend
+                              layout="vertical"
+                              align="right"
+                              verticalAlign="middle"
+                              wrapperStyle={{
+                                paddingLeft: '20px'
+                              }}
+                            />
+                          )}
+                        </PieChart>
+                      </ResponsiveContainer>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="todo-section">
+                  <div className="todo-header">
+                    <div className="todo-stats">
+                      <span className="total-todos">کل: {todos?.length || 0}</span>
+                      <span className="completed-todos">
+                        مکمل: {todos?.filter(todo => todo.completed).length || 0}
+                      </span>
+                      <span className="pending-todos">
+                        باقی: {todos?.filter(todo => !todo.completed).length || 0}
+                      </span>
+                    </div>
+                    <h2>نوٹس فہرست</h2>
+                  
+                  </div>
+
+                  <form onSubmit={handleAddTodo} className="todo-form">
+                    <div className="form-group">
+                      <input
+                        type="text"
+                        placeholder="نوٹس کا عنوان درج کریں"
+                        value={newTodo.title}
+                        onChange={(e) => setNewTodo({ ...newTodo, title: e.target.value })}
+                        required
+                      />
+                      <input
+                        type="text"
+                        placeholder="نوٹس کی تفصیل درج کریں"
+                        value={newTodo.description}
+                        onChange={(e) => setNewTodo({ ...newTodo, description: e.target.value })}
+                        required
+                      />
+                    </div>
+                    <button type="submit" className="add-todo-button">
+                      <Plus size={16} />
+                      نوٹس شامل کریں
+                    </button>
+                  </form>
+
+                  <div className="todo-list">
+                    {todos?.map((todo) => (
+                      <div key={todo._id} className={`todo-item ${todo.completed ? 'completed' : ''}`}>
+                        {editingTodo?._id === todo._id ? (
+                          <div className="edit-todo">
+                            <div className="form-group">
+                              <input
+                                type="text"
+                                value={editingTodo.title}
+                                onChange={(e) => setEditingTodo({ ...editingTodo, title: e.target.value })}
+                                placeholder="عنوان میں ترمیم کریں"
+                              />
+                              <input
+                                type="text"
+                                value={editingTodo.description}
+                                onChange={(e) => setEditingTodo({ ...editingTodo, description: e.target.value })}
+                                placeholder="تفصیل میں ترمیم کریں"
+                              />
+                            </div>
+                            <div className="button-group">
+                              <button onClick={() => handleUpdateTodo(todo._id, editingTodo)} className="save-button">
+                                <Check size={14} />
+                                محفوظ کریں
+                              </button>
+                              <button onClick={() => setEditingTodo(null)} className="cancel-button">
+                                <X size={14} />
+                                منسوخ کریں
+                              </button>
+                            </div>
+                          </div>
+                        ) : (
+                          <>
+                            <div className="todo-content">
+                              <div className="todo-info">
+                                <h3>{todo.title}</h3>
+                                <p>{todo.description}</p>
+                              </div>
+                              <div className="todo-actions">
+                                <button
+                                  onClick={() => setEditingTodo(todo)}
+                                  className="edit-button"
+                                  title="ترمیم"
+                                >
+                                  <EditIcon />
+                                </button>
+                                <button
+                                  onClick={() => handleDeleteClick(todo._id)}
+                                  className="delete-button"
+                                  title="حذف کریں"
+                                >
+                                  <DeleteIcon />
+                                </button>
+                                <button
+                                  onClick={() => handleUpdateTodo(todo._id, { ...todo, completed: !todo.completed })}
+                                  className={`complete-button ${todo.completed ? 'completed' : ''}`}
+                                  title={todo.completed ? 'نامکمل کریں' : 'مکمل کریں'}
+                                >
+                                  <Check size={14} />
+                                </button>
+                              </div>
+                            </div>
+                            <div className="todo-status">
+                              <span className={`status-badge ${todo.completed ? 'completed' : 'pending'}`}>
+                                {todo.completed ? 'مکمل' : 'باقی'}
+                              </span>
+                            </div>
+                          </>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </>
+            )}
+          </div>
         </div>
+
+        {/* Add Delete Confirmation Modal */}
+        {deleteConfirmation.show && (
+          <div className="modal-overlay">
+            <div className="delete-confirmation-modal">
+              <div className="modal-header">
+                <h2>حذف کرنے کی تصدیق</h2>
+                <button className="modal-close-btn" onClick={handleCancelDelete}>
+                  <FiX />
+                </button>
+              </div>
+              <div className="modal-body">
+                <p>کیا آپ واقعی اس نوٹس کو حذف کرنا چاہتے ہیں؟ یہ عمل واپس نہیں کیا جا سکتا۔</p>
+              </div>
+              <div className="modal-footer">
+                <button className="cancel-btn" onClick={handleCancelDelete}>
+                  منسوخ کریں
+                </button>
+                <button
+                  className="delete-btn"
+                  onClick={() => handleDelete(deleteConfirmation.todoId)}
+                >
+                  حذف کریں
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
-    </div>
+    </>
   );
 };
 

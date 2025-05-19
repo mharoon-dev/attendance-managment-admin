@@ -38,6 +38,8 @@ const ViewAttendance = () => {
   });
   const { user } = useSelector((state) => state.user);
   console.log(user);
+  const {students} = useSelector((state) => state.students);
+  console.log(students);
 
   // Sample data for dropdowns
 
@@ -280,6 +282,7 @@ xmlns:html="http://www.w3.org/TR/REC-html40">
                     <th>وقت</th>
                     <th>حالت</th>
                     <th>رول نمبر</th>
+                    <th>نام</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -296,7 +299,7 @@ xmlns:html="http://www.w3.org/TR/REC-html40">
                         </span>
                       </td>
                       <td>{record?.id}</td>
-
+                      <td>{students.find(student => student?.schoolDetails?.rollNumber === record?.id)?.fullName}</td>
                     </tr>
                   ))}
                 </tbody>

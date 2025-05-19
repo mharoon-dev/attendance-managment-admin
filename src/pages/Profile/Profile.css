@@ -251,8 +251,11 @@
 .profile-page-document-container {
   margin: 20px 0;
   border-radius: 12px;
-  width: 300px;
-  height: 200px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* width: 300px; */
+  height: 300px;
   overflow: hidden;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   position: relative;
@@ -380,6 +383,10 @@
   
   .profile-page-detail-value {
     font-size: 1rem;
+  }
+
+  .profile-page-document-container {
+    flex-direction: column;
   }
 }
 
