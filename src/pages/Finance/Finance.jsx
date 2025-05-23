@@ -270,7 +270,10 @@ const Finance = () => {
         <Navbar toggleSidebar={toggleSidebar} isSidebarOpen={sidebarOpen} />
         <div className="finance-main">
           <br />
-          <h1>مالیات کا انتظام</h1>
+          <h1 style={{
+            textAlign: "end",
+            width: "100%",
+          }}>مالیات کا انتظام</h1>
 
           <div className="finance-actions">
             <button

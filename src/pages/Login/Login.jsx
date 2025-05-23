@@ -137,7 +137,7 @@ const Login = () => {
                 <circle cx="20" cy="20" r="4" fill="white" />
               </svg>
             </div>
-            <h1 className="login-title">Attendance Management System</h1>
+            <h1 className="login-title">School Management System</h1>
             <p className="login-subtitle">Sign in to your account</p>
           </div>
 

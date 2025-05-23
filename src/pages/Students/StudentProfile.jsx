@@ -1,26 +1,26 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import PersonIcon from '@mui/icons-material/Person';
-import PhoneIcon from '@mui/icons-material/Phone';
-import LocationOnIcon from '@mui/icons-material/LocationOn';
-import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
-import MenuBookIcon from '@mui/icons-material/MenuBook';
-import GroupIcon from '@mui/icons-material/Group';
-import BusinessIcon from '@mui/icons-material/Business';
-import BadgeIcon from '@mui/icons-material/Badge';
-import SchoolIcon from '@mui/icons-material/School';
-import WorkIcon from '@mui/icons-material/Work';
-import EmailIcon from '@mui/icons-material/Email';
-import DownloadIcon from '@mui/icons-material/Download';
-import Navbar from '../../components/Navbar/Navbar';
-import Sidebar from '../../components/Sidebar/Sidebar';
-import useSidebar from '../../hooks/useSidebar';
-import './StudentProfile.css';
-import { useDispatch, useSelector } from 'react-redux';
-import Loader from '../../components/Loader/Loader';
-import html2pdf from 'html2pdf.js';
-import ImageViewer from '../../components/ImageViewer/ImageViewer';
+import React, { useState, useEffect, useRef } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import PersonIcon from "@mui/icons-material/Person";
+import PhoneIcon from "@mui/icons-material/Phone";
+import LocationOnIcon from "@mui/icons-material/LocationOn";
+import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
+import MenuBookIcon from "@mui/icons-material/MenuBook";
+import GroupIcon from "@mui/icons-material/Group";
+import BusinessIcon from "@mui/icons-material/Business";
+import BadgeIcon from "@mui/icons-material/Badge";
+import SchoolIcon from "@mui/icons-material/School";
+import WorkIcon from "@mui/icons-material/Work";
+import EmailIcon from "@mui/icons-material/Email";
+import DownloadIcon from "@mui/icons-material/Download";
+import Navbar from "../../components/Navbar/Navbar";
+import Sidebar from "../../components/Sidebar/Sidebar";
+import useSidebar from "../../hooks/useSidebar";
+import "./StudentProfile.css";
+import { useDispatch, useSelector } from "react-redux";
+import Loader from "../../components/Loader/Loader";
+import html2pdf from "html2pdf.js";
+import ImageViewer from "../../components/ImageViewer/ImageViewer";
 
 const StudentProfile = () => {
   const { id } = useParams();
@@ -31,48 +31,48 @@ const StudentProfile = () => {
   const { sidebarOpen, toggleSidebar } = useSidebar();
   const [isLoading, setIsLoading] = useState(true);
   const [showImageViewer, setShowImageViewer] = useState(false);
-  const [selectedImage, setSelectedImage] = useState('');
+  const [selectedImage, setSelectedImage] = useState("");
   const pdfRef = useRef(null);
 
   useEffect(() => {
     if (student) {
       setIsLoading(false);
-      console.log('Student School Details:', {
+      console.log("Student School Details:", {
         fullSchoolDetails: student.schoolDetails,
         joiningDate: student.schoolDetails?.joiningDate,
-        previousInstitute: student.schoolDetails?.previousInstitute
+        previousInstitute: student.schoolDetails?.previousInstitute,
       });
     }
   }, [student]);
 
   const formatPhoneNumber = (phoneNumber) => {
-    if (!phoneNumber) return 'N/A';
-    const cleaned = phoneNumber.replace(/\D/g, '');
-    return cleaned.replace(/^(\d{4})(\d+)/, '$1-$2');
+    if (!phoneNumber) return "N/A";
+    const cleaned = phoneNumber.replace(/\D/g, "");
+    return cleaned.replace(/^(\d{4})(\d+)/, "$1-$2");
   };
 
   const formatNIC = (nic) => {
-    if (!nic) return 'N/A';
+    if (!nic) return "N/A";
     let newNic;
-    const part1 = nic.slice(0,5);
-    const part2 = nic.slice(5,11);
+    const part1 = nic.slice(0, 5);
+    const part2 = nic.slice(5, 11);
     const part3 = nic.slice(11);
-    newNic = part1 + '-' + part2 + '-' + part3;
+    newNic = part1 + "-" + part2 + "-" + part3;
     return newNic;
   };
 
   const generatePDF = async () => {
-    const element = document.createElement('div');
-    element.style.direction = 'rtl';
-    element.style.fontFamily = 'Noto Nastaliq Urdu';
-    element.style.padding = '10px';
-    element.style.backgroundColor = 'white';
+    const element = document.createElement("div");
+    element.style.direction = "rtl";
+    element.style.fontFamily = "Noto Nastaliq Urdu";
+    element.style.padding = "10px";
+    element.style.backgroundColor = "white";
 
     // Create the PDF content with enhanced visual design
     element.innerHTML = `
       <div style="background: linear-gradient(135deg, #1a5f1a, #2e8b2e); padding: 20px; border-radius: 12px; margin-bottom: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
         <div style="display: flex; justify-content: space-between; align-items: center;">
-          <div style="width: 120px; height: 120px; background: white; padding: 8px; border-radius: 12px; box-shadow: 0 4px 8px rgba(0,0,0,0.15);">
+          <div style="width: 120px; height: 120px; background: transparent; padding: 8px; border-radius: 12px; box-shadow: 0 4px 8px rgba(0,0,0,0.15);">
             <img src="/assets/logo.png" style="width: 100%; height: 100%; object-fit: contain;" />
           </div>
           <div style="text-align: center; flex-grow: 1; margin: 0 20px;">
@@ -83,7 +83,9 @@ const StudentProfile = () => {
 </p>
           </div>
           <div style="width: 120px; height: 120px; background: white; padding: 4px; border-radius: 50%; box-shadow: 0 4px 12px rgba(0,0,0,0.2);">
-            <img src="${student?.profileImage || '/assets/default-profile.png'}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;" />
+            <img src="${
+              student?.profileImage || "/assets/default-profile.png"
+            }" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;" />
           </div>
         </div>
       </div>
@@ -95,19 +97,31 @@ const StudentProfile = () => {
           </tr>
           <tr>
             <td style="padding: 10px; background-color: rgba(26,95,26,0.08); border: 1px solid #e0e0e0; width: 25%; font-weight: bold; color: #1a5f1a;">پورا نام</td>
-            <td style="padding: 10px; border: 1px solid #e0e0e0; width: 25%;">${student?.fullName || 'N/A'}</td>
+            <td style="padding: 10px; border: 1px solid #e0e0e0; width: 25%;">${
+              student?.fullName || "N/A"
+            }</td>
             <td style="padding: 10px; background-color: rgba(26,95,26,0.08); border: 1px solid #e0e0e0; width: 25%; font-weight: bold; color: #1a5f1a;">تاریخ پیدائش</td>
-            <td style="padding: 10px; border: 1px solid #e0e0e0; width: 25%;">${student?.dateOfBirth ? new Date(student.dateOfBirth).toLocaleDateString() : 'N/A'}</td>
+            <td style="padding: 10px; border: 1px solid #e0e0e0; width: 25%;">${
+              student?.dateOfBirth
+                ? new Date(student.dateOfBirth).toLocaleDateString()
+                : "N/A"
+            }</td>
           </tr>
           <tr>
             <td style="padding: 10px; background-color: rgba(26,95,26,0.08); border: 1px solid #e0e0e0; font-weight: bold; color: #1a5f1a;">جنس</td>
-            <td style="padding: 10px; border: 1px solid #e0e0e0;">${student?.gender || 'N/A'}</td>
+            <td style="padding: 10px; border: 1px solid #e0e0e0;">${
+              student?.gender == "male" ? "مرد" : "عورت"
+            }</td>
             <td style="padding: 10px; background-color: rgba(26,95,26,0.08); border: 1px solid #e0e0e0; font-weight: bold; color: #1a5f1a;">فون نمبر</td>
-            <td style="padding: 10px; border: 1px solid #e0e0e0;">${formatPhoneNumber(student?.phoneNumber) || 'N/A'}</td>
+            <td style="padding: 10px; border: 1px solid #e0e0e0;">${
+              formatPhoneNumber(student?.phoneNumber) || "N/A"
+            }</td>
           </tr>
           <tr>
             <td style="padding: 10px; background-color: rgba(26,95,26,0.08); border: 1px solid #e0e0e0; font-weight: bold; color: #1a5f1a;">پتہ</td>
-            <td colspan="3" style="padding: 10px; border: 1px solid #e0e0e0;">${student?.fullAddress || 'N/A'}</td>
+            <td colspan="3" style="padding: 10px; border: 1px solid #e0e0e0;">${
+              student?.fullAddress || "N/A"
+            }</td>
           </tr>
         </table>
 
@@ -117,19 +131,34 @@ const StudentProfile = () => {
           </tr>
           <tr>
             <td style="padding: 10px; background-color: rgba(26,95,26,0.08); border: 1px solid #e0e0e0; width: 25%; font-weight: bold; color: #1a5f1a;">والدین کا نام</td>
-            <td style="padding: 10px; border: 1px solid #e0e0e0; width: 25%;">${student?.parentDetails?.fullName || 'N/A'}</td>
+            <td style="padding: 10px; border: 1px solid #e0e0e0; width: 25%;">${
+              student?.parentDetails?.fullName || "N/A"
+            }</td>
            
          
         
          
             <td style="padding: 10px; background-color: rgba(26,95,26,0.08); border: 1px solid #e0e0e0; font-weight: bold; color: #1a5f1a;">فون نمبر</td>
-            <td style="padding: 10px; border: 1px solid #e0e0e0;">${formatPhoneNumber(student?.parentDetails?.phoneNumber) || 'N/A'}</td>
+            <td style="padding: 10px; border: 1px solid #e0e0e0;">${
+              formatPhoneNumber(student?.parentDetails?.phoneNumber) || "N/A"
+            }</td>
           </tr>
           <tr>
             <td style="padding: 10px; background-color: rgba(26,95,26,0.08); border: 1px solid #e0e0e0; font-weight: bold; color: #1a5f1a;">تعلیم</td>
-            <td style="padding: 10px; border: 1px solid #e0e0e0;">${student?.parentDetails?.education || 'N/A'}</td>
+            <td style="padding: 10px; border: 1px solid #e0e0e0;">${
+              student?.parentDetails?.education || "N/A"
+            }</td>
             <td style="padding: 10px; background-color: rgba(26,95,26,0.08); border: 1px solid #e0e0e0; font-weight: bold; color: #1a5f1a;">پیشہ</td>
-            <td style="padding: 10px; border: 1px solid #e0e0e0;">${student?.parentDetails?.profession || 'N/A'}</td>
+            <td style="padding: 10px; border: 1px solid #e0e0e0;">${
+              student?.parentDetails?.profession || "N/A"
+            }</td>
+            
+          </tr>
+          <tr>
+          <td style="padding: 10px; background-color: rgba(26,95,26,0.08); border: 1px solid #e0e0e0; font-weight: bold; color: #1a5f1a;">شناختی کارڈ نمبر</td>
+            <td colspan="3" style="padding: 10px; border: 1px solid #e0e0e0;">${
+              formatNIC(student?.parentDetails?.nic) || "N/A"
+            }</td>
           </tr>
         </table>
 
@@ -139,15 +168,27 @@ const StudentProfile = () => {
           </tr>
           <tr>
             <td style="padding: 10px; background-color: rgba(26,95,26,0.08); border: 1px solid #e0e0e0; width: 25%; font-weight: bold; color: #1a5f1a;">رول نمبر</td>
-            <td style="padding: 10px; border: 1px solid #e0e0e0; width: 25%;">${student?.schoolDetails?.rollNumber || 'N/A'}</td>
+            <td style="padding: 10px; border: 1px solid #e0e0e0; width: 25%;">${
+              student?.schoolDetails?.rollNumber || "N/A"
+            }</td>
             <td style="padding: 10px; background-color: rgba(26,95,26,0.08); border: 1px solid #e0e0e0; width: 25%; font-weight: bold; color: #1a5f1a;">گریڈ</td>
-            <td style="padding: 10px; border: 1px solid #e0e0e0; width: 25%;">${student?.grade || 'N/A'}</td>
+            <td style="padding: 10px; border: 1px solid #e0e0e0; width: 25%;">${
+              student?.grade || "N/A"
+            }</td>
           </tr>
           <tr>
             <td style="padding: 10px; background-color: rgba(26,95,26,0.08); border: 1px solid #e0e0e0; font-weight: bold; color: #1a5f1a;">تاریخ داخلہ</td>
-            <td style="padding: 10px; border: 1px solid #e0e0e0;">${student?.schoolDetails?.joiningDate ? new Date(student.schoolDetails.joiningDate).toLocaleDateString() : 'N/A'}</td>
+            <td style="padding: 10px; border: 1px solid #e0e0e0;">${
+              student?.schoolDetails?.joiningDate
+                ? new Date(
+                    student.schoolDetails.joiningDate
+                  ).toLocaleDateString()
+                : "N/A"
+            }</td>
             <td style="padding: 10px; background-color: rgba(26,95,26,0.08); border: 1px solid #e0e0e0; font-weight: bold; color: #1a5f1a;">سابقہ ادارہ</td>
-            <td style="padding: 10px; border: 1px solid #e0e0e0;">${student?.schoolDetails?.previousInstitute || 'N/A'}</td>
+            <td style="padding: 10px; border: 1px solid #e0e0e0;">${
+              student?.schoolDetails?.previousInstitute || "N/A"
+            }</td>
           </tr>
         </table>
       </div>
@@ -160,26 +201,26 @@ const StudentProfile = () => {
     // Configure html2pdf options
     const opt = {
       margin: 0.3,
-      filename: 'student_profile.pdf',
-      image: { type: 'jpeg', quality: 0.98 },
-      html2canvas: { 
+      filename: "student_profile.pdf",
+      image: { type: "jpeg", quality: 0.98 },
+      html2canvas: {
         scale: 2,
         useCORS: true,
-        logging: true
+        logging: true,
       },
-      jsPDF: { 
-        unit: 'in', 
-        format: 'letter', 
-        orientation: 'portrait'
-      }
+      jsPDF: {
+        unit: "in",
+        format: "letter",
+        orientation: "portrait",
+      },
     };
 
     // Generate PDF
     try {
       await html2pdf().set(opt).from(element).save();
     } catch (error) {
-      console.error('Error generating PDF:', error);
-      alert('Error generating PDF. Please try again.');
+      console.error("Error generating PDF:", error);
+      alert("Error generating PDF. Please try again.");
     }
   };
 
@@ -189,17 +230,24 @@ const StudentProfile = () => {
   };
 
   return (
-    <div className={`layout-container ${sidebarOpen ? 'sidebar-open' : ''}`}>
+    <div className={`layout-container ${sidebarOpen ? "sidebar-open" : ""}`}>
       <Navbar toggleSidebar={toggleSidebar} isSidebarOpen={sidebarOpen} />
       <Sidebar isOpen={sidebarOpen} toggleSidebar={toggleSidebar} />
 
-      <div className={`student-profile-container ${!sidebarOpen ? 'sidebar-closed' : ''}`}>
+      <div
+        className={`student-profile-container ${
+          !sidebarOpen ? "sidebar-closed" : ""
+        }`}
+      >
         {isLoading ? (
           <Loader />
         ) : (
           <>
             <div className="student-profile-header">
-              <div className="back-button" onClick={() => navigate('/students')}>
+              <div
+                className="back-button"
+                onClick={() => navigate("/students")}
+              >
                 <ArrowBackIcon /> طلباء کی فہرست پر واپس جائیں
               </div>
               <div className="student-profile-title">
@@ -231,13 +279,17 @@ const StudentProfile = () => {
                           <img
                             src={student.profileImage}
                             alt={student.fullName}
-                            onClick={() => handleImageClick(student.profileImage)}
-                            style={{ cursor: 'pointer' }}
+                            onClick={() =>
+                              handleImageClick(student.profileImage)
+                            }
+                            style={{ cursor: "pointer" }}
                           />
                         </div>
                       </div>
                       <div className="student-nic-section">
-                        <div className="image-label">شناختی کارڈ کی دستاویز</div>
+                        <div className="image-label">
+                          شناختی کارڈ کی دستاویز
+                        </div>
                         <div className="multiple-images-container">
                           {student.nicImage && student.nicImage.length > 0 ? (
                             student.nicImage.map((image, index) => (
@@ -246,7 +298,7 @@ const StudentProfile = () => {
                                   src={image}
                                   alt={`طالب علم کا شناختی کارڈ ${index + 1}`}
                                   onClick={() => handleImageClick(image)}
-                                  style={{ cursor: 'pointer' }}
+                                  style={{ cursor: "pointer" }}
                                 />
                               </div>
                             ))
@@ -255,8 +307,10 @@ const StudentProfile = () => {
                               <img
                                 src="/default-nic.png"
                                 alt="طالب علم کا شناختی کارڈ"
-                                onClick={() => handleImageClick('/default-nic.png')}
-                                style={{ cursor: 'pointer' }}
+                                onClick={() =>
+                                  handleImageClick("/default-nic.png")
+                                }
+                                style={{ cursor: "pointer" }}
                               />
                             </div>
                           )}
@@ -276,7 +330,9 @@ const StudentProfile = () => {
                         <CalendarMonthIcon className="info-icon" />
                         <div className="info-details">
                           <span className="info-label">تاریخ پیدائش</span>
-                          <span className="info-value">{new Date(student.dateOfBirth).toLocaleDateString()}</span>
+                          <span className="info-value">
+                            {new Date(student.dateOfBirth).toLocaleDateString()}
+                          </span>
                         </div>
                       </div>
                       <div className="info-item">
@@ -290,21 +346,27 @@ const StudentProfile = () => {
                         <PhoneIcon className="info-icon" />
                         <div className="info-details">
                           <span className="info-label">فون نمبر</span>
-                          <span className="info-value">{formatPhoneNumber(student.phoneNumber)}</span>
+                          <span className="info-value">
+                            {formatPhoneNumber(student.phoneNumber)}
+                          </span>
                         </div>
                       </div>
                       <div className="info-item">
                         <LocationOnIcon className="info-icon" />
                         <div className="info-details">
                           <span className="info-label">پتہ</span>
-                          <span className="info-value">{student.fullAddress}</span>
+                          <span className="info-value">
+                            {student.fullAddress}
+                          </span>
                         </div>
                       </div>
                       <div className="info-item">
                         <BadgeIcon className="info-icon" />
                         <div className="info-details">
                           <span className="info-label">شناختی کارڈ نمبر</span>
-                          <span className="info-value">{formatNIC(student?.parentDetails?.nic)}</span>
+                          <span className="info-value">
+                            {formatNIC(student?.parentDetails?.nic)}
+                          </span>
                         </div>
                       </div>
                     </div>
@@ -322,26 +384,33 @@ const StudentProfile = () => {
                   <div className="card-content">
                     <div className="parent-images-container">
                       <div className="parent-nic-section">
-                        <div className="image-label">شناختی کارڈ کی دستاویز</div>
+                        <div className="image-label">
+                          شناختی کارڈ کی دستاویز
+                        </div>
                         <div className="multiple-images-container">
-                          {student.parentDetails.nicImage && student.parentDetails.nicImage.length > 0 ? (
-                            student.parentDetails.nicImage.map((image, index) => (
-                              <div key={index} className="image-container">
-                                <img
-                                  src={image}
-                                  alt={`والدین کا شناختی کارڈ ${index + 1}`}
-                                  onClick={() => handleImageClick(image)}
-                                  style={{ cursor: 'pointer' }}
-                                />
-                              </div>
-                            ))
+                          {student.parentDetails.nicImage &&
+                          student.parentDetails.nicImage.length > 0 ? (
+                            student.parentDetails.nicImage.map(
+                              (image, index) => (
+                                <div key={index} className="image-container">
+                                  <img
+                                    src={image}
+                                    alt={`والدین کا شناختی کارڈ ${index + 1}`}
+                                    onClick={() => handleImageClick(image)}
+                                    style={{ cursor: "pointer" }}
+                                  />
+                                </div>
+                              )
+                            )
                           ) : (
                             <div className="image-container">
                               <img
                                 src="/default-nic.png"
                                 alt="والدین کا شناختی کارڈ"
-                                onClick={() => handleImageClick('/default-nic.png')}
-                                style={{ cursor: 'pointer' }}
+                                onClick={() =>
+                                  handleImageClick("/default-nic.png")
+                                }
+                                style={{ cursor: "pointer" }}
                               />
                             </div>
                           )}
@@ -354,35 +423,49 @@ const StudentProfile = () => {
                         <PersonIcon className="info-icon" />
                         <div className="info-details">
                           <span className="info-label">پورا نام</span>
-                          <span className="info-value">{student.parentDetails.fullName}</span>
+                          <span className="info-value">
+                            {student.parentDetails.fullName}
+                          </span>
                         </div>
                       </div>
                       <div className="info-item">
                         <PhoneIcon className="info-icon" />
                         <div className="info-details">
                           <span className="info-label">والد کا فون نمبر</span>
-                          <span className="info-value">{formatPhoneNumber(student.parentDetails.phoneNumber)}</span>
+                          <span className="info-value">
+                            {formatPhoneNumber(
+                              student.parentDetails.phoneNumber
+                            )}
+                          </span>
                         </div>
                       </div>
                       <div className="info-item">
                         <PhoneIcon className="info-icon" />
                         <div className="info-details">
                           <span className="info-label">والدہ کا فون نمبر</span>
-                          <span className="info-value">{formatPhoneNumber(student.parentDetails.motherPhoneNumber)}</span>
+                          <span className="info-value">
+                            {formatPhoneNumber(
+                              student.parentDetails.motherPhoneNumber
+                            )}
+                          </span>
                         </div>
                       </div>
                       <div className="info-item">
                         <MenuBookIcon className="info-icon" />
                         <div className="info-details">
                           <span className="info-label">تعلیم</span>
-                          <span className="info-value">{student.parentDetails.education}</span>
+                          <span className="info-value">
+                            {student.parentDetails.education}
+                          </span>
                         </div>
                       </div>
                       <div className="info-item">
                         <WorkIcon className="info-icon" />
                         <div className="info-details">
                           <span className="info-label">پیشہ</span>
-                          <span className="info-value">{student.parentDetails.profession}</span>
+                          <span className="info-value">
+                            {student.parentDetails.profession}
+                          </span>
                         </div>
                       </div>
                     </div>
@@ -403,21 +486,29 @@ const StudentProfile = () => {
                         <BadgeIcon className="info-icon" />
                         <div className="info-details">
                           <span className="info-label">رول نمبر</span>
-                          <span className="info-value">{student.schoolDetails.rollNumber}</span>
+                          <span className="info-value">
+                            {student.schoolDetails.rollNumber}
+                          </span>
                         </div>
                       </div>
                       <div className="info-item">
                         <CalendarMonthIcon className="info-icon" />
                         <div className="info-details">
                           <span className="info-label">تاریخ داخلہ</span>
-                          <span className="info-value">{new Date(student.schoolDetails.joiningDate).toLocaleDateString()}</span>
+                          <span className="info-value">
+                            {new Date(
+                              student.schoolDetails.joiningDate
+                            ).toLocaleDateString()}
+                          </span>
                         </div>
                       </div>
                       <div className="info-item">
                         <MenuBookIcon className="info-icon" />
                         <div className="info-details">
                           <span className="info-label">سابقہ ادارہ</span>
-                          <span className="info-value">{student.schoolDetails.previousInstitute}</span>
+                          <span className="info-value">
+                            {student.schoolDetails.previousInstitute}
+                          </span>
                         </div>
                       </div>
                       <div className="info-item">
@@ -433,10 +524,17 @@ const StudentProfile = () => {
                           <span className="info-label">سابقہ ڈگری</span>
                           <div className="image-container">
                             <img
-                              src={student.schoolDetails.previousDegreeWithImage || 'https://via.placeholder.com/150'}
+                              src={
+                                student.schoolDetails.previousDegreeWithImage ||
+                                "https://via.placeholder.com/150"
+                              }
                               alt="سابقہ ڈگری"
-                              onClick={() => handleImageClick(student.schoolDetails.previousDegreeWithImage)}
-                              style={{ cursor: 'pointer', }}
+                              onClick={() =>
+                                handleImageClick(
+                                  student.schoolDetails.previousDegreeWithImage
+                                )
+                              }
+                              style={{ cursor: "pointer" }}
                             />
                           </div>
                         </div>
@@ -460,4 +558,4 @@ const StudentProfile = () => {
   );
 };
 
-export default StudentProfile; 
+export default StudentProfile;

@@ -298,15 +298,15 @@ const Teachers = () => {
             <div className="teachers-header">
               {(user?.role === "admin" || user?.role === "superAdmin") && (
                 <button
-                  className="add-teacher-btn"
-                  onClick={() => navigate("/teachers/add")}
+                className="add-teacher-btn"
+                onClick={() => navigate("/teachers/add")}
                 >
                   <AddIcon />
                   نیااستاد شامل کریں
 
                 </button>
               )}
-              <h1>تمام استاد</h1>
+              <h1 className="">تمام استاد</h1>
             </div>
 
             <div className="toolbar">

@@ -214,7 +214,9 @@ const AddTeacher = () => {
         <div className="add-teacher-content">
           <form onSubmit={handleSubmit}>
             <div className="form-section">
-              <h2>بنیادی معلومات</h2>
+              <div className="card-header">
+                <h2>بنیادی معلومات</h2>
+              </div>
               
               <div className="form-group">
                 <label>پروفائل تصویر</label>
@@ -464,8 +466,10 @@ const AddTeacher = () => {
             </div>
 
             <div className="form-section">
-              <h2>ملازمت کی تفصیلات
-              </h2>
+              <div className="card-header">
+                <h2>ملازمت کی تفصیلات
+                </h2>
+              </div>
               
               <div className="form-row">
             
@@ -536,8 +540,10 @@ const AddTeacher = () => {
             </div>
 
             <div className="form-section">
-              <h2>تعلیم کی تفصیلات
-              </h2>
+              <div className="card-header">
+                <h2>تعلیم کی تفصیلات
+                </h2>
+              </div>
               
               <div className="form-row">
                 <div className="form-group">

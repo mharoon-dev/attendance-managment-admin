@@ -2,20 +2,42 @@ import React, { useEffect, useState } from "react";
 import Navbar from "../../components/Navbar/Navbar";
 import Sidebar from "../../components/Sidebar/Sidebar";
 import Loader from "../../components/Loader/Loader";
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
 import useSidebar from "../../hooks/useSidebar";
 import "./Dashboard.css";
 import { api } from "../../utils/url.js";
 import { useDispatch, useSelector } from "react-redux";
-import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip, Sector } from 'recharts';
-import { Plus, Edit2, Trash2, Check, X } from 'react-feather';
-import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip as ChartTooltip, Legend as ChartLegend } from 'chart.js';
-import { Bar } from 'react-chartjs-2';
-import { addTodoSuccess, deleteTodoSuccess, getTodosFailure, getTodosStart, getTodosSuccess, updateTodoSuccess, } from "../../redux/slices/todoSlice.jsx";
-import { FiX } from 'react-icons/fi';
+import {
+  PieChart,
+  Pie,
+  Cell,
+  ResponsiveContainer,
+  Legend,
+  Tooltip,
+  Sector,
+} from "recharts";
+import { Plus, Edit2, Trash2, Check, X } from "react-feather";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip as ChartTooltip,
+  Legend as ChartLegend,
+} from "chart.js";
+import { Bar } from "react-chartjs-2";
+import {
+  addTodoSuccess,
+  deleteTodoSuccess,
+  getTodosFailure,
+  getTodosStart,
+  getTodosSuccess,
+  updateTodoSuccess,
+} from "../../redux/slices/todoSlice.jsx";
+import { FiX } from "react-icons/fi";
 import { toast, Toaster } from "sonner";
-
 
 // Register ChartJS components
 ChartJS.register(
@@ -38,13 +60,16 @@ const Dashboard = () => {
   const { dailyAttendance } = useSelector((state) => state.dailyAttendance);
   const { todos } = useSelector((state) => state.todos);
   const { user } = useSelector((state) => state.user);
-  const [currentMonth, setCurrentMonth] = useState('');
-  const [currentYear, setCurrentYear] = useState('');
+  const [currentMonth, setCurrentMonth] = useState("");
+  const [currentYear, setCurrentYear] = useState("");
   const [activeIndex, setActiveIndex] = useState(0);
-  const [newTodo, setNewTodo] = useState({ title: '', description: '' });
+  const [newTodo, setNewTodo] = useState({ title: "", description: "" });
   const [editingTodo, setEditingTodo] = useState(null);
   const [attendanceByDay, setAttendanceByDay] = useState([]);
-  const [deleteConfirmation, setDeleteConfirmation] = useState({ show: false, todoId: null });
+  const [deleteConfirmation, setDeleteConfirmation] = useState({
+    show: false,
+    todoId: null,
+  });
 
   // Set current month and year when component mounts
   useEffect(() => {
@@ -60,8 +85,10 @@ const Dashboard = () => {
 
       try {
         setLoading(true);
-        const response = await api.get(`attendance/students/get/month?month=${currentMonth}&year=${currentYear}`);
-        dispatch({ type: 'SET_DAILY_ATTENDANCE', payload: response.data.data });
+        const response = await api.get(
+          `attendance/students/get/month?month=${currentMonth}&year=${currentYear}`
+        );
+        dispatch({ type: "SET_DAILY_ATTENDANCE", payload: response.data.data });
       } catch (error) {
         console.error("Error fetching attendance data:", error);
       } finally {
@@ -75,9 +102,14 @@ const Dashboard = () => {
   // Calculate attendance statistics
   const attendanceStats = {
     total: dailyAttendance?.length || 0,
-    present: dailyAttendance?.filter(record => record.status === 'present').length || 0,
-    absent: dailyAttendance?.filter(record => record.status === 'absent').length || 0,
-    late: dailyAttendance?.filter(record => record.status === 'late').length || 0
+    present:
+      dailyAttendance?.filter((record) => record.status === "present").length ||
+      0,
+    absent:
+      dailyAttendance?.filter((record) => record.status === "absent").length ||
+      0,
+    late:
+      dailyAttendance?.filter((record) => record.status === "late").length || 0,
   };
 
   // Group attendance by day
@@ -87,7 +119,7 @@ const Dashboard = () => {
     // Create an object to store attendance by day
     const attendanceByDay = {};
 
-    dailyAttendance.forEach(record => {
+    dailyAttendance.forEach((record) => {
       if (!record || !record.date) return;
 
       const date = new Date(record.date);
@@ -98,7 +130,7 @@ const Dashboard = () => {
           present: 0,
           absent: 0,
           late: 0,
-          total: 0
+          total: 0,
         };
       }
 
@@ -112,7 +144,7 @@ const Dashboard = () => {
     return Object.entries(attendanceByDay)
       .map(([day, stats]) => ({
         day: parseInt(day),
-        ...stats
+        ...stats,
       }))
       .sort((a, b) => a.day - b.day);
   };
@@ -139,7 +171,7 @@ const Dashboard = () => {
   const getMonthName = (month) => {
     const date = new Date();
     date.setMonth(month - 1);
-    return date.toLocaleString('default', { month: 'long' });
+    return date.toLocaleString("default", { month: "long" });
   };
 
   // Calculate totals for the circular progress
@@ -147,18 +179,31 @@ const Dashboard = () => {
     return Math.round((value / total) * 100);
   };
 
-  const totalItems = students?.length + teachers?.length + classes?.length + books?.length;
-  const studentPercentage = calculateTotalPercentage(students?.length || 0, totalItems);
-  const teacherPercentage = calculateTotalPercentage(teachers?.length || 0, totalItems);
-  const classPercentage = calculateTotalPercentage(classes?.length || 0, totalItems);
-  const bookPercentage = calculateTotalPercentage(books?.length || 0, totalItems);
+  const totalItems =
+    students?.length + teachers?.length + classes?.length + books?.length;
+  const studentPercentage = calculateTotalPercentage(
+    students?.length || 0,
+    totalItems
+  );
+  const teacherPercentage = calculateTotalPercentage(
+    teachers?.length || 0,
+    totalItems
+  );
+  const classPercentage = calculateTotalPercentage(
+    classes?.length || 0,
+    totalItems
+  );
+  const bookPercentage = calculateTotalPercentage(
+    books?.length || 0,
+    totalItems
+  );
 
   // Prepare data for pie chart
   const pieChartData = [
-    { name: 'Students', value: students?.length || 0, color: '#3A86FF' },
-    { name: 'Teachers', value: teachers?.length || 0, color: '#FF006E' },
-    { name: 'Classes', value: classes?.length || 0, color: '#8338EC' },
-    { name: 'Books', value: books?.length || 0, color: '#38B000' }
+    { name: "Students", value: students?.length || 0, color: "#3A86FF" },
+    { name: "Teachers", value: teachers?.length || 0, color: "#FF006E" },
+    { name: "Classes", value: classes?.length || 0, color: "#8338EC" },
+    { name: "Books", value: books?.length || 0, color: "#38B000" },
   ];
 
   // Prepare data for Chart.js
@@ -166,37 +211,37 @@ const Dashboard = () => {
     labels: Array.from({ length: daysInMonth }, (_, i) => i + 1),
     datasets: [
       {
-        label: 'Present',
+        label: "Present",
         data: Array.from({ length: daysInMonth }, (_, i) => {
-          const dayData = attendanceByDay.find(d => d.day === i + 1);
+          const dayData = attendanceByDay.find((d) => d.day === i + 1);
           return dayData ? dayData.present : 0;
         }),
-        backgroundColor: 'rgba(76, 175, 80, 0.8)',
-        borderColor: 'rgba(76, 175, 80, 1)',
+        backgroundColor: "rgba(76, 175, 80, 0.8)",
+        borderColor: "rgba(76, 175, 80, 1)",
         borderWidth: 1,
-        stack: 'Stack 0',
+        stack: "Stack 0",
       },
       {
-        label: 'Absent',
+        label: "Absent",
         data: Array.from({ length: daysInMonth }, (_, i) => {
-          const dayData = attendanceByDay.find(d => d.day === i + 1);
+          const dayData = attendanceByDay.find((d) => d.day === i + 1);
           return dayData ? dayData.absent : 0;
         }),
-        backgroundColor: 'rgba(244, 67, 54, 0.8)',
-        borderColor: 'rgba(244, 67, 54, 1)',
+        backgroundColor: "rgba(244, 67, 54, 0.8)",
+        borderColor: "rgba(244, 67, 54, 1)",
         borderWidth: 1,
-        stack: 'Stack 0',
+        stack: "Stack 0",
       },
       {
-        label: 'Late',
+        label: "Late",
         data: Array.from({ length: daysInMonth }, (_, i) => {
-          const dayData = attendanceByDay.find(d => d.day === i + 1);
+          const dayData = attendanceByDay.find((d) => d.day === i + 1);
           return dayData ? dayData.late : 0;
         }),
-        backgroundColor: 'rgba(255, 193, 7, 0.8)',
-        borderColor: 'rgba(255, 193, 7, 1)',
+        backgroundColor: "rgba(255, 193, 7, 0.8)",
+        borderColor: "rgba(255, 193, 7, 1)",
         borderWidth: 1,
-        stack: 'Stack 0',
+        stack: "Stack 0",
       },
     ],
   };
@@ -206,72 +251,72 @@ const Dashboard = () => {
     maintainAspectRatio: false,
     plugins: {
       legend: {
-        position: 'bottom',
+        position: "bottom",
         labels: {
           padding: 20,
           font: {
-            size: 12
-          }
-        }
+            size: 12,
+          },
+        },
       },
       title: {
         display: true,
         text: `طلباء کی حاضری - ${getMonthName(currentMonth)} ${currentYear}`,
         font: {
           size: 16,
-          weight: 'bold'
-        }
+          weight: "bold",
+        },
       },
       tooltip: {
-        mode: 'index',
+        mode: "index",
         intersect: false,
         callbacks: {
           label: function (context) {
             return `${context.dataset.label}: ${context.raw}`;
-          }
-        }
-      }
+          },
+        },
+      },
     },
     scales: {
       x: {
         stacked: true,
         title: {
           display: true,
-          text: 'مہینے کا دن',
+          text: "مہینے کا دن",
           font: {
             size: 12,
-            weight: 'bold'
-          }
+            weight: "bold",
+          },
         },
         grid: {
           display: true,
-          color: 'rgba(0, 0, 0, 0.1)'
-        }
+          color: "rgba(0, 0, 0, 0.1)",
+        },
       },
       y: {
         stacked: true,
         title: {
           display: true,
-          text: 'طلباء کی تعداد',
+          text: "طلباء کی تعداد",
           font: {
             size: 12,
-            weight: 'bold'
-          }
+            weight: "bold",
+          },
         },
         beginAtZero: true,
         grid: {
           display: true,
-          color: 'rgba(0, 0, 0, 0.1)'
-        }
+          color: "rgba(0, 0, 0, 0.1)",
+        },
       },
     },
   };
 
   // Debug data
   useEffect(() => {
-    console.log('Chart Data:', chartData);
-    console.log('Attendance By Day:', attendanceByDay);
-    console.log('Days in Month:', daysInMonth);
+    console.log("Chart Data:", chartData);
+    console.log("Attendance By Day:", attendanceByDay);
+    console.log("Days in Month:", daysInMonth);
   }, [attendanceByDay, daysInMonth]);
 
   // Sample data for dashboard
@@ -439,16 +484,48 @@ const Dashboard = () => {
 
   // Custom active shape renderer
   const renderActiveShape = (props) => {
-    const { cx, cy, innerRadius, outerRadius, startAngle, endAngle, fill, payload, percent, value } = props;
+    const {
+      cx,
+      cy,
+      innerRadius,
+      outerRadius,
+      startAngle,
+      endAngle,
+      fill,
+      payload,
+      percent,
+      value,
+    } = props;
     return (
       <g>
-        <text x={cx} y={cy} dy={-20} textAnchor="middle" fill={fill} style={{ fontSize: '16px', fontWeight: 'bold' }}>
+        <text
+          x={cx}
+          y={cy}
+          dy={-20}
+          textAnchor="middle"
+          fill={fill}
+          style={{ fontSize: "16px", fontWeight: "bold" }}
+        >
           {payload.name}
         </text>
-        <text x={cx} y={cy} dy={0} textAnchor="middle" fill={fill} style={{ fontSize: '14px' }}>
+        <text
+          x={cx}
+          y={cy}
+          dy={0}
+          textAnchor="middle"
+          fill={fill}
+          style={{ fontSize: "14px" }}
+        >
           {`${value} items`}
         </text>
-        <text x={cx} y={cy} dy={20} textAnchor="middle" fill={fill} style={{ fontSize: '14px' }}>
+        <text
+          x={cx}
+          y={cy}
+          dy={20}
+          textAnchor="middle"
+          fill={fill}
+          style={{ fontSize: "14px" }}
+        >
           {`(${(percent * 100).toFixed(1)}%)`}
         </text>
         <Sector
@@ -468,20 +545,28 @@ const Dashboard = () => {
   const CustomTooltip = ({ active, payload }) => {
     if (active && payload && payload.length) {
       return (
-        <div className="custom-tooltip" style={{
-          backgroundColor: 'rgba(255, 255, 255, 0.9)',
-          padding: '10px',
-          borderRadius: '5px',
-          boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-          border: `2px solid ${payload[0].payload.color}`
-        }}>
-          <p style={{ margin: '0', color: payload[0].payload.color, fontWeight: 'bold' }}>
+        <div
+          className="custom-tooltip"
+          style={{
+            backgroundColor: "rgba(255, 255, 255, 0.9)",
+            padding: "10px",
+            borderRadius: "5px",
+            boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+            border: `2px solid ${payload[0].payload.color}`,
+          }}
+        >
+          <p
+            style={{
+              margin: "0",
+              color: payload[0].payload.color,
+              fontWeight: "bold",
+            }}
+          >
             {payload[0].name}
           </p>
-          <p style={{ margin: '5px 0 0 0', color: '#666' }}>
+          <p style={{ margin: "5px 0 0 0", color: "#666" }}>
             Count: {payload[0].value}
           </p>
-
         </div>
       );
     }
@@ -493,7 +578,7 @@ const Dashboard = () => {
     try {
       const response = await api.post("todos/add", newTodo);
       dispatch(addTodoSuccess(response.data.data));
-      setNewTodo({ title: '', description: '' });
+      setNewTodo({ title: "", description: "" });
     } catch (error) {
       console.error("Error adding todo:", error);
     }
@@ -522,10 +607,10 @@ const Dashboard = () => {
       await api.delete(`todos/delete/${id}`);
       dispatch(deleteTodoSuccess(id));
       setDeleteConfirmation({ show: false, todoId: null });
-      toast.success('Todo deleted successfully');
+      toast.success("Todo deleted successfully");
     } catch (error) {
       console.error("Error deleting todo:", error);
-      toast.error('Failed to delete todo');
+      toast.error("Failed to delete todo");
     }
   };
 
@@ -536,9 +621,15 @@ const Dashboard = () => {
         <Navbar toggleSidebar={toggleSidebar} isSidebarOpen={sidebarOpen} />
         <div className="dashboard-container">
           <Sidebar isOpen={sidebarOpen} toggleSidebar={toggleSidebar} />
-          <div className={`main-content ${!sidebarOpen ? 'sidebar-closed' : ''}`}>
+          <div
+            className={`main-content ${!sidebarOpen ? "sidebar-closed" : ""}`}
+          >
             {loading ? (
-              <Loader variant="ripple" color="#3A86FF" text="ڈیش بورڈ لوڈ ہو رہا ہے..." />
+              <Loader
+                variant="ripple"
+                color="#3A86FF"
+                text="ڈیش بورڈ لوڈ ہو رہا ہے..."
+              />
             ) : (
               <>
                 <div className="dashboard-header">
@@ -574,8 +665,12 @@ const Dashboard = () => {
 
                 <div className="dashboard-grid">
                   <div className="dashboard-card chart-card">
-                    <div className="card-header">
-                      <h2>طلباء کی حاضری - {getMonthName(currentMonth)} {currentYear}</h2>
+                    <div className="attendance-graph-card-header">
+                      <h2>
+                        {" "}
+                        {getMonthName(currentMonth)} {currentYear} - 
+                        طلباء کی حاضری 
+                      </h2>
                     </div>
                     <div className="chart-container">
                       <Bar data={chartData} options={chartOptions} />
@@ -620,7 +715,7 @@ const Dashboard = () => {
                               align="right"
                               verticalAlign="middle"
                               wrapperStyle={{
-                                paddingLeft: '20px'
+                                paddingLeft: "20px",
                               }}
                             />
                           )}
@@ -633,16 +728,19 @@ const Dashboard = () => {
                 <div className="todo-section">
                   <div className="todo-header">
                     <div className="todo-stats">
-                      <span className="total-todos">کل: {todos?.length || 0}</span>
+                      <span className="total-todos">
+                        کل: {todos?.length || 0}
+                      </span>
                       <span className="completed-todos">
-                        مکمل: {todos?.filter(todo => todo.completed).length || 0}
+                        مکمل:{" "}
+                        {todos?.filter((todo) => todo.completed).length || 0}
                       </span>
                       <span className="pending-todos">
-                        باقی: {todos?.filter(todo => !todo.completed).length || 0}
+                        باقی:{" "}
+                        {todos?.filter((todo) => !todo.completed).length || 0}
                       </span>
                     </div>
                     <h2>نوٹس فہرست</h2>
-                  
                   </div>
 
                   <form onSubmit={handleAddTodo} className="todo-form">
@@ -651,14 +749,21 @@ const Dashboard = () => {
                         type="text"
                         placeholder="نوٹس کا عنوان درج کریں"
                         value={newTodo.title}
-                        onChange={(e) => setNewTodo({ ...newTodo, title: e.target.value })}
+                        onChange={(e) =>
+                          setNewTodo({ ...newTodo, title: e.target.value })
+                        }
                         required
                       />
                       <input
                         type="text"
                         placeholder="نوٹس کی تفصیل درج کریں"
                         value={newTodo.description}
-                        onChange={(e) => setNewTodo({ ...newTodo, description: e.target.value })}
+                        onChange={(e) =>
+                          setNewTodo({
+                            ...newTodo,
+                            description: e.target.value,
+                          })
+                        }
                         required
                       />
                     </div>
@@ -670,29 +775,52 @@ const Dashboard = () => {
 
                   <div className="todo-list">
                     {todos?.map((todo) => (
-                      <div key={todo._id} className={`todo-item ${todo.completed ? 'completed' : ''}`}>
+                      <div
+                        key={todo._id}
+                        className={`todo-item ${
+                          todo.completed ? "completed" : ""
+                        }`}
+                      >
                         {editingTodo?._id === todo._id ? (
                           <div className="edit-todo">
                             <div className="form-group">
                               <input
                                 type="text"
                                 value={editingTodo.title}
-                                onChange={(e) => setEditingTodo({ ...editingTodo, title: e.target.value })}
+                                onChange={(e) =>
+                                  setEditingTodo({
+                                    ...editingTodo,
+                                    title: e.target.value,
+                                  })
+                                }
                                 placeholder="عنوان میں ترمیم کریں"
                               />
                               <input
                                 type="text"
                                 value={editingTodo.description}
-                                onChange={(e) => setEditingTodo({ ...editingTodo, description: e.target.value })}
+                                onChange={(e) =>
+                                  setEditingTodo({
+                                    ...editingTodo,
+                                    description: e.target.value,
+                                  })
+                                }
                                 placeholder="تفصیل میں ترمیم کریں"
                               />
                             </div>
                             <div className="button-group">
-                              <button onClick={() => handleUpdateTodo(todo._id, editingTodo)} className="save-button">
+                              <button
+                                onClick={() =>
+                                  handleUpdateTodo(todo._id, editingTodo)
+                                }
+                                className="save-button"
+                              >
                                 <Check size={14} />
                                 محفوظ کریں
                               </button>
-                              <button onClick={() => setEditingTodo(null)} className="cancel-button">
+                              <button
+                                onClick={() => setEditingTodo(null)}
+                                className="cancel-button"
+                              >
                                 <X size={14} />
                                 منسوخ کریں
                               </button>
@@ -721,17 +849,30 @@ const Dashboard = () => {
                                   <DeleteIcon />
                                 </button>
                                 <button
-                                  onClick={() => handleUpdateTodo(todo._id, { ...todo, completed: !todo.completed })}
-                                  className={`complete-button ${todo.completed ? 'completed' : ''}`}
-                                  title={todo.completed ? 'نامکمل کریں' : 'مکمل کریں'}
+                                  onClick={() =>
+                                    handleUpdateTodo(todo._id, {
+                                      ...todo,
+                                      completed: !todo.completed,
+                                    })
+                                  }
+                                  className={`complete-button ${
+                                    todo.completed ? "completed" : ""
+                                  }`}
+                                  title={
+                                    todo.completed ? "نامکمل کریں" : "مکمل کریں"
+                                  }
                                 >
                                   <Check size={14} />
                                 </button>
                               </div>
                             </div>
                             <div className="todo-status">
-                              <span className={`status-badge ${todo.completed ? 'completed' : 'pending'}`}>
-                                {todo.completed ? 'مکمل' : 'باقی'}
+                              <span
+                                className={`status-badge ${
+                                  todo.completed ? "completed" : "pending"
+                                }`}
+                              >
+                                {todo.completed ? "مکمل" : "باقی"}
                               </span>
                             </div>
                           </>
@@ -751,12 +892,18 @@ const Dashboard = () => {
             <div className="delete-confirmation-modal">
               <div className="modal-header">
                 <h2>حذف کرنے کی تصدیق</h2>
-                <button className="modal-close-btn" onClick={handleCancelDelete}>
+                <button
+                  className="modal-close-btn"
+                  onClick={handleCancelDelete}
+                >
                   <FiX />
                 </button>
               </div>
               <div className="modal-body">
-                <p>کیا آپ واقعی اس نوٹس کو حذف کرنا چاہتے ہیں؟ یہ عمل واپس نہیں کیا جا سکتا۔</p>
+                <p>
+                  کیا آپ واقعی اس نوٹس کو حذف کرنا چاہتے ہیں؟ یہ عمل واپس نہیں
+                  کیا جا سکتا۔
+                </p>
               </div>
               <div className="modal-footer">
                 <button className="cancel-btn" onClick={handleCancelDelete}>

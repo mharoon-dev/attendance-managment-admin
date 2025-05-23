@@ -34,7 +34,7 @@ const ViewStudentAttendance = () => {
   const [isDateDisabled, setIsDateDisabled] = useState(false);
   const [isStudentIdDisabled, setIsStudentIdDisabled] = useState(false);
   const [availableDates, setAvailableDates] = useState([]);
-  const {students} = useSelector((state) => state.students);
+  const { students } = useSelector((state) => state.students);
 
   useEffect(() => {
     fetchAttendanceData();
@@ -235,7 +235,10 @@ const ViewStudentAttendance = () => {
         }`}
       >
         <div className="attendance-header">
-          <h1>طلباء کی حاضری دیکھیں</h1>
+          <h1 style={{
+            textAlign: "end",
+            width: "100%",
+          }}>طلباء کی حاضری دیکھیں</h1>
         </div>
 
         <div className="attendance-content">
@@ -362,7 +365,14 @@ const ViewStudentAttendance = () => {
                         </div>
                       </td>
                       <td>{record.id}</td>
-                      <td>{students.find(student => student?.schoolDetails?.rollNumber === record?.id)?.fullName}</td>
+                      <td>
+                        {
+                          students.find(
+                            (student) =>
+                              student?.schoolDetails?.rollNumber === record?.id
+                          )?.fullName
+                        }
+                      </td>
                     </tr>
                   ))}
                 </tbody>
