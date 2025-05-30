@@ -68,7 +68,7 @@ function App() {
   const [currentMonth, setCurrentMonth] = useState('');
   const [currentYear, setCurrentYear] = useState('');
   useEffect(() => {
-    const token = JSON.parse(localStorage.getItem("token"));
+    const token = JSON?.parse(localStorage?.getItem("token"));
 
     const isAuthenticated = async () => {
       try {

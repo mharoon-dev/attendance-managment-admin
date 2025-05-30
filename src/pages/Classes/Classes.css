@@ -55,6 +55,7 @@
 .toolbar-actions {
   display: flex;
   flex-wrap: wrap;
+  justify-content: end;
   gap: 1rem;
   align-items: center;
 }

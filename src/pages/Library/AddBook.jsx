@@ -93,10 +93,10 @@ const AddBook = () => {
       
       <div className={`add-book-container ${!sidebarOpen ? 'sidebar-closed' : ''}`}>
         <div className="add-book-header">
+          <h1>نئی کتاب شامل کریں</h1>
           <button className="back-btn" onClick={handleCancel}>
             <ArrowBackIcon /> لائبریری پر واپس جائیں
           </button>
-          <h1>نئی کتاب شامل کریں</h1>
         </div>
 
         <div className="add-book-content">

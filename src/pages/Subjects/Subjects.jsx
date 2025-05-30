@@ -215,7 +215,6 @@ const Subjects = () => {
           }`}
         >
           <div className="subjects-header">
-            <h1>تمام مضامین</h1>
             {
               (user.role === "admin" || user.role === "superAdmin") && (
                 <button
@@ -226,6 +225,7 @@ const Subjects = () => {
                 </button>
               )
             }
+            <h1>تمام مضامین</h1>
           </div>
 
           <div className="toolbar">

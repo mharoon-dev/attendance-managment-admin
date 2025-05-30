@@ -679,7 +679,10 @@ const Dashboard = () => {
 
                   <div className="dashboard-card activity-card">
                     <div className="card-header">
-                      <h2>تقسیم کا جائزہ</h2>
+                      <h2 style={{
+                        width: "100%",
+                        textAlign: "end",
+                      }}>تقسیم کا جائزہ</h2>
                     </div>
                     <div className="pie-chart-container">
                       <ResponsiveContainer width="100%" height={290}>
